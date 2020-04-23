@@ -1,4 +1,7 @@
 // import valueParser from "postcss-value-parser";
+import postcss from "postcss";
+import scss from "postcss-scss";
+// import atImport from "postcss-import";
 import { utils } from "stylelint";
 import {
   declarationValueIndex,
@@ -12,14 +15,15 @@ import {
   normaliseVariableName,
 } from "../../utils";
 import splitValueList from "../../utils/splitValueList";
+import fs from "fs";
 
 export const ruleName = namespace("theme-token-use");
 
 export const messages = utils.ruleMessages(ruleName, {
   rejected: (property, value) =>
-    `Expected carbon token for "${property}" found "${value}.`,
+    `Expected carbon token for "${property}" found "${value}".`,
   rejectedVariable: (property, variable, value) =>
-    `Expected carbon token to be set for variable "${variable}" used by "${property}" found "${value}.`,
+    `Expected carbon token to be set for variable "${variable}" used by "${property}" found "${value}".`,
 });
 
 const isValidIgnoreValues = isValidOption;
@@ -49,16 +53,91 @@ export default function rule(optionsIn) {
       return;
     }
 
-    // list of variables that may need checking during walk
-    // const declVariables = [];
-    // root.walkDecls(decl => {
-    //   // record variable for check later with $ or --
-    //   if (isVariable(decl.prop)) {
-    //     declVariables.push(decl);
-    //   }
-    // });
+    root.walkAtRules((ats) => {
+      if (ats.name === "import") {
+        let filename = ats.params.substr(1, ats.params.length - 2);
+
+        if (!filename.endsWith(".scss")) {
+          filename = filename.concat(".scss");
+        }
+
+        let _filename = filename;
+        const lastSlash = filename.lastIndexOf("/");
+
+        if (lastSlash >= 0) {
+          if (filename.charAt(lastSlash + 1) !== "_") {
+            // try with _ before last name
+            _filename = filename.replace(/\/([^/]*)$/, "/_$1");
+          }
+        }
+
+        if (fs.existsSync(_filename)) {
+          filename = _filename;
+        }
+
+        const scssFromFile = fs.readFileSync(filename, "utf8");
+
+        // eslint-disable-next-line
+        console.log(scssFromFile, typeof scssFromFile);
+
+        Promise.all(
+          postcss()
+            // .use(atImport()) // not working resolver struggles with extensions, try newer version
+            .process(`${scssFromFile}`, {
+              from: `${filename}`,
+              syntax: scss,
+            })
+            .then(function (result) {
+              result.root.walkDecls((decl) => {
+                // eslint-disable-next-line
+                console.dir(decl);
+
+                if (isVariable(decl.prop)) {
+                  // eslint-disable-next-line
+                  console.log("prop is var");
+
+                  // add to variable declarations
+                  // expects all variables to appear before use
+                  // expects all variables to be simple (not map or list)
+
+                  if (isVariable(decl.value)) {
+                    // eslint-disable-next-line
+                    console.log("val is var");
+
+                    variables[normaliseVariableName(decl.prop)] =
+                      variables[normaliseVariableName(decl.value)];
+                  } else {
+                    variables[normaliseVariableName(decl.prop)] = decl.value;
+                  }
+                  // eslint-disable-next-line
+                  console.dir(variables);
+                }
+
+                // eslint-disable-next-line
+                console.log("decl");
+              });
+            })
+            .catch((reason) => {
+              // eslint-disable-next-line
+              console.log("Rejected ---------------", reason);
+            })
+        );
+
+        // eslint-disable-next-line
+        console.log("-------------asdfasdfasdfasdf-------");
+      }
+    });
+
+    // eslint-disable-next-line
+    console.log("next up");
+
+    // eslint-disable-next-line
+    console.dir(variables);
 
     root.walkDecls((decl) => {
+      // // eslint-disable-next-line
+      // console.dir(decl);
+
       if (isVariable(decl.prop)) {
         // add to variable declarations
         // expects all variables to appear before use
