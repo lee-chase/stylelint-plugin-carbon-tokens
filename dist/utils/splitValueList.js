@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true,
+  value: true
 });
 exports["default"] = splitValueList;
 
@@ -17,6 +17,7 @@ function splitValueList(value) {
     lastPos = commaSplitRegex.lastIndex;
   }
   /* istanbul ignore else */
+
 
   if (lastPos < value.length) {
     values.push(value.substring(lastPos).trim());

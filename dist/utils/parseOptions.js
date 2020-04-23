@@ -1,16 +1,14 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true,
+  value: true
 });
 exports["default"] = parseOptions;
 
 var parseAddDefaults = function parseAddDefaults(options, defaults) {
-  var output = options
-    ? options.filter(function (option) {
-        return option.length > 0;
-      })
-    : [];
+  var output = options ? options.filter(function (option) {
+    return option.length > 0;
+  }) : [];
   var addDefaults = false;
 
   if (output.length === 0) {
@@ -40,14 +38,8 @@ function parseOptions(options, defaults) {
   var optsOut = {}; // // eslint-disable-next-line
   // console.dir(defaults);
 
-  optsOut.includeProps = parseAddDefaults(
-    (options && options.includeProps) || [],
-    defaults.includeProps
-  );
-  optsOut.ignoreValues = parseAddDefaults(
-    (options && options.ignoreValues) || [],
-    defaults.ignoreValues
-  ); // // eslint-disable-next-line
+  optsOut.includeProps = parseAddDefaults(options && options.includeProps || [], defaults.includeProps);
+  optsOut.ignoreValues = parseAddDefaults(options && options.ignoreValues || [], defaults.ignoreValues); // // eslint-disable-next-line
   // console.dir(optsOut);
 
   return optsOut;

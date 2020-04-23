@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true,
+  value: true
 });
 exports["default"] = declarationValueIndex;
 
@@ -13,7 +13,6 @@ exports["default"] = declarationValueIndex;
  */
 function declarationValueIndex(decl) {
   var beforeColon = decl.toString().indexOf(":");
-  var afterColon =
-    decl.raw("between").length - decl.raw("between").indexOf(":");
+  var afterColon = decl.raw("between").length - decl.raw("between").indexOf(":");
   return beforeColon + afterColon;
 }

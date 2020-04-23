@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true,
+  value: true
 });
 exports["default"] = checkValue;
 
@@ -12,6 +12,7 @@ var themesTokens = _themes.tokens.colors.map(function (token) {
   return (0, _themes.formatTokenName)(token);
 }); // permitted carbon theme functions
 // TODO: read this from carbon
+
 
 var themeFunctions = ["get-light-value"];
 
@@ -29,10 +30,7 @@ function checkValue(val) {
     // if function check it's in themeFunctions
 
     /* istanbul ignore next */
-    var passFunctionCheck =
-      !matches[matchFunction] ||
-      matches[matchFunction].length === 0 ||
-      themeFunctions.includes(matches[matchFunction]); // check token exists in theme
+    var passFunctionCheck = !matches[matchFunction] || matches[matchFunction].length === 0 || themeFunctions.includes(matches[matchFunction]); // check token exists in theme
 
     return passFunctionCheck && themesTokens.includes(matches[matchVariable]);
   }

@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-  value: true,
+  value: true
 });
 exports["default"] = rule;
 exports.messages = exports.ruleName = void 0;
@@ -10,95 +10,26 @@ var _stylelint = require("stylelint");
 
 var _utils = require("../../utils");
 
-var _splitValueList = _interopRequireDefault(
-  require("../../utils/splitValueList")
-);
+var _splitValueList = _interopRequireDefault(require("../../utils/splitValueList"));
 
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-function _createForOfIteratorHelper(o) {
-  if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) {
-    if (Array.isArray(o) || (o = _unsupportedIterableToArray(o))) {
-      var i = 0;
-      var F = function F() {};
-      return {
-        s: F,
-        n: function n() {
-          if (i >= o.length) return { done: true };
-          return { done: false, value: o[i++] };
-        },
-        e: function e(_e) {
-          throw _e;
-        },
-        f: F,
-      };
-    }
-    throw new TypeError(
-      "Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."
-    );
-  }
-  var it,
-    normalCompletion = true,
-    didErr = false,
-    err;
-  return {
-    s: function s() {
-      it = o[Symbol.iterator]();
-    },
-    n: function n() {
-      var step = it.next();
-      normalCompletion = step.done;
-      return step;
-    },
-    e: function e(_e2) {
-      didErr = true;
-      err = _e2;
-    },
-    f: function f() {
-      try {
-        if (!normalCompletion && it["return"] != null) it["return"]();
-      } finally {
-        if (didErr) throw err;
-      }
-    },
-  };
-}
+function _createForOfIteratorHelper(o) { if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (o = _unsupportedIterableToArray(o))) { var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var it, normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
-function _unsupportedIterableToArray(o, minLen) {
-  if (!o) return;
-  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
-  var n = Object.prototype.toString.call(o).slice(8, -1);
-  if (n === "Object" && o.constructor) n = o.constructor.name;
-  if (n === "Map" || n === "Set") return Array.from(n);
-  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n))
-    return _arrayLikeToArray(o, minLen);
-}
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(n); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
-function _arrayLikeToArray(arr, len) {
-  if (len == null || len > arr.length) len = arr.length;
-  for (var i = 0, arr2 = new Array(len); i < len; i++) {
-    arr2[i] = arr[i];
-  }
-  return arr2;
-}
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 var ruleName = (0, _utils.namespace)("theme-token-use");
 exports.ruleName = ruleName;
 
 var messages = _stylelint.utils.ruleMessages(ruleName, {
   rejected: function rejected(property, value) {
-    return 'Expected carbon token for "'
-      .concat(property, '" found "')
-      .concat(value, ".");
+    return "Expected carbon token for \"".concat(property, "\" found \"").concat(value, ".");
   },
   rejectedVariable: function rejectedVariable(property, variable, value) {
-    return 'Expected carbon token to be set for variable "'
-      .concat(variable, '" used by "')
-      .concat(property, '" found "')
-      .concat(value, ".");
-  },
+    return "Expected carbon token to be set for variable \"".concat(variable, "\" used by \"").concat(property, "\" found \"").concat(value, ".");
+  }
 });
 
 exports.messages = messages;
@@ -108,7 +39,7 @@ var variables = {}; // used to contain variable declarations
 
 var defaultOptions = {
   includeProps: ["/color/", "/shadow/", "border"],
-  ignoreValues: ["/transparent|inherit|initial/"],
+  ignoreValues: ["/transparent|inherit|initial/"]
 };
 
 function rule(optionsIn) {
@@ -118,9 +49,9 @@ function rule(optionsIn) {
       actual: options,
       possible: {
         includeProps: [isValidIncludeProps],
-        ignoreValues: [isValidIgnoreValues],
+        ignoreValues: [isValidIgnoreValues]
       },
-      optional: true,
+      optional: true
     });
 
     if (!validOptions) {
@@ -134,6 +65,7 @@ function rule(optionsIn) {
     //     declVariables.push(decl);
     //   }
     // });
+
 
     root.walkDecls(function (decl) {
       if ((0, _utils.isVariable)(decl.prop)) {
@@ -149,10 +81,10 @@ function rule(optionsIn) {
         var values = (0, _splitValueList["default"])(decl.value);
 
         var _iterator = _createForOfIteratorHelper(values),
-          _step;
+            _step;
 
         try {
-          for (_iterator.s(); !(_step = _iterator.n()).done; ) {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
             var value = _step.value;
 
             if (!(0, _utils.checkIgnoreValue)(value, options.ignoreValues)) {
@@ -167,13 +99,9 @@ function rule(optionsIn) {
                     _stylelint.utils.report({
                       ruleName: ruleName,
                       result: result,
-                      message: messages.rejectedVariable(
-                        decl.prop,
-                        value,
-                        variableValue
-                      ),
+                      message: messages.rejectedVariable(decl.prop, value, variableValue),
                       index: (0, _utils.declarationValueIndex)(decl),
-                      node: decl,
+                      node: decl
                     });
                   }
                 } else {
@@ -183,7 +111,7 @@ function rule(optionsIn) {
                     result: result,
                     message: messages.rejected(decl.prop, decl.value),
                     index: (0, _utils.declarationValueIndex)(decl),
-                    node: decl,
+                    node: decl
                   });
                 }
               }
@@ -198,6 +126,7 @@ function rule(optionsIn) {
       // valueParser(decl.value).walk(node => {
       // });
       // }
+
     });
   };
 }
