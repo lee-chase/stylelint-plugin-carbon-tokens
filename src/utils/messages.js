@@ -15,6 +15,10 @@ const getMessages = (ruleName, label) => {
       `Expected carbon ${label} token, mixin or function for "${property}" found "${value}" in position(s) "${range}".`,
     rejectedVariable: (property, variable, value) =>
       `Expected carbon ${label} token, mixin or function to be set for variable "${variable}" used by "${property}" found "${value}".`,
+    rejectedUnknownVariable: (property, variable) =>
+      `Expected carbon ${label} token, mixin or function to be set for variable "${variable}" used by "${property}" found "an unknown, undefined or unrecognized value".`,
+    rejectedV10VariableNoFix: (property, variable) =>
+      `Expected carbon V11 ${label} token, mixin or function to be set for variable "${variable}" used by "${property}". "${variable}" maps to multiple V11 tokens and cannot be automatically fixed.`,
     rejectedMaths: (property, value) =>
       `Expected calc of the form calc(P O #{$}) or calc(-1 * #{$}). Where 'P' is in (vw, vh or %), 'O' is + or -,  '$' is a carbon ${label} token, mixin or function for "${property}" found "${value}".`,
     rejectedTransition: (property, value) =>

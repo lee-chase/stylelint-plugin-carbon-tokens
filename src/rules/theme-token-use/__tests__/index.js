@@ -665,25 +665,21 @@ testRule(rule, {
   config: [
     true,
     {
-      enforceScopes: true,
-      acceptScopes: ["theme"]
+      acceptScopes: ["theme", ""]
     }
   ],
   customSyntax: "postcss-scss",
-  accept: [
-    {
-      code: "@use '@carbon/theme' as *; background-color: $layer-03;",
-      description: "Should accept * when @use enforced"
-    },
-    {
-      code: "@use '@carbon/theme' as rename_theme; background-color: rename_theme.$layer-03;",
-      description: "Should accept renamed scope when @use enforced"
-    }
-  ],
+  fix: true,
+  accept: [],
   reject: [
     {
-      code: "background-color: $layer-03;",
-      description: "Should reject global scope without when @use enforced"
+      code: "@use '@carbon/theme' as *; background-color: $active-ui;",
+      description: "Cannot map one to many v10 to v11.",
+      fixed: "This will not be fixed",
+      message: messages.rejectedV10VariableNoFix(
+        "background-color",
+        "$active-ui"
+      )
     }
   ]
 });

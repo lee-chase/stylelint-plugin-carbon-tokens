@@ -50,13 +50,15 @@ export default async function checkRule(
       } else if (decl.prop === "animation") {
         message = messages.rejectedAnimation(decl.prop, item.raw);
       } else if (testResult.isVariable) {
-        message = messages.rejectedVariable(
-          decl.prop,
-          item.raw,
-          testResult.variableValue === undefined
-            ? "an unknown, undefined or unrecognized value"
-            : testResult.variableValue
-        );
+        if (testResult.variableValue === undefined) {
+          message = messages.rejectedUnknownVariable(decl.prop, item.raw);
+        } else {
+          message = messages.rejectedVariable(
+            decl.prop,
+            item.raw,
+            testResult.variableValue
+          );
+        }
       } else {
         message = messages.rejected(decl.prop, decl.value);
       }
@@ -200,7 +202,7 @@ export default async function checkRule(
     }
   );
 
-  if (!options.enforceScopes) {
+  if (!options.enforceScopes && !localScopes.includes("")) {
     // scopes are not being enforced allow no scope
     localScopes.push("");
   }
@@ -258,6 +260,7 @@ export default async function checkRule(
             : [tokenizedValue];
 
         const reports = [];
+        const manualMappings = [];
 
         // *** check each item found in value
         for (const itemToCheck of itemsToCheck) {
@@ -291,7 +294,15 @@ export default async function checkRule(
               });
             });
 
-            if (workingValue !== decl.value) {
+            if (workingValue.startsWith("{")) {
+              try {
+                const mappings = JSON.parse(workingValue);
+
+                manualMappings.push(mappings);
+              } catch {
+                // ignore
+              }
+            } else if (workingValue !== decl.value) {
               for (let si = 0; si < localScopes.length; si++) {
                 const reportsFix = [];
                 const scope = localScopes[si];
@@ -324,6 +335,9 @@ export default async function checkRule(
                   fixed = true;
                   decl.value = scopedValue;
                   break; // fixed no need to try next scope
+                } else {
+                  // eslint-disable-next-line
+                  console.log(decl.parent.nodes);
                 }
               }
             }

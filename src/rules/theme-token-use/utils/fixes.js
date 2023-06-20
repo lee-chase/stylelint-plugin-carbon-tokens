@@ -27,6 +27,7 @@ export const fixes = [
           "$active-primary": "$button-primary-active",
           "$active-secondary": "$button-secondary-active",
           "$active-tertiary": "$button-tertiary-active",
+          "$active-ui": "v10-variable-cannot-ix.$active-ui",
           $danger: "$button-danger-primary",
           "$danger-01": "$button-danger-primary",
           "$danger-02": "$button-danger-secondary",
