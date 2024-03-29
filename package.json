@@ -43,8 +43,8 @@
     "@carbon/motion": "^11.3.0",
     "@carbon/motion-10": "npm:@carbon/motion@^10.29.0",
     "@carbon/themes": "^11.7.0",
-    "@carbon/themes-11-4": "npm:@carbon/themes@11.4.0",
     "@carbon/themes-10": "npm:@carbon/themes@^10.54.0",
+    "@carbon/themes-11-4": "npm:@carbon/themes@11.4.0",
     "@carbon/type": "^11.7.0",
     "@carbon/type-10": "npm:@carbon/type@^10.44.0",
     "babel-plugin-istanbul": "^6.1.1",
@@ -62,7 +62,7 @@
     "npmpub": "^5.1.1",
     "prettier": "^2.7.1",
     "rimraf": "^3.0.2",
-    "stylelint": "^14.11.0"
+    "stylelint": "^15"
   },
   "peerDependencies": {
     "@carbon/colors": ">=10 <= 11",
