@@ -1,0 +1,70 @@
+{
+  "env": {
+    "browser": true,
+    "es2024": true,
+    "jest": true,
+  },
+  "extends": ["eslint:recommended", "plugin:import/recommended", "eslint-config-prettier"],
+  "settings": {
+    "react": {
+      "version": "detect",
+    },
+    "import/resolver": {
+      "alias": {
+        "map": [
+          ["", "./public"], // <-- this line
+        ],
+        "extensions": [".js", ".jsx", ".svg"],
+      },
+      "node": {
+        "paths": ["src"],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"],
+      },
+    },
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true,
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+  },
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": true,
+        "trailingComma": "es5",
+      },
+    ],
+    "max-len": [2, 140, 4],
+    "no-param-reassign": [
+      2,
+      {
+        "props": false,
+      },
+    ],
+    "no-plusplus": 0,
+    "no-underscore-dangle": 0,
+    "prefer-rest-params": 0,
+    "comma-dangle": [
+      2,
+      {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "never",
+      },
+    ],
+    "import/no-extraneous-dependencies": [2, { "devDependencies": true }],
+    "import/order": 0,
+  },
+  "globals": {
+    "testRule": "readonly",
+    "__dirname": "readonly",
+    "__filename": "readonly",
+    "process": "readonly",
+  },
+}

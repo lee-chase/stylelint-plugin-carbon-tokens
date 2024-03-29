@@ -68,7 +68,7 @@ const doInit = async ({ carbonPath, carbonModulePostfix }) => {
           if (tokenWithoutNumber.startsWith("size")) {
             tokenArray = containerTokens;
           } else {
-            // eslint-disable-next-line no-console
+             
             console.warn(
               `Unexpected token "${token}" found in @carbon/layout - please raise an issue`
             );

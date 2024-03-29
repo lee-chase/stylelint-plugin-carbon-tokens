@@ -12,7 +12,7 @@ const parseAddDefaults = (options, defaults) => {
   if (output.length === 0) {
     addDefaults = true;
   } else {
-    const index = output.findIndex((item) => item === "*");
+    const index = output.findIndex((item) => item === '*');
 
     if (index >= 0) {
       addDefaults = true;
@@ -36,10 +36,7 @@ export default function parseOptions(options, defaults) {
 
   for (const prop of Object.keys(defaults)) {
     if (Array.isArray(defaults[prop])) {
-      optsOut[prop] = parseAddDefaults(
-        (options && options[prop]) || [],
-        defaults[prop]
-      );
+      optsOut[prop] = parseAddDefaults((options && options[prop]) || [], defaults[prop]);
     } else if (options && options[prop] !== undefined) {
       optsOut[prop] = options[prop];
     } else {

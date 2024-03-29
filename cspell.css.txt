@@ -1,0 +1,4 @@
+optimizelegibility
+grayscale
+keyframes
+vmin

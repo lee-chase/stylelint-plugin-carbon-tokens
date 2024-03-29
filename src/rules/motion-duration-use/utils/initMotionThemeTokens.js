@@ -5,21 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { formatTokenName } from "../../../utils/token-name";
-import { unstable_tokens as installedTokens } from "@carbon/motion";
-import { version as installedVersion } from "@carbon/motion/package.json";
-import loadModules from "../../../utils/loadModules";
+import { formatTokenName } from '../../../utils/token-name';
+import { unstable_tokens as installedTokens } from '@carbon/motion';
+import { version as installedVersion } from '@carbon/motion/package.json';
+import loadModules from '../../../utils/loadModules';
 
 const doInit = async ({ carbonPath, carbonModulePostfix }) => {
   const motionTokens = [];
-  const motionFunctions = ["motion"];
+  const motionFunctions = ['motion'];
 
   let tokens;
   let _version;
 
   if (carbonPath) {
     // eslint-disable-next-line node/no-unsupported-features/es-syntax
-    const { motion, pkg } = await loadModules(carbonPath, ["motion"], carbonModulePostfix);
+    const { motion, pkg } = await loadModules(carbonPath, ['motion'], carbonModulePostfix);
 
     _version = pkg.version;
     tokens = motion.unstable_tokens;
@@ -28,8 +28,8 @@ const doInit = async ({ carbonPath, carbonModulePostfix }) => {
     _version = installedVersion;
   }
 
-  const isV10 = _version.startsWith("10");
-  const durationPrefix = isV10 ? "$duration--" : "$duration-";
+  const isV10 = _version.startsWith('10');
+  const durationPrefix = isV10 ? '$duration--' : '$duration-';
 
   for (const key in tokens) {
     if (Object.hasOwn(tokens, key)) {

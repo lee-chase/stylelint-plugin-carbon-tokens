@@ -5,14 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { TOKEN_TYPES } from "./tokenizeValue";
+import { TOKEN_TYPES } from './tokenizeValue';
 
 export default function isVariable(val) {
-  if (typeof val === "string") {
-    return (
-      val !== undefined &&
-      (val.startsWith("$") || val.startsWith("--") || val.startsWith("var(--"))
-    );
+  if (typeof val === 'string') {
+    return val !== undefined && (val.startsWith('$') || val.startsWith('--') || val.startsWith('var(--'));
   }
 
   // is tokenized
@@ -26,5 +23,5 @@ export default function isVariable(val) {
     return true;
   }
 
-  return val.type === TOKEN_TYPES.FUNCTION && val.value === "var";
+  return val.type === TOKEN_TYPES.FUNCTION && val.value === 'var';
 }

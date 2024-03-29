@@ -1,6 +1,6 @@
 # Theme Token Use
 
-This rule is intended enfoce use of Carbon theme tokens, functions, mixins and CSS classes as defined.
+This rule is intended enforce use of Carbon theme tokens, functions, mixins and CSS classes as defined.
 
 - [https://www.carbondesignsystem.com/guidelines/color/overview](https://www.carbondesignsystem.com/guidelines/color/overview)
 - [https://www.carbondesignsystem.com/guidelines/themes/overview](https://www.carbondesignsystem.com/guidelines/themes/overview)
@@ -34,6 +34,9 @@ const defaultOptions = {
 
 The automatic fixes for the theme rule are as follows.
 
-- V11: Attempts to update V10 tokens to V11. This is limited by not all v10 tokens mapping 1-1 to a v11 token. In some cases the property name can be used to refine the mapping, but in numerous cases the linter does not have the context to be able to make a fix. An assumption based on the primary, or first declared meaning of a v10 token may also be used.
+- V11: Attempts to update V10 tokens to V11. This is limited by not all v10 tokens mapping 1-1 to a v11 token. In some
+  cases the property name can be used to refine the mapping, but in numerous cases the linter does not have the context
+  to be able to make a fix. An assumption based on the primary, or first declared meaning of a v10 token may also be
+  used.
 
 Please Review all changes.

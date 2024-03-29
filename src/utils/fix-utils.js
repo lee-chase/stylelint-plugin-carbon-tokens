@@ -7,7 +7,7 @@
 
 export const fixUsingMap = (value, _target, map, config) => {
   let workingValue = value;
-  const target = _target.global ? _target : new RegExp(_target.source, "g"); // ensure not infinite loop
+  const target = _target.global ? _target : new RegExp(_target.source, 'g'); // ensure not infinite loop
   let match = target.exec(workingValue);
 
   let lastEnd = -1;
@@ -18,7 +18,7 @@ export const fixUsingMap = (value, _target, map, config) => {
       let replacement = map[match[0]];
 
       if (replacement) {
-        if (typeof replacement === "object") {
+        if (typeof replacement === 'object') {
           const keys = Object.keys(replacement).filter((key) => {
             const rgx = new RegExp(key);
 
@@ -28,9 +28,7 @@ export const fixUsingMap = (value, _target, map, config) => {
           if (keys.length > 0) {
             replacement = replacement[keys[0]];
           } else {
-            replacement = config?.options?.preferContextFixes
-              ? replacement.context
-              : replacement.standard;
+            replacement = config?.options?.preferContextFixes ? replacement.context : replacement.standard;
           }
         }
 
@@ -47,7 +45,7 @@ export const fixUsingMap = (value, _target, map, config) => {
 
 export const tryFix = ({ target, replacement, version }, value, config) => {
   if (version === undefined || config.ruleInfo.version.startsWith(version)) {
-    if (typeof replacement === "function") {
+    if (typeof replacement === 'function') {
       return replacement(value, target, config);
     }
 

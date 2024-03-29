@@ -10,14 +10,14 @@
 export const fixes = [
   {
     // remove carbon prefix for easings
-    version: "11",
+    version: '11',
     target: /\$(carbon--)((ease-in)|(ease-out)|(standard-easing)|(easings))/g,
-    replacement: "$$$2"
+    replacement: '$$$2',
   },
   {
     // remove carbon prefix for motion function
-    version: "11",
+    version: '11',
     target: /carbon--motion/g,
-    replacement: "motion"
-  }
+    replacement: 'motion',
+  },
 ];

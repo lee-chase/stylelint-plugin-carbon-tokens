@@ -5,22 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { fixUsingMap } from "../fix-utils";
+import { fixUsingMap } from '../fix-utils';
 
-describe("fixUsingMap", () => {
-  it("Does not loop forever", () => {
-    const newValue = fixUsingMap("$test is this", /test/g, {
-      test: "Is a loop test"
+describe('fixUsingMap', () => {
+  it('Does not loop forever', () => {
+    const newValue = fixUsingMap('$test is this', /test/g, {
+      test: 'Is a loop test',
     });
 
-    expect(newValue).toBe("$Is a loop test is this");
+    expect(newValue).toBe('$Is a loop test is this');
   });
 
   it("Does not loop forever if '/g' is missed", () => {
-    const newValue = fixUsingMap("$test is this", /test/, {
-      test: "Is a loop test"
+    const newValue = fixUsingMap('$test is this', /test/, {
+      test: 'Is a loop test',
     });
 
-    expect(newValue).toBe("$Is a loop test is this");
+    expect(newValue).toBe('$Is a loop test is this');
   });
 });

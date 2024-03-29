@@ -5,47 +5,46 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { doInitColors } from "./initCarbonColor";
-import { doInitTheme } from "./initCarbonTheme";
-import { fixes } from "./fixes";
-import { sassColorFunctions } from "./initSassFunctions";
+import { doInitColors } from './initCarbonColor';
+import { doInitTheme } from './initCarbonTheme';
+import { fixes } from './fixes';
+import { sassColorFunctions } from './initSassFunctions';
 
 export default async function getThemeInfo(options) {
-  // eslint-disable-next-line
   const { carbonColorTokens, ibmColorTokens } = await doInitColors(options);
   const { themeTokens, themeFunctions, version } = await doInitTheme(options);
 
   return {
     tokens: [
       {
-        source: "Theme",
+        source: 'Theme',
         accept: true,
-        values: themeTokens
+        values: themeTokens,
       },
       {
-        source: "Carbon color",
+        source: 'Carbon color',
         accept: options.acceptCarbonColorTokens,
-        values: carbonColorTokens
+        values: carbonColorTokens,
       },
       {
-        source: "IBM Color",
+        source: 'IBM Color',
         accept: options.acceptIBMColorTokensCarbonV10Only,
-        values: ibmColorTokens
-      }
+        values: ibmColorTokens,
+      },
     ],
     functions: [
       {
-        source: "Theme",
+        source: 'Theme',
         accept: true,
-        values: themeFunctions
+        values: themeFunctions,
       },
       {
-        source: "SASS",
+        source: 'SASS',
         accept: true,
-        values: sassColorFunctions
-      }
+        values: sassColorFunctions,
+      },
     ],
     fixes,
-    version
+    version,
   };
 }

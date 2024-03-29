@@ -5,67 +5,55 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { doInit } from "./initAll";
-import { fixes } from "./fixes";
+import { doInit } from './initAll';
+import { fixes } from './fixes';
 
 export default async function getLayoutInfo(options) {
-  const {
-    containerTokens,
-    fluidSpacingTokens,
-    iconSizeTokens,
-    layoutFunctions,
-    layoutTokens,
-    spacingTokens,
-    version
-  } = await doInit(options);
+  const { containerTokens, fluidSpacingTokens, iconSizeTokens, layoutFunctions, layoutTokens, spacingTokens, version } =
+    await doInit(options);
 
   return {
     tokens: [
       {
-        source: "Container",
+        source: 'Container',
         accept: options.acceptContainerTokens,
-        values: containerTokens
+        values: containerTokens,
       },
       {
-        source: "Fluid spacing",
+        source: 'Fluid spacing',
         accept: options.acceptFluidSpacingTokens,
-        values: fluidSpacingTokens
+        values: fluidSpacingTokens,
       },
       {
-        source: "Icon size",
+        source: 'Icon size',
         accept: options.acceptIconSizeTokens,
-        values: iconSizeTokens
+        values: iconSizeTokens,
       },
       {
-        source: "Layout",
+        source: 'Layout',
         accept: true,
-        values: layoutTokens
+        values: layoutTokens,
       },
       {
-        source: "Spacing",
+        source: 'Spacing',
         accept: true,
-        values: spacingTokens
-      }
+        values: spacingTokens,
+      },
     ],
     functions: [
       {
-        source: "Layout",
+        source: 'Layout',
         accept: options.acceptCarbonMiniUnitsFunction,
-        values: layoutFunctions
+        values: layoutFunctions,
       },
       {
-        source: "CSS",
+        source: 'CSS',
         accept: true,
-        values: [
-          "translate(1 2)",
-          "translateX(1)",
-          "translateY(1)",
-          "translate3d(1 2)"
-        ]
+        values: ['translate(1 2)', 'translateX(1)', 'translateY(1)', 'translate3d(1 2)'],
       },
-      { source: "CSS", accept: true, values: ["calc(1)"] }
+      { source: 'CSS', accept: true, values: ['calc(1)'] },
     ],
     fixes,
-    version
+    version,
   };
 }

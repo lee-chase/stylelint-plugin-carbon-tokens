@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const prefix = "carbon";
+const prefix = 'carbon';
 
 export default function namespace(ruleName) {
   return `${prefix}/${ruleName}`;

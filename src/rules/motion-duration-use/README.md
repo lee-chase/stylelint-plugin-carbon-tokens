@@ -1,6 +1,6 @@
 # Motion Token Use
 
-This rule is intended enfoce use of Carbon theme tokens, functions, mixins and CSS classes as defined.
+This rule is intended enforce use of Carbon theme tokens, functions, mixins and CSS classes as defined.
 
 - [https://www.carbondesignsystem.com/guidelines/motion/overview](https://www.carbondesignsystem.com/guidelines/motion/overview)
 
