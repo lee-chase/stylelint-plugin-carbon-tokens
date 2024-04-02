@@ -10,28 +10,30 @@ import {
   getMessages,
   isValidOption,
   namespace,
-  parseOptions
-} from "../../utils";
-import { getTypeInfo } from "./utils";
-import { utils } from "stylelint";
+  parseOptions,
+} from '../../utils';
+import { getTypeInfo } from './utils';
+import { utils } from 'stylelint';
 
-export const ruleName = namespace("type-token-use");
-export const messages = getMessages(ruleName, "type");
-
+export const ruleName = namespace('type-token-use');
+export const messages = getMessages(ruleName, 'type');
+export const meta = {
+  url: 'https://github.com/carbon-design-system/stylelint-plugin-carbon-tokens/blob/main/src/rules/type-token-use/README.md',
+};
 const isValidAcceptValues = isValidOption;
 const isValidIncludeProps = isValidOption;
 
 const defaultOptions = {
   // include standard type properties
-  includeProps: ["font", "/^font-*/", "line-height", "letterSpacing"],
-  acceptValues: ["/inherit|initial|none|unset/"],
+  includeProps: ['font', '/^font-*/', 'line-height', 'letterSpacing'],
+  acceptValues: ['/inherit|initial|none|unset/'],
   acceptCarbonFontWeightFunction: false, // permit use of carbon font weight function
   acceptCarbonTypeScaleFunction: false, // permit use of carbon type scale function
   acceptCarbonFontFamilyFunction: false, // permit use of carbon font family function
-  acceptScopes: ["type"],
+  acceptScopes: ['type'],
   carbonPath: undefined,
   carbonModulePostfix: undefined,
-  enforceScopes: undefined
+  enforceScopes: undefined,
 };
 
 export default function rule(primaryOptions, secondaryOptions, context) {
@@ -42,7 +44,7 @@ export default function rule(primaryOptions, secondaryOptions, context) {
       result,
       ruleName,
       {
-        actual: primaryOptions
+        actual: primaryOptions,
       },
       {
         actual: options,
@@ -51,18 +53,18 @@ export default function rule(primaryOptions, secondaryOptions, context) {
           acceptValues: [isValidAcceptValues],
           acceptScopes: [isValidAcceptValues],
           acceptCarbonFontWeightFunction: (val) =>
-            val === undefined || typeof val === "boolean",
+            val === undefined || typeof val === 'boolean',
           acceptCarbonTypeScaleFunction: (val) =>
-            val === undefined || typeof val === "boolean",
+            val === undefined || typeof val === 'boolean',
           acceptCarbonFontFamilyFunction: (val) =>
-            val === undefined || typeof val === "boolean",
-          carbonPath: (val) => val === undefined || val.indexOf("@carbon") > -1,
+            val === undefined || typeof val === 'boolean',
+          carbonPath: (val) => val === undefined || val.indexOf('@carbon') > -1,
           carbonModulePostfix: (val) =>
-            val === undefined || typeof val === "string",
-          enforceScopes: (val) => val === undefined || typeof val === "boolean"
+            val === undefined || typeof val === 'string',
+          enforceScopes: (val) => val === undefined || typeof val === 'boolean',
         },
-        optional: true
-      }
+        optional: true,
+      },
     );
 
     if (!validOptions) {
@@ -77,7 +79,11 @@ export default function rule(primaryOptions, secondaryOptions, context) {
       options,
       messages,
       getTypeInfo,
-      context
+      context,
     );
   };
 }
+
+rule.meta = meta;
+rule.messages = messages;
+rule.ruleName = ruleName;

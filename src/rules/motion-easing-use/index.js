@@ -10,32 +10,34 @@ import {
   getMessages,
   isValidOption,
   namespace,
-  parseOptions
-} from "../../utils";
-import { getMotionInfo } from "./utils";
-import { utils } from "stylelint";
+  parseOptions,
+} from '../../utils';
+import { getMotionInfo } from './utils';
+import { utils } from 'stylelint';
 
-export const ruleName = namespace("motion-easing-use");
-export const messages = getMessages(ruleName, "motion-easing");
-
+export const ruleName = namespace('motion-easing-use');
+export const messages = getMessages(ruleName, 'motion-easing');
+export const meta = {
+  url: 'https://github.com/carbon-design-system/stylelint-plugin-carbon-tokens/blob/main/src/rules/motion-easing-use/README.md',
+};
 const isValidAcceptValues = isValidOption;
 const isValidIncludeProps = isValidOption;
 
 const defaultOptions = {
   // include standard motion properties
   includeProps: [
-    "transition<3>", // only permitted definition order fails otherwise
-    "transition-timing-function",
-    "animation<3>", // only permitted definition order fails otherwise
-    "animation-timing-function"
+    'transition<3>', // only permitted definition order fails otherwise
+    'transition-timing-function',
+    'animation<3>', // only permitted definition order fails otherwise
+    'animation-timing-function',
   ],
   //  Accept reset values
-  acceptValues: ["/$0s?/", "/inherit|initial|none|unset/"],
+  acceptValues: ['/$0s?/', '/inherit|initial|none|unset/'],
   acceptUndefinedVariables: false,
-  acceptScopes: ["motion"],
+  acceptScopes: ['motion'],
   enforceScopes: false, // TODO: default in v3
   carbonPath: undefined,
-  carbonModulePostfix: undefined
+  carbonModulePostfix: undefined,
 };
 
 export default function rule(primaryOptions, secondaryOptions, context) {
@@ -46,7 +48,7 @@ export default function rule(primaryOptions, secondaryOptions, context) {
       result,
       ruleName,
       {
-        actual: primaryOptions
+        actual: primaryOptions,
       },
       {
         actual: options,
@@ -55,14 +57,14 @@ export default function rule(primaryOptions, secondaryOptions, context) {
           acceptValues: [isValidAcceptValues],
           acceptScopes: [isValidAcceptValues],
           acceptUndefinedVariables: (val) =>
-            val === undefined || typeof val === "boolean",
-          carbonPath: (val) => val === undefined || val.indexOf("@carbon") > -1,
+            val === undefined || typeof val === 'boolean',
+          carbonPath: (val) => val === undefined || val.indexOf('@carbon') > -1,
           carbonModulePostfix: (val) =>
-            val === undefined || typeof val === "string",
-          enforceScopes: (val) => val === undefined || typeof val === "boolean"
+            val === undefined || typeof val === 'string',
+          enforceScopes: (val) => val === undefined || typeof val === 'boolean',
         },
-        optional: true
-      }
+        optional: true,
+      },
     );
 
     if (!validOptions) {
@@ -77,7 +79,11 @@ export default function rule(primaryOptions, secondaryOptions, context) {
       options,
       messages,
       getMotionInfo,
-      context
+      context,
     );
   };
 }
+
+rule.meta = meta;
+rule.messages = messages;
+rule.ruleName = ruleName;

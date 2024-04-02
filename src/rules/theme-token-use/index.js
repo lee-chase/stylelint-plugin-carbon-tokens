@@ -10,13 +10,16 @@ import {
   getMessages,
   isValidOption,
   namespace,
-  parseOptions
-} from "../../utils";
-import { getThemeInfo } from "./utils";
-import { utils } from "stylelint";
+  parseOptions,
+} from '../../utils';
+import { getThemeInfo } from './utils';
+import { utils } from 'stylelint';
 
-export const ruleName = namespace("theme-token-use");
-export const messages = getMessages(ruleName, "theme");
+export const ruleName = namespace('theme-token-use');
+export const messages = getMessages(ruleName, 'theme');
+export const meta = {
+  url: 'https://github.com/carbon-design-system/stylelint-plugin-carbon-tokens/blob/main/src/rules/theme-token-use/README.md',
+};
 
 const isValidAcceptValues = isValidOption;
 const isValidIncludeProps = isValidOption;
@@ -24,27 +27,27 @@ const isValidIncludeProps = isValidOption;
 const defaultOptions = {
   // include standard color properties
   includeProps: [
-    "/color$/",
-    "/shadow$/<-1>",
-    "border<-1>",
-    "outline<-1>",
-    "fill",
-    "stroke"
+    '/color$/',
+    '/shadow$/<-1>',
+    'border<-1>',
+    'outline<-1>',
+    'fill',
+    'stroke',
   ],
   // Accept transparent, common reset values and 0 on its own
   acceptValues: [
-    "/inherit|initial|none|unset/",
-    "/^0$/",
-    "/currentColor|transparent/"
+    '/inherit|initial|none|unset/',
+    '/^0$/',
+    '/currentColor|transparent/',
   ],
   acceptCarbonColorTokens: false,
   acceptIBMColorTokensCarbonV10Only: false,
   acceptUndefinedVariables: false,
-  acceptScopes: ["theme", "vars"],
+  acceptScopes: ['theme', 'vars'],
   enforceScopes: false, // TODO: default in v3
   // preferContextFixes: false,
   carbonPath: undefined,
-  carbonModulePostfix: undefined
+  carbonModulePostfix: undefined,
 };
 
 export default function rule(primaryOptions, secondaryOptions, context) {
@@ -55,7 +58,7 @@ export default function rule(primaryOptions, secondaryOptions, context) {
       result,
       ruleName,
       {
-        actual: primaryOptions
+        actual: primaryOptions,
       },
       {
         actual: options,
@@ -64,20 +67,20 @@ export default function rule(primaryOptions, secondaryOptions, context) {
           acceptValues: [isValidAcceptValues],
           acceptScopes: [isValidAcceptValues],
           acceptCarbonColorTokens: (val) =>
-            val === undefined || typeof val === "boolean",
+            val === undefined || typeof val === 'boolean',
           acceptIBMColorTokensCarbonV10Only: (val) =>
-            val === undefined || typeof val === "boolean",
+            val === undefined || typeof val === 'boolean',
           acceptUndefinedVariables: (val) =>
-            val === undefined || typeof val === "boolean",
-          carbonPath: (val) => val === undefined || val.indexOf("@carbon") > -1,
+            val === undefined || typeof val === 'boolean',
+          carbonPath: (val) => val === undefined || val.indexOf('@carbon') > -1,
           carbonModulePostfix: (val) =>
-            val === undefined || typeof val === "string",
-          enforceScopes: (val) => val === undefined || typeof val === "boolean"
+            val === undefined || typeof val === 'string',
+          enforceScopes: (val) => val === undefined || typeof val === 'boolean',
           // preferContextFixes: (val) =>
           //   val === undefined || typeof val === "boolean"
         },
-        optional: true
-      }
+        optional: true,
+      },
     );
 
     if (!validOptions) {
@@ -92,7 +95,11 @@ export default function rule(primaryOptions, secondaryOptions, context) {
       options,
       messages,
       getThemeInfo,
-      context
+      context,
     );
   };
 }
+
+rule.meta = meta;
+rule.messages = messages;
+rule.ruleName = ruleName;
