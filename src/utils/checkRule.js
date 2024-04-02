@@ -13,62 +13,33 @@ import {
   normalizeVariableName,
   parseRangeValue,
   testItem,
-  tokenizeValue
-} from "./";
-import { tryFix } from "./fix-utils";
-import { utils } from "stylelint";
+  tokenizeValue,
+} from './';
+import { tryFix } from './fix-utils';
+import { utils } from 'stylelint';
 
 // import valueParser from "postcss-value-parser";
 
-export default async function checkRule(
-  root,
-  result,
-  ruleName,
-  options,
-  messages,
-  getRuleInfo,
-  context
-) {
-  const checkItem = (
-    decl,
-    item,
-    propSpec,
-    ruleInfo,
-    localScopes,
-    localVariables
-  ) => {
+export default async function checkRule(root, result, ruleName, options, messages, getRuleInfo, context) {
+  const checkItem = (decl, item, propSpec, ruleInfo, localScopes, localVariables) => {
     // Expects to be passed an item containing either a token { raw, type, value} or
     // one of the types with children Math, Function or Bracketed content { raw, type, items: [] }
 
-    const testResult = testItem(
-      item,
-      ruleInfo,
-      options,
-      localScopes,
-      localVariables
-    );
+    const testResult = testItem(item, ruleInfo, options, localScopes, localVariables);
     let message;
 
     if (!testResult.accepted) {
       if (item === undefined) {
-        message = messages.rejectedUndefinedRange(
-          decl.prop,
-          item,
-          propSpec.range
-        );
+        message = messages.rejectedUndefinedRange(decl.prop, item, propSpec.range);
       } else if (testResult.isVariable) {
         testResult.variableValue !== undefined
-          ? (message = messages.rejectedVariable(
-              decl.prop,
-              item.raw,
-              testResult.variableValue
-            ))
+          ? (message = messages.rejectedVariable(decl.prop, item.raw, testResult.variableValue))
           : (message = messages.rejectedUndefinedVariable(decl.prop, item.raw));
       } else if (testResult.isCalc) {
         message = messages.rejectedMaths(decl.prop, item.raw);
-      } else if (decl.prop === "transition") {
+      } else if (decl.prop === 'transition') {
         message = messages.rejectedTransition(decl.prop, item.raw);
-      } else if (decl.prop === "animation") {
+      } else if (decl.prop === 'animation') {
         message = messages.rejectedAnimation(decl.prop, item.raw);
       } else {
         message = messages.rejected(decl.prop, decl.value);
@@ -82,38 +53,28 @@ export default async function checkRule(
         result,
         message,
         index: declarationValueIndex(decl) + offsetValue,
-        node: decl
+        node: decl,
       };
     }
 
     return null;
   };
 
-  const specialItems = ["inherit", "initial", "none", "unset"];
+  const specialItems = ['inherit', 'initial', 'none', 'unset'];
 
-  const checkItems = (
-    items,
-    decl,
-    propSpec,
-    ruleInfo,
-    localScopes,
-    localVariables
-  ) => {
+  const checkItems = (items, decl, propSpec, ruleInfo, localScopes, localVariables) => {
     // expects to be passed an items array containing tokens
     let itemsToCheck;
     const isRange = propSpec.range !== undefined;
     const reports = [];
 
-    if (
-      !isRange ||
-      (items.length === 1 && specialItems.includes(items[0].value))
-    ) {
+    if (!isRange || (items.length === 1 && specialItems.includes(items[0].value))) {
       // check all items in list
       itemsToCheck = items;
     } else if (isRange) {
       // for the range select only the values to check
       // 1 = first value, -1 = last value
-      let [start, end] = propSpec.range.split(" ");
+      let [start, end] = propSpec.range.split(' ');
 
       itemsToCheck = [];
 
@@ -131,7 +92,7 @@ export default async function checkRule(
     // look at propSpec.valueCheck
     if (propSpec.valueCheck) {
       itemsToCheck = itemsToCheck.filter((item) => {
-        if (typeof propSpec.valueCheck === "object") {
+        if (typeof propSpec.valueCheck === 'object') {
           return propSpec.valueCheck.test(item.raw);
         }
 
@@ -140,14 +101,7 @@ export default async function checkRule(
     }
 
     for (const item of itemsToCheck) {
-      const report = checkItem(
-        decl,
-        item,
-        propSpec,
-        ruleInfo,
-        localScopes,
-        localVariables
-      );
+      const report = checkItem(decl, item, propSpec, ruleInfo, localScopes, localVariables);
 
       if (report) {
         // contains report
@@ -172,11 +126,9 @@ export default async function checkRule(
      * - If an acceptable scope is renamed or * then options.acceptScopes is updated.
      */
     (rule) => {
-      if (rule.name === "use") {
-        const ruleParams = rule.params
-          .replace(/'(.*)'/, "$1")
-          .replace(/"(.*)"/, "$1"); // remove quotes if needed
-        const [usedThing, usedScope] = ruleParams.split(" as ");
+      if (rule.name === 'use') {
+        const ruleParams = rule.params.replace(/'(.*)'/, '$1').replace(/"(.*)"/, '$1'); // remove quotes if needed
+        const [usedThing, usedScope] = ruleParams.split(' as ');
 
         const carbonThingRegex = // eslint-disable-next-line regexp/no-unused-capturing-group
           /((@carbon)|(carbon-components(\/([^/$]+))*))\/+_?([^.]+)(\.scss)*/;
@@ -209,7 +161,7 @@ export default async function checkRule(
         if (usedScope) {
           // may want to add it to accept scopes
           if (knownScope || !options.enforceScopes) {
-            const acceptThisScope = usedScope === "*" ? "" : usedScope;
+            const acceptThisScope = usedScope === '*' ? '' : usedScope;
 
             localScopes.push(acceptThisScope);
             options.acceptScopes.push(acceptThisScope);
@@ -221,9 +173,9 @@ export default async function checkRule(
     }
   );
 
-  if (!options.enforceScopes && !localScopes.includes("")) {
+  if (!options.enforceScopes && !localScopes.includes('')) {
     // scopes are not being enforced allow no scope
-    localScopes.push("");
+    localScopes.push('');
   }
 
   // **** walk rules and check values
@@ -250,9 +202,7 @@ export default async function checkRule(
           const interpolatedKey = `#{${key}}`;
 
           if (decl.prop.indexOf(key) !== -1) {
-            newKeys.push(
-              decl.prop.replace(interpolatedKey, localVariables[key].value)
-            );
+            newKeys.push(decl.prop.replace(interpolatedKey, localVariables[key].value));
           }
         });
 
@@ -274,22 +224,13 @@ export default async function checkRule(
 
         const itemsToCheck =
           // eslint-disable-next-line eqeqeq
-          tokenizedValue.type == TOKEN_TYPES.LIST
-            ? tokenizedValue.items
-            : [tokenizedValue];
+          tokenizedValue.type == TOKEN_TYPES.LIST ? tokenizedValue.items : [tokenizedValue];
 
         const reports = [];
 
         // *** check each item found in value
         for (const itemToCheck of itemsToCheck) {
-          const newReports = checkItems(
-            itemToCheck.items,
-            decl,
-            propSpec,
-            ruleInfo,
-            localScopes,
-            localVariables
-          );
+          const newReports = checkItems(itemToCheck.items, decl, propSpec, ruleInfo, localScopes, localVariables);
 
           if (newReports?.length > 0) {
             reports.push(...newReports);
@@ -309,7 +250,7 @@ export default async function checkRule(
               workingValue = tryFix(fix, workingValue, {
                 ruleInfo,
                 options,
-                prop: decl.prop
+                prop: decl.prop,
               });
             });
 
@@ -317,15 +258,12 @@ export default async function checkRule(
               for (let si = 0; si < localScopes.length; si++) {
                 const reportsFix = [];
                 const scope = localScopes[si];
-                const scopedValue =
-                  scope.length > 0 ? `${scope}.${workingValue}` : workingValue;
+                const scopedValue = scope.length > 0 ? `${scope}.${workingValue}` : workingValue;
 
                 // test new value
                 const tokenizedValueFix = tokenizeValue(scopedValue);
                 const itemsToCheckFix =
-                  tokenizedValueFix.type === TOKEN_TYPES.LIST
-                    ? tokenizedValueFix.items
-                    : [tokenizedValueFix];
+                  tokenizedValueFix.type === TOKEN_TYPES.LIST ? tokenizedValueFix.items : [tokenizedValueFix];
 
                 for (const itemToCheckFix of itemsToCheckFix) {
                   const newReports = checkItems(

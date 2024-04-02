@@ -5,26 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
-  isVariable,
-  normalizeVariableName,
-  parseRangeValue,
-  parseToRegexOrString
-} from ".";
-import { TOKEN_TYPES } from "./tokenizeValue";
+import { isVariable, normalizeVariableName, parseRangeValue, parseToRegexOrString } from '.';
+import { TOKEN_TYPES } from './tokenizeValue';
 
 const sanitizeUnconnectedOperators = (val) => {
   // eslint-disable-next-line regexp/no-super-linear-backtracking
   const regex = /^([+ -]*)([^+-]*)$/;
   const matches = val.match(regex);
-  let sign = "";
+  let sign = '';
   let resultVal = val;
 
   if (matches && matches[1] && matches[2]) {
     // index is start of non sign part
     const signs = `${matches[1]}1`;
 
-    sign = parseInt(signs) < 0 ? "-" : "";
+    sign = parseInt(signs) < 0 ? '-' : '';
 
     resultVal = `${sign}${matches[2]}`;
   }
@@ -35,25 +30,19 @@ const sanitizeUnconnectedOperators = (val) => {
 const scopeMatch = (item, acceptedScope) => {
   const testValue = parseToRegexOrString(acceptedScope);
 
-  return (
-    (testValue.test && testValue.test(item.scope)) || testValue === item.scope
-  );
+  return (testValue.test && testValue.test(item.scope)) || testValue === item.scope;
 };
 
 const checkScope = (item, options, localScopes) => {
-  if (options.acceptScopes[0] === "**" && item.scope) {
+  if (options.acceptScopes[0] === '**' && item.scope) {
     // ** means all scopes
     return true;
   }
 
-  let result =
-    localScopes.length > 0 &&
-    localScopes.some((scope) => scopeMatch(item, scope));
+  let result = localScopes.length > 0 && localScopes.some((scope) => scopeMatch(item, scope));
 
   if (!result && !options.enforceScopes) {
-    result =
-      options.acceptScopes &&
-      options.acceptScopes.some((scope) => scopeMatch(item, scope));
+    result = options.acceptScopes && options.acceptScopes.some((scope) => scopeMatch(item, scope));
   }
 
   return result;
@@ -64,11 +53,7 @@ const checkAcceptValuesRaw = (valueToCheck, options) => {
     // regex or string
     const testValue = parseToRegexOrString(acceptedValue);
 
-    return (
-      (testValue.test &&
-        testValue.test(sanitizeUnconnectedOperators(valueToCheck))) ||
-      testValue === valueToCheck
-    );
+    return (testValue.test && testValue.test(sanitizeUnconnectedOperators(valueToCheck))) || testValue === valueToCheck;
   });
 };
 
@@ -93,11 +78,8 @@ const checkAcceptValues = (item, options, localScopes) => {
 };
 
 const unquoteIfNeeded = (val) => {
-  if (typeof val === "string") {
-    if (
-      (val.startsWith("'") && val.endsWith("'")) ||
-      (val.startsWith('"') && val.endsWith('"'))
-    ) {
+  if (typeof val === 'string') {
+    if ((val.startsWith("'") && val.endsWith("'")) || (val.startsWith('"') && val.endsWith('"'))) {
       return val.substring(1, val.length - 1);
     }
   }
@@ -125,13 +107,13 @@ const preProcessToken = (variable, localVariables) => {
       replacements.push({
         index: match.index,
         match: replacementMatch,
-        replacement: unquoteIfNeeded(replacement.raw)
+        replacement: unquoteIfNeeded(replacement.raw),
       });
     } else {
       replacements.push({
         index: match.index,
         match: replacementMatch,
-        replacement: match[1]
+        replacement: match[1],
       });
     }
   }
@@ -142,9 +124,7 @@ const preProcessToken = (variable, localVariables) => {
     const lastIndex = result.lastIndexOf(replacement.match);
 
     result =
-      result.substr(0, lastIndex) +
-      replacement.replacement +
-      result.substr(lastIndex + replacement.match.length);
+      result.substr(0, lastIndex) + replacement.replacement + result.substr(lastIndex + replacement.match.length);
   }
 
   result = normalizeVariableName(result);
@@ -156,13 +136,7 @@ const preProcessToken = (variable, localVariables) => {
   return result;
 };
 
-const checkTokens = function (
-  item,
-  ruleInfo,
-  options,
-  localScopes,
-  localVariables
-) {
+const checkTokens = function (item, ruleInfo, options, localScopes, localVariables) {
   const result = { accepted: false, done: false };
   let valueToCheck = item.raw;
 
@@ -174,13 +148,13 @@ const checkTokens = function (
     if (!checkScope(item, options, localScopes)) {
       return result;
     }
-  } else if (options.enforceScopes && !options.acceptScopes.includes("")) {
+  } else if (options.enforceScopes && !options.acceptScopes.includes('')) {
     return result; // reject without scope
   }
 
   const start = valueToCheck.substr(0, 2);
 
-  if (start[0] === "-" && start[1] !== "-") {
+  if (start[0] === '-' && start[1] !== '-') {
     // is negation not a variable
     valueToCheck = valueToCheck.substr(1);
   }
@@ -188,7 +162,7 @@ const checkTokens = function (
   // cope with variables wrapped in #{}
   let _variable = preProcessToken(valueToCheck, localVariables);
 
-  if (_variable.startsWith("#")) {
+  if (_variable.startsWith('#')) {
     // token set does not contain #{}
     _variable = _variable.substr(2, _variable.length - 3);
   }
@@ -214,95 +188,53 @@ const checkTokens = function (
   return result;
 };
 
-const checkProportionalMath = (
-  mathItems,
-  ruleInfo,
-  options,
-  localScopes,
-  localVariables
-) => {
+const checkProportionalMath = (mathItems, ruleInfo, options, localScopes, localVariables) => {
   let otherItem;
 
-  if (
-    mathItems[0].type === TOKEN_TYPES.NUMERIC_LITERAL &&
-    ["vw", "vh", "%"].indexOf(mathItems[0].units) > -1
-  ) {
+  if (mathItems[0].type === TOKEN_TYPES.NUMERIC_LITERAL && ['vw', 'vh', '%'].indexOf(mathItems[0].units) > -1) {
     otherItem = mathItems[2];
-  } else if (
-    mathItems[2].type === TOKEN_TYPES.NUMERIC_LITERAL &&
-    ["vw", "vh", "%"].indexOf(mathItems[2].units) > -1
-  ) {
+  } else if (mathItems[2].type === TOKEN_TYPES.NUMERIC_LITERAL && ['vw', 'vh', '%'].indexOf(mathItems[2].units) > -1) {
     otherItem = mathItems[0];
   }
 
   if (otherItem !== undefined) {
-    if (["+", "-"].indexOf(mathItems[1].value) > -1) {
+    if (['+', '-'].indexOf(mathItems[1].value) > -1) {
       // is plus or minus
-      return checkTokens(
-        otherItem,
-        ruleInfo,
-        options,
-        localScopes,
-        localVariables
-      );
+      return checkTokens(otherItem, ruleInfo, options, localScopes, localVariables);
     }
   }
 
   return {};
 };
 
-const checkNegationMaths = (
-  mathItems,
-  ruleInfo,
-  options,
-  localScopes,
-  localVariables
-) => {
+const checkNegationMaths = (mathItems, ruleInfo, options, localScopes, localVariables) => {
   let otherItem;
   let numeric;
 
-  if (
-    mathItems[0].type === TOKEN_TYPES.NUMERIC_LITERAL &&
-    mathItems[0].units === ""
-  ) {
+  if (mathItems[0].type === TOKEN_TYPES.NUMERIC_LITERAL && mathItems[0].units === '') {
     numeric = mathItems[0];
     otherItem = mathItems[2];
-  } else if (
-    mathItems[2].type === TOKEN_TYPES.NUMERIC_LITERAL &&
-    mathItems[2].units === ""
-  ) {
+  } else if (mathItems[2].type === TOKEN_TYPES.NUMERIC_LITERAL && mathItems[2].units === '') {
     numeric = mathItems[2];
     otherItem = mathItems[0];
   }
 
   if (otherItem !== undefined) {
-    if (["*", "/"].indexOf(mathItems[1].value) > -1 && numeric.raw === "-1") {
+    if (['*', '/'].indexOf(mathItems[1].value) > -1 && numeric.raw === '-1') {
       // is times or divide by -1
-      return checkTokens(
-        otherItem,
-        ruleInfo,
-        options,
-        localScopes,
-        localVariables
-      );
+      return checkTokens(otherItem, ruleInfo, options, localScopes, localVariables);
     }
   }
 
   return {};
 };
 
-const testItemInner = function (
-  item,
-  ruleInfo,
-  options,
-  localScopes,
-  localVariables
-) {
+const testItemInner = function (item, ruleInfo, options, localScopes, localVariables) {
   // Expects to be passed an item containing either a item { raw, type, value} or
   // one of the types with children Math, Function or Bracketed content { raw, type, items: [] }
   const result = {
     accepted: false,
-    done: false
+    done: false,
   };
 
   if (item === undefined) {
@@ -321,26 +253,17 @@ const testItemInner = function (
   }
 
   // cope with css variables
-  const _item =
-    item.type === TOKEN_TYPES.FUNCTION && item.value === "var"
-      ? item.items[0]
-      : item;
+  const _item = item.type === TOKEN_TYPES.FUNCTION && item.value === 'var' ? item.items[0] : item;
 
   if (item.type === TOKEN_TYPES.BRACKETED_CONTENT) {
     // test all parts
     const bracketContentsGood = item.items.every((bracketedItem) => {
-      const bracketedItemResult = testItemInner(
-        bracketedItem,
-        ruleInfo,
-        options,
-        localScopes,
-        localVariables
-      );
+      const bracketedItemResult = testItemInner(bracketedItem, ruleInfo, options, localScopes, localVariables);
 
       return bracketedItemResult.accepted;
     });
 
-    result.source = "Bracketed content";
+    result.source = 'Bracketed content';
     result.accepted = bracketContentsGood;
     result.done = true; // all tests completed
   } else if (_item.type === TOKEN_TYPES.FUNCTION) {
@@ -348,7 +271,7 @@ const testItemInner = function (
       const funcSpecs = funcSet.values;
 
       const matchesFuncSpec = funcSpecs.some((funcSpec) => {
-        const parts = funcSpec.split("(");
+        const parts = funcSpec.split('(');
 
         if (_item.scope && !checkScope(_item, options, localScopes)) {
           return false;
@@ -366,16 +289,12 @@ const testItemInner = function (
           // IF FALSE a list contains values which could include math or brackets or function calls
           // NOTE: we do not try to deal with function calls inside function calls
 
-          const inList = Boolean(
-            _item.items && _item.items[0].type === TOKEN_TYPES.LIST
-          );
+          const inList = Boolean(_item.items && _item.items[0].type === TOKEN_TYPES.LIST);
           const paramItems = inList
             ? _item.items[0].items // List[0] contains list items
             : _item.items; // otherwise contains Tokens
 
-          let [start, end] = parts[1]
-            .substring(0, parts[1].length - 1)
-            .split(" ");
+          let [start, end] = parts[1].substring(0, parts[1].length - 1).split(' ');
 
           start = parseRangeValue(start, paramItems.length);
           end = parseRangeValue(end, paramItems.length) || start; // start if end empty
@@ -394,53 +313,23 @@ const testItemInner = function (
               // allow proportional + or - checkTokens
               const mathItems = paramItems[pos].items;
 
-              tokenResult = checkProportionalMath(
-                mathItems,
-                ruleInfo,
-                options,
-                localScopes,
-                localVariables
-              );
+              tokenResult = checkProportionalMath(mathItems, ruleInfo, options, localScopes, localVariables);
 
               if (!tokenResult.accepted) {
-                tokenResult = checkNegationMaths(
-                  mathItems,
-                  ruleInfo,
-                  options,
-                  localScopes,
-                  localVariables
-                );
+                tokenResult = checkNegationMaths(mathItems, ruleInfo, options, localScopes, localVariables);
               }
             } else {
-              tokenResult.accepted = checkAcceptValues(
-                paramItems[pos],
-                options,
-                localScopes
-              );
+              tokenResult.accepted = checkAcceptValues(paramItems[pos], options, localScopes);
 
               if (!tokenResult.accepted) {
                 const paramItem =
-                  paramItems[pos].type === TOKEN_TYPES.LIST_ITEM
-                    ? paramItems[pos].items[0]
-                    : paramItems[pos];
+                  paramItems[pos].type === TOKEN_TYPES.LIST_ITEM ? paramItems[pos].items[0] : paramItems[pos];
 
                 if (paramItem.type === TOKEN_TYPES.FUNCTION) {
                   // child function
-                  tokenResult = testItemInner(
-                    paramItem,
-                    ruleInfo,
-                    options,
-                    localScopes,
-                    localVariables
-                  );
+                  tokenResult = testItemInner(paramItem, ruleInfo, options, localScopes, localVariables);
                 } else {
-                  tokenResult = checkTokens(
-                    paramItem,
-                    ruleInfo,
-                    options,
-                    localScopes,
-                    localVariables
-                  );
+                  tokenResult = checkTokens(paramItem, ruleInfo, options, localScopes, localVariables);
                 }
               }
             }
@@ -465,22 +354,10 @@ const testItemInner = function (
       }
     }
   } else if (item.type === TOKEN_TYPES.MATH) {
-    let tokenResult = checkProportionalMath(
-      item.items,
-      ruleInfo,
-      options,
-      localScopes,
-      localVariables
-    );
+    let tokenResult = checkProportionalMath(item.items, ruleInfo, options, localScopes, localVariables);
 
     if (!tokenResult.accepted) {
-      tokenResult = checkNegationMaths(
-        item.items,
-        ruleInfo,
-        options,
-        localScopes,
-        localVariables
-      );
+      tokenResult = checkNegationMaths(item.items, ruleInfo, options, localScopes, localVariables);
     }
 
     result.source = tokenResult.source;
@@ -489,13 +366,7 @@ const testItemInner = function (
   } else {
     // test what ever is left over
 
-    const tokenResult = checkTokens(
-      _item,
-      ruleInfo,
-      options,
-      localScopes,
-      localVariables
-    );
+    const tokenResult = checkTokens(_item, ruleInfo, options, localScopes, localVariables);
 
     result.source = tokenResult.source;
     result.accepted = tokenResult.accepted;
@@ -524,13 +395,7 @@ const testItemInner = function (
   return result;
 };
 
-export default function testItem(
-  item,
-  ruleInfo,
-  options,
-  localScopes,
-  localVariables
-) {
+export default function testItem(item, ruleInfo, options, localScopes, localVariables) {
   // Expects to be passed an item containing either a item { raw, type, value} or
   // one of the types with children Math, Function or Bracketed content { raw, type, items: [] }
   let result = {};

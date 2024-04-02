@@ -5,13 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
-  checkRule,
-  getMessages,
-  isValidOption,
-  namespace,
-  parseOptions,
-} from '../../utils';
+import { checkRule, getMessages, isValidOption, namespace, parseOptions } from '../../utils';
 import { getLayoutInfo } from './utils';
 import { utils } from 'stylelint';
 
@@ -43,11 +37,7 @@ const defaultOptions = {
     // "/^box-shadow$/<1 -2>",
   ],
   // Accept transparent, common reset values, 0, proportional values,
-  acceptValues: [
-    '/inherit|initial|auto|none|unset/',
-    '/^0[a-z]*$/',
-    '/^-{0,1}[0-9]*(%|vw|vh)$/',
-  ],
+  acceptValues: ['/inherit|initial|auto|none|unset/', '/^0[a-z]*$/', '/^-{0,1}[0-9]*(%|vw|vh)$/'],
   acceptUndefinedVariables: false,
   acceptContainerTokens: false,
   acceptIconSizeTokens: false,
@@ -74,23 +64,17 @@ export default function rule(primaryOptions, secondaryOptions, context) {
           includeProps: [isValidIncludeProps],
           acceptValues: [isValidAcceptValues],
           acceptScopes: [isValidAcceptValues],
-          acceptUndefinedVariables: (val) =>
-            val === undefined || typeof val === 'boolean',
-          acceptContainerTokens: (val) =>
-            val === undefined || typeof val === 'boolean',
-          acceptIconSizeTokens: (val) =>
-            val === undefined || typeof val === 'boolean',
-          acceptFluidSpacingTokens: (val) =>
-            val === undefined || typeof val === 'boolean',
-          acceptCarbonMiniUnitsFunction: (val) =>
-            val === undefined || typeof val === 'boolean',
+          acceptUndefinedVariables: (val) => val === undefined || typeof val === 'boolean',
+          acceptContainerTokens: (val) => val === undefined || typeof val === 'boolean',
+          acceptIconSizeTokens: (val) => val === undefined || typeof val === 'boolean',
+          acceptFluidSpacingTokens: (val) => val === undefined || typeof val === 'boolean',
+          acceptCarbonMiniUnitsFunction: (val) => val === undefined || typeof val === 'boolean',
           carbonPath: (val) => val === undefined || val.indexOf('@carbon') > -1,
-          carbonModulePostfix: (val) =>
-            val === undefined || typeof val === 'string',
+          carbonModulePostfix: (val) => val === undefined || typeof val === 'string',
           enforceScopes: (val) => val === undefined || typeof val === 'boolean',
         },
         optional: true,
-      },
+      }
     );
 
     if (!validOptions) {
@@ -98,15 +82,7 @@ export default function rule(primaryOptions, secondaryOptions, context) {
       return;
     }
 
-    await checkRule(
-      root,
-      result,
-      ruleName,
-      options,
-      messages,
-      getLayoutInfo,
-      context,
-    );
+    await checkRule(root, result, ruleName, options, messages, getLayoutInfo, context);
   };
 }
 

@@ -12,9 +12,8 @@
  * @return {int} The index
  */
 export default function declarationValueIndex(decl) {
-  const beforeColon = decl.toString().indexOf(":");
-  const afterColon =
-    decl.raw("between").length - decl.raw("between").indexOf(":");
+  const beforeColon = decl.toString().indexOf(':');
+  const afterColon = decl.raw('between').length - decl.raw('between').indexOf(':');
 
   return beforeColon + afterColon;
 }

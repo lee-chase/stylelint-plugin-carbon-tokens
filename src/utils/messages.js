@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { utils } from "stylelint";
+import { utils } from 'stylelint';
 
 const stringOrRegexMessage = (f, { label, ...options }) => {
   // strip empty values from options
@@ -22,13 +22,13 @@ const stringOrRegexMessage = (f, { label, ...options }) => {
   }
 
   const regexOpts = Object.keys(options).reduce((acc, key) => {
-    acc[key] = ".*";
+    acc[key] = '.*';
 
     return acc;
   }, {});
 
   // message with () escaped
-  const msg = f({ label, ...regexOpts }).replace(/([()])/g, "\\$1");
+  const msg = f({ label, ...regexOpts }).replace(/([()])/g, '\\$1');
 
   return `/${msg}/`;
 };
@@ -37,8 +37,7 @@ const getMessages = (ruleName, label) => {
   return utils.ruleMessages(ruleName, {
     rejected: (property, value) =>
       stringOrRegexMessage(
-        (o) =>
-          `Expected carbon ${o.label} token, mixin or function for "${o.property}" found "${o.value}".`,
+        (o) => `Expected carbon ${o.label} token, mixin or function for "${o.property}" found "${o.value}".`,
         { label, property, value }
       ),
     rejectedUndefinedRange: (property, value, range) =>
@@ -76,7 +75,7 @@ const getMessages = (ruleName, label) => {
         (o) =>
           `Expected carbon ${o.label} token or function for duration and easing at positions 2 and 3 for "${o.property}" found "${o.value}".`,
         { label, property, value }
-      )
+      ),
   });
 };
 

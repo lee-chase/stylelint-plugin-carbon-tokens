@@ -5,35 +5,31 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { version as installedVersion } from "@carbon/motion/package.json";
-import loadModules from "../../../utils/loadModules";
+import { version as installedVersion } from '@carbon/motion/package.json';
+import loadModules from '../../../utils/loadModules';
 
 const doInit = async ({ carbonPath, carbonModulePostfix }) => {
-  const baseTokens = ["ease-in", "ease-out", "standard-easing"];
-  const motionFunctions = ["motion"];
+  const baseTokens = ['ease-in', 'ease-out', 'standard-easing'];
+  const motionFunctions = ['motion'];
   let motionTokens;
   let _version;
 
   if (carbonPath) {
     // eslint-disable-next-line node/no-unsupported-features/es-syntax
-    const { pkg } = await loadModules(
-      carbonPath,
-      ["motion"],
-      carbonModulePostfix
-    );
+    const { pkg } = await loadModules(carbonPath, ['motion'], carbonModulePostfix);
 
     _version = pkg.version;
   } else {
     _version = installedVersion;
   }
 
-  const isV10 = _version.startsWith("10");
+  const isV10 = _version.startsWith('10');
 
   if (isV10) {
-    motionFunctions.push("carbon--motion");
+    motionFunctions.push('carbon--motion');
     motionTokens = baseTokens.map((token) => `$carbon--${token}`);
   } else {
-    motionFunctions.push("motion");
+    motionFunctions.push('motion');
     motionTokens = baseTokens.map((token) => `$${token}`);
   }
 

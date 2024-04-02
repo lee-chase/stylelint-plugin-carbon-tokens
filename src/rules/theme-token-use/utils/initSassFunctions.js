@@ -5,6 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const sassColorFunctions = ["rgba(1)"];
+const sassColorFunctions = ['rgba(1)'];
 
 export { sassColorFunctions };

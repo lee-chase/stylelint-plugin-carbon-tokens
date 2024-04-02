@@ -5,13 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
-  checkRule,
-  getMessages,
-  isValidOption,
-  namespace,
-  parseOptions,
-} from '../../utils';
+import { checkRule, getMessages, isValidOption, namespace, parseOptions } from '../../utils';
 import { getThemeInfo } from './utils';
 import { utils } from 'stylelint';
 
@@ -26,20 +20,9 @@ const isValidIncludeProps = isValidOption;
 
 const defaultOptions = {
   // include standard color properties
-  includeProps: [
-    '/color$/',
-    '/shadow$/<-1>',
-    'border<-1>',
-    'outline<-1>',
-    'fill',
-    'stroke',
-  ],
+  includeProps: ['/color$/', '/shadow$/<-1>', 'border<-1>', 'outline<-1>', 'fill', 'stroke'],
   // Accept transparent, common reset values and 0 on its own
-  acceptValues: [
-    '/inherit|initial|none|unset/',
-    '/^0$/',
-    '/currentColor|transparent/',
-  ],
+  acceptValues: ['/inherit|initial|none|unset/', '/^0$/', '/currentColor|transparent/'],
   acceptCarbonColorTokens: false,
   acceptIBMColorTokensCarbonV10Only: false,
   acceptUndefinedVariables: false,
@@ -66,21 +49,17 @@ export default function rule(primaryOptions, secondaryOptions, context) {
           includeProps: [isValidIncludeProps],
           acceptValues: [isValidAcceptValues],
           acceptScopes: [isValidAcceptValues],
-          acceptCarbonColorTokens: (val) =>
-            val === undefined || typeof val === 'boolean',
-          acceptIBMColorTokensCarbonV10Only: (val) =>
-            val === undefined || typeof val === 'boolean',
-          acceptUndefinedVariables: (val) =>
-            val === undefined || typeof val === 'boolean',
+          acceptCarbonColorTokens: (val) => val === undefined || typeof val === 'boolean',
+          acceptIBMColorTokensCarbonV10Only: (val) => val === undefined || typeof val === 'boolean',
+          acceptUndefinedVariables: (val) => val === undefined || typeof val === 'boolean',
           carbonPath: (val) => val === undefined || val.indexOf('@carbon') > -1,
-          carbonModulePostfix: (val) =>
-            val === undefined || typeof val === 'string',
+          carbonModulePostfix: (val) => val === undefined || typeof val === 'string',
           enforceScopes: (val) => val === undefined || typeof val === 'boolean',
           // preferContextFixes: (val) =>
           //   val === undefined || typeof val === "boolean"
         },
         optional: true,
-      },
+      }
     );
 
     if (!validOptions) {
@@ -88,15 +67,7 @@ export default function rule(primaryOptions, secondaryOptions, context) {
       return;
     }
 
-    await checkRule(
-      root,
-      result,
-      ruleName,
-      options,
-      messages,
-      getThemeInfo,
-      context,
-    );
+    await checkRule(root, result, ruleName, options, messages, getThemeInfo, context);
   };
 }
 

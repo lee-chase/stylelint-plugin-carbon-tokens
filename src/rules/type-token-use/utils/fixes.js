@@ -10,8 +10,8 @@
 export const fixes = [
   {
     // remove carbon prefix for font functions
-    version: "11",
+    version: '11',
     target: /(carbon--)((font-family)|(type-scale)|(font-weight))\(/g,
-    replacement: "$2("
-  }
+    replacement: '$2(',
+  },
 ];

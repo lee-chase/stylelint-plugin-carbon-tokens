@@ -5,13 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
-  checkRule,
-  getMessages,
-  isValidOption,
-  namespace,
-  parseOptions,
-} from '../../utils';
+import { checkRule, getMessages, isValidOption, namespace, parseOptions } from '../../utils';
 import { getMotionInfo } from './utils';
 import { utils } from 'stylelint';
 
@@ -56,15 +50,13 @@ export default function rule(primaryOptions, secondaryOptions, context) {
           includeProps: [isValidIncludeProps],
           acceptValues: [isValidAcceptValues],
           acceptScopes: [isValidAcceptValues],
-          acceptUndefinedVariables: (val) =>
-            val === undefined || typeof val === 'boolean',
+          acceptUndefinedVariables: (val) => val === undefined || typeof val === 'boolean',
           carbonPath: (val) => val === undefined || val.indexOf('@carbon') > -1,
-          carbonModulePostfix: (val) =>
-            val === undefined || typeof val === 'string',
+          carbonModulePostfix: (val) => val === undefined || typeof val === 'string',
           enforceScopes: (val) => val === undefined || typeof val === 'boolean',
         },
         optional: true,
-      },
+      }
     );
 
     if (!validOptions) {
@@ -72,15 +64,7 @@ export default function rule(primaryOptions, secondaryOptions, context) {
       return;
     }
 
-    await checkRule(
-      root,
-      result,
-      ruleName,
-      options,
-      messages,
-      getMotionInfo,
-      context,
-    );
+    await checkRule(root, result, ruleName, options, messages, getMotionInfo, context);
   };
 }
 

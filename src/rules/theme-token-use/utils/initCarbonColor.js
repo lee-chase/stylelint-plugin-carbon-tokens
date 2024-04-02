@@ -5,16 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { colors as installedColors } from "@carbon/colors";
+import { colors as installedColors } from '@carbon/colors';
 // colors comes in as object depth 2
 // keys are color names, values are objects
 // value objects container key: intensity number, value actual color
-import { formatTokenName } from "../../../utils/token-name";
-import { version as installedVersion } from "@carbon/colors/package.json";
-import loadModules from "../../../utils/loadModules";
+import { formatTokenName } from '../../../utils/token-name';
+import { version as installedVersion } from '@carbon/colors/package.json';
+import loadModules from '../../../utils/loadModules';
 
-const carbonColorPrefix = "$carbon--";
-const ibmColorPrefix = "$ibm-color__";
+const carbonColorPrefix = '$carbon--';
+const ibmColorPrefix = '$ibm-color__';
 
 const doInitColors = async ({ carbonPath, carbonModulePostfix }) => {
   let _version;
@@ -24,7 +24,7 @@ const doInitColors = async ({ carbonPath, carbonModulePostfix }) => {
 
   if (carbonPath) {
     // eslint-disable-next-line node/no-unsupported-features/es-syntax
-    const { colors, pkg } = await loadModules(carbonPath, ["colors"], carbonModulePostfix);
+    const { colors, pkg } = await loadModules(carbonPath, ['colors'], carbonModulePostfix);
 
     colorTokens = colors.colors;
 
@@ -34,7 +34,7 @@ const doInitColors = async ({ carbonPath, carbonModulePostfix }) => {
     colorTokens = installedColors;
   }
 
-  const isV10 = _version.startsWith("10");
+  const isV10 = _version.startsWith('10');
 
   for (const key in colorTokens) {
     if (Object.hasOwn(colorTokens, key)) {

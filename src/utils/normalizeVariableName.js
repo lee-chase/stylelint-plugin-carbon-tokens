@@ -6,7 +6,7 @@
  */
 
 export default function normalizeVariableName(variable) {
-  if (variable.startsWith("--")) {
+  if (variable.startsWith('--')) {
     return `var(${variable})`;
   }
 

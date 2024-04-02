@@ -15,7 +15,6 @@
 - Fix: issue #89 by pinning Babel to node 14. This can be updated in April when node 14 goes out of maintenance.
 - Feat Adds `acceptScopes: ["**"]` to all rules. This value permits correctly named tokens regardless of scope.
 
-
 ## 2.1.0
 
 - feat: add improved scope fixes
@@ -38,7 +37,8 @@
 
 ## 2.0.0-beta.14
 
-- Adds the ability to specify a Carbon path as part of each rule. This is mainly for use with multiple Carbon versions in monorepo packages.
+- Adds the ability to specify a Carbon path as part of each rule. This is mainly for use with multiple Carbon versions
+  in monorepo packages.
 
 ## 2.0.0-beta.13
 
@@ -86,6 +86,7 @@
 ## 2.0.0-beta.4
 
 - Test fix for block class
+
 ## 2.0.0-beta.3
 
 - Animation order should expect name first
@@ -115,13 +116,11 @@
 
 ## 1.0.0
 
-Updates to the latest version of Carbon 10 and calls V1 in prep for a v-next or v2 branch for Carbon 11. V1 will continue to track v10 with updates published on a request only basis.
+Updates to the latest version of Carbon 10 and calls V1 in prep for a v-next or v2 branch for Carbon 11. V1 will
+continue to track v10 with updates published on a request only basis.
 
-├── @carbon/colors@10.37.1
-├── @carbon/layout@10.37.1
-├── @carbon/motion@10.29.0
-├── @carbon/themes@10.54.0
-├── carbon-components@10.56.0
+├── @carbon/colors@10.37.1 ├── @carbon/layout@10.37.1 ├── @carbon/motion@10.29.0 ├── @carbon/themes@10.54.0 ├──
+carbon-components@10.56.0
 
 ## 0.12.0
 
@@ -136,16 +135,15 @@ Updates to the latest version of Carbon 10 and calls V1 in prep for a v-next or 
 
 ## 0.11.1
 
-- Prevent linter falling over when passed the following forms
-  code: `.foo { $body--height: 400px; top: -($body--height - $spacing-05); }`,
-  code: `.foo { top: -($body--height - $spacing-05); }`,
-  code: `.foo { $body--height: 400px; top: ($body--height - $spacing-05); }`,
-  code: `.foo { top: ($body--height - $spacing-05); }`,
-  code: `.foo { $body--height: 400px; top: $body--height - $spacing-05; }`,
-  description: `Reject non-supported maths of form $x: 1px; $x - $token`,
-  code: `.foo { top: $body--height - $spacing-05; }`,
-  description: `Reject non-supported maths of form $unknown - $token`,
-  code: `.foo {margin-top: 1 + map-get($map: (key: 1rem), $key: key);}`,
+- Prevent linter falling over when passed the following forms code:
+  `.foo { $body--height: 400px; top: -($body--height - $spacing-05); }`, code:
+  `.foo { top: -($body--height - $spacing-05); }`, code:
+  `.foo { $body--height: 400px; top: ($body--height - $spacing-05); }`, code:
+  `.foo { top: ($body--height - $spacing-05); }`, code:
+  `.foo { $body--height: 400px; top: $body--height - $spacing-05; }`, description:
+  `Reject non-supported maths of form $x: 1px; $x - $token`, code: `.foo { top: $body--height - $spacing-05; }`,
+  description: `Reject non-supported maths of form $unknown - $token`, code:
+  `.foo {margin-top: 1 + map-get($map: (key: 1rem), $key: key);}`,
 
 ## 0.11.0
 

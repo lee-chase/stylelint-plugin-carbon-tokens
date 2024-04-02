@@ -8,7 +8,7 @@
 const formatTokenName = (token) => {
   return `${token
     .split(/(?<![A-Z])(?=[A-Z]|[0-9]{2})/) // capital letter or number not preceded by a capital letter
-    .join("-")
+    .join('-')
     .toLowerCase()}`;
 };
 

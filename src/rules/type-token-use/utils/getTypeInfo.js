@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { doInit } from "./initTypeTokens";
-import { fixes } from "./fixes";
+import { doInit } from './initTypeTokens';
+import { fixes } from './fixes';
 
 export default async function getTypeInfo(options) {
   const { typeFunctions, version } = await doInit(options);
@@ -23,14 +23,14 @@ export default async function getTypeInfo(options) {
     ],
     functions: typeFunctions.map((item) => {
       const result = {
-        source: "Type",
+        source: 'Type',
         accept: options[item.accept],
-        values: [item.name]
+        values: [item.name],
       };
 
       return result;
     }),
     fixes,
-    version
+    version,
   };
 }

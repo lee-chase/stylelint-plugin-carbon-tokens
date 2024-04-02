@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import parseToRegexOrString from "./parseToRegexOrString";
+import parseToRegexOrString from './parseToRegexOrString';
 
 const getPropSpec = (prop) => {
   // starts with / and has another /
@@ -24,7 +24,7 @@ const getPropSpec = (prop) => {
       prop: matches[1],
       test: parseToRegexOrString(matches[1]),
       range: matches[5], // 5 may be undefined
-      valueCheck: parseToRegexOrString(matches[7]) // may be undefined
+      valueCheck: parseToRegexOrString(matches[7]), // may be undefined
     };
   }
 
@@ -39,10 +39,7 @@ const checkProp = (prop2Check, includedProps) => {
     propSpec = getPropSpec(includedProp);
 
     if (propSpec) {
-      if (
-        (propSpec.test.test && propSpec.test.test(prop2Check)) ||
-        propSpec.test === prop2Check
-      ) {
+      if ((propSpec.test.test && propSpec.test.test(prop2Check)) || propSpec.test === prop2Check) {
         // return first result that matches
 
         result = propSpec;

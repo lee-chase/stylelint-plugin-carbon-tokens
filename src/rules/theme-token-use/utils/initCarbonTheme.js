@@ -8,30 +8,30 @@
 import {
   unstable_metadata as installedMetadata,
   tokens as installedTokens,
-  white as installedWhite
-} from "@carbon/themes";
-import { formatTokenName } from "../../../utils/token-name";
-import { unstable_tokens as installedLayout } from "@carbon/layout";
-import { unstable_tokens as installedType } from "@carbon/type";
-import { version as installedVersion } from "@carbon/themes/package.json";
-import loadModules from "../../../utils/loadModules";
+  white as installedWhite,
+} from '@carbon/themes';
+import { formatTokenName } from '../../../utils/token-name';
+import { unstable_tokens as installedLayout } from '@carbon/layout';
+import { unstable_tokens as installedType } from '@carbon/type';
+import { version as installedVersion } from '@carbon/themes/package.json';
+import loadModules from '../../../utils/loadModules';
 
 const missingButtonTokens = [
-  "button-danger-active",
-  "button-danger-hover",
-  "button-danger-primary",
-  "button-danger-secondary",
-  "button-disabled",
-  "button-primary",
-  "button-primary-active",
-  "button-primary-hover",
-  "button-secondary",
-  "button-secondary-active",
-  "button-secondary-hover",
-  "button-separator",
-  "button-tertiary",
-  "button-tertiary-active",
-  "button-tertiary-hover"
+  'button-danger-active',
+  'button-danger-hover',
+  'button-danger-primary',
+  'button-danger-secondary',
+  'button-disabled',
+  'button-primary',
+  'button-primary-active',
+  'button-primary-hover',
+  'button-secondary',
+  'button-secondary-active',
+  'button-secondary-hover',
+  'button-separator',
+  'button-tertiary',
+  'button-tertiary-active',
+  'button-tertiary-hover',
 ];
 
 const doInitTheme = async ({ carbonPath, carbonModulePostfix }) => {
@@ -45,7 +45,7 @@ const doInitTheme = async ({ carbonPath, carbonModulePostfix }) => {
   if (carbonPath) {
     const { layout, type, themes, pkg } = await loadModules(
       carbonPath,
-      ["themes", "layout", "type"],
+      ['themes', 'layout', 'type'],
       carbonModulePostfix
     );
 
@@ -69,9 +69,7 @@ const doInitTheme = async ({ carbonPath, carbonModulePostfix }) => {
 
   if (unstable_metadata) {
     // prefer to installedWhite.
-    themeTokens = unstable_metadata.v11
-      .filter((token) => token.type === "color")
-      .map((token) => `$${token.name}`);
+    themeTokens = unstable_metadata.v11.filter((token) => token.type === 'color').map((token) => `$${token.name}`);
   } else if (tokens?.colors) {
     // Carbon v10 as used in v1.0.0 of linter
     themeTokens = tokens.colors.map((token) => `$${formatTokenName(token)}`);
@@ -80,9 +78,7 @@ const doInitTheme = async ({ carbonPath, carbonModulePostfix }) => {
 
     // map themes to recognizable tokens
     themeTokens = Object.keys(white)
-      .filter(
-        (token) => !layoutTokens.includes(token) && !typeTokens.includes(token)
-      )
+      .filter((token) => !layoutTokens.includes(token) && !typeTokens.includes(token))
       .map((token) => `$${formatTokenName(token)}`);
 
     missingButtonTokens.forEach((token) => {
@@ -90,11 +86,11 @@ const doInitTheme = async ({ carbonPath, carbonModulePostfix }) => {
     });
   }
 
-  const isV10 = _version.startsWith("10");
+  const isV10 = _version.startsWith('10');
 
   // permitted carbon theme functions
   // TODO: read this from carbon
-  const themeFunctions = isV10 ? ["get-light-value"] : [];
+  const themeFunctions = isV10 ? ['get-light-value'] : [];
 
   return { themeTokens, themeFunctions, version: _version };
 };
