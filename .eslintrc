@@ -66,5 +66,7 @@
     "__dirname": "readonly",
     "__filename": "readonly",
     "process": "readonly",
+    "global": "readonly",
+    "module": "readonly",
   },
 }

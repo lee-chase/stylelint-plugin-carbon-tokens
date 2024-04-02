@@ -14,7 +14,8 @@ import { fixUsingMap } from '../../../utils/fix-utils';
 
 export const fixes = [
   {
-    // v10 to v11 Updated and deprecated tokens from https://github.com/carbon-design-system/carbon/blob/main/docs/migration/v11.md#carbonthemes
+    // v10 to v11 Updated and deprecated tokens from
+    // https://github.com/carbon-design-system/carbon/blob/main/docs/migration/v11.md#carbonthemes
     // NOTE: Not all can be automated, but the ones that can are.
     target: /\$[a-z0-9-]+/gi,
     replacement: (value, target, config) =>

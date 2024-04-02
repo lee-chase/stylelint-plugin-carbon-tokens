@@ -48,32 +48,37 @@ const getMessages = (ruleName, label) => {
       ),
     rejectedUndefinedVariable: (property, variable, value) =>
       stringOrRegexMessage(
-        (o) =>
-          `Expected carbon ${o.label} token, mixin or function to be set for variable "${o.variable}" used by "${o.property}" found "an unknown, undefined or unrecognized value".`,
+        () =>
+          'Expected carbon ${o.label} token, mixin or function to be set for variable "${o.variable}"' +
+          ' used by "${o.property}" found "an unknown, undefined or unrecognized value".',
         { label, property, variable, value }
       ),
     rejectedVariable: (property, variable, value) =>
       stringOrRegexMessage(
-        (o) =>
-          `Expected carbon ${o.label} token, mixin or function to be set for variable "${o.variable}" used by "${o.property}" found "${o.value}".`,
+        () =>
+          'Expected carbon ${o.label} token, mixin or function to be set for variable "${o.variable}"' +
+          ' used by "${o.property}" found "${o.value}".',
         { label, property, variable, value }
       ),
     rejectedMaths: (property, value) =>
       stringOrRegexMessage(
-        (o) =>
-          `Expected calc of the form calc(P O #{$}) or calc(-1 * #{$}). Where 'P' is in (vw, vh or %), 'O' is + or -,  '$' is a carbon ${o.label} token, mixin or function for "${o.property}" found "${o.value}".`,
+        () =>
+          "Expected calc of the form calc(P O #{$}) or calc(-1 * #{$}). Where 'P' is in (vw, vh or %), 'O' is" +
+          ' + or -,  \'$\' is a carbon ${o.label} token, mixin or function for "${o.property}" found "${o.value}".',
         { label, property, value }
       ),
     rejectedTransition: (property, value) =>
       stringOrRegexMessage(
         (o) =>
-          `Expected carbon ${o.label} token or function for duration and easing at positions 2 and 3 for "${o.property}" found "${o.value}".`,
+          `Expected carbon ${o.label} token or function for duration and easing` +
+          `at positions 2 and 3 for "${o.property}" found "${o.value}".`,
         { label, property, value }
       ),
     rejectedAnimation: (property, value) =>
       stringOrRegexMessage(
         (o) =>
-          `Expected carbon ${o.label} token or function for duration and easing at positions 2 and 3 for "${o.property}" found "${o.value}".`,
+          `Expected carbon ${o.label} token or function for duration and easing` +
+          ` at positions 2 and 3 for "${o.property}" found "${o.value}".`,
         { label, property, value }
       ),
   });

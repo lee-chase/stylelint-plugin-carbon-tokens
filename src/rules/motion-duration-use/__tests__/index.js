@@ -33,7 +33,9 @@ testRule(rule, {
       description: 'Carbon motion token expected for transition.',
     },
     {
-      code: '.foo {   transition: background-color $duration-slow-02 motion(exit, expressive) , opacity $duration-moderate-02 motion(exit, expressive); }',
+      code:
+        '.foo {   transition: background-color $duration-slow-02 motion(exit, expressive)' +
+        ' , opacity $duration-moderate-02 motion(exit, expressive); }',
       description: 'Carbon multiple motion token settings expected for transition.',
     },
     {

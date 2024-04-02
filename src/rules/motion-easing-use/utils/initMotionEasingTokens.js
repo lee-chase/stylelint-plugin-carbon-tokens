@@ -15,7 +15,6 @@ const doInit = async ({ carbonPath, carbonModulePostfix }) => {
   let _version;
 
   if (carbonPath) {
-    // eslint-disable-next-line node/no-unsupported-features/es-syntax
     const { pkg } = await loadModules(carbonPath, ['motion'], carbonModulePostfix);
 
     _version = pkg.version;

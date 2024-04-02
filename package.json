@@ -115,10 +115,7 @@
     "roots": [
       "src"
     ],
-    "testRegex": ".*\\.test\\.js$|src/.*/__tests__/.*\\.js$",
-    "transform": {
-      "^.+\\.jsx?$": "babel-jest"
-    }
+    "testRegex": ".*\\.test\\.js$|src/.*/__tests__/.*\\.js$"
   },
   "scripts": {
     "prebuild": "rimraf dist",

@@ -14,7 +14,6 @@ const getPropSpec = (prop) => {
 
   let propSpec = false;
 
-  // eslint-disable-next-line regexp/no-unused-capturing-group
   const checkRegex = /^((\/[^/]*\/)|([^</[]+))(<([^>]*)>)*(\[([\s\S]+)\])*/;
 
   const matches = checkRegex.exec(prop);

@@ -130,8 +130,7 @@ export default async function checkRule(root, result, ruleName, options, message
         const ruleParams = rule.params.replace(/'(.*)'/, '$1').replace(/"(.*)"/, '$1'); // remove quotes if needed
         const [usedThing, usedScope] = ruleParams.split(' as ');
 
-        const carbonThingRegex = // eslint-disable-next-line regexp/no-unused-capturing-group
-          /((@carbon)|(carbon-components(\/([^/$]+))*))\/+_?([^.]+)(\.scss)*/;
+        const carbonThingRegex = /((@carbon)|(carbon-components(\/([^/$]+))*))\/+_?([^.]+)(\.scss)*/;
 
         const carbonThing = carbonThingRegex.exec(usedThing);
         let fileScope;
@@ -142,8 +141,7 @@ export default async function checkRule(root, result, ruleName, options, message
           // at this point local scopes come from a known import at least in theory
           // other scopes we might accept are based on user
 
-          const nonCarbonThingRegex = // eslint-disable-next-line regexp/no-unused-capturing-group
-            /((.+)\/)*_?([^.]+)(\.scss)*/;
+          const nonCarbonThingRegex = /((.+)\/)*_?([^.]+)(\.scss)*/;
 
           const nonCarbonThing = nonCarbonThingRegex.exec(usedThing);
 
@@ -186,7 +184,8 @@ export default async function checkRule(root, result, ruleName, options, message
       console.warn(
         `Unexpected syntax in decl: ${JSON.stringify(
           decl
-        )}. \n\n HELP. If you see this message PLEASE copy the contents of the message above and raise a github issue. Thankyou in advance for helping us to improve the tool.`
+        )}. \n\n HELP. If you see this message PLEASE copy the contents of the message above` +
+          ` and raise a github issue. Thankyou in advance for helping us to improve the tool.`
       );
     } else if (tokenizedValue && tokenizedValue.warning) {
       console.warn(tokenizedValue.warning);

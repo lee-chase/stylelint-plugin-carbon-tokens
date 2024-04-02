@@ -25,7 +25,9 @@ testRule(rule, {
       description: 'Carbon motion easing function settings expected for transition.',
     },
     {
-      code: '.foo {   transition: background-color $duration-slow-02 motion(exit, expressive) , opacity $duration-moderate-02 motion(exit, expressive); }',
+      code:
+        '.foo {   transition: background-color $duration-slow-02 motion(exit, expressive)' +
+        ' , opacity $duration-moderate-02 motion(exit, expressive); }',
       description: 'Carbon multiple motion easing function settings expected for transition.',
     },
     {
@@ -33,7 +35,9 @@ testRule(rule, {
       description: 'Carbon scoped motion easing token settings expected for transition.',
     },
     {
-      code: '.foo {   transition: background-color $duration-slow-02 motion.$ease-out, opacity $duration-moderate-02 motion.$standard-easing; }',
+      code:
+        '.foo {   transition: background-color $duration-slow-02 motion.$ease-out, opacity' +
+        ' $duration-moderate-02 motion.$standard-easing; }',
       description: 'Carbon multiple scoped motion easing token settings expected for transition.',
     },
     {
@@ -41,7 +45,9 @@ testRule(rule, {
       description: 'Carbon scoped motion easing function settings expected for transition.',
     },
     {
-      code: '.foo {   transition: background-color $duration-slow-02 motion.motion(exit, expressive) , opacity $duration-moderate-02 motion.motion(exit, expressive); }',
+      code:
+        '.foo {   transition: background-color $duration-slow-02 motion.motion(exit, expressive)' +
+        ' , opacity $duration-moderate-02 motion.motion(exit, expressive); }',
       description: 'Carbon multiple scoped motion easing function settings expected for transition.',
     },
     {
@@ -137,7 +143,9 @@ testRule(rule, {
   customSyntax: 'postcss-scss',
   accept: [
     {
-      code: '.foo {   transition: background-color $duration-slow-02 abc.$ease-in; } .bar {   transition: background-color $duration-slow-02 zyx.$ease-in; }',
+      code:
+        '.foo {   transition: background-color $duration-slow-02 abc.$ease-in; }' +
+        ' .bar {   transition: background-color $duration-slow-02 zyx.$ease-in; }',
       description: "All scopes ['**'].",
     },
   ],

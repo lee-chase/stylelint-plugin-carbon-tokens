@@ -662,11 +662,14 @@ testRule(rule, {
   reject: [
     {
       code: `$block-class: 'test'; .foo { top: var(--#{$block-class}--breadcrumb-title-top); }`,
-      description: `Reject undefined SCSS var constructed with a CSS custom prop with preprocessor in name if undeclared and undefined variables is off`,
+      description:
+        'Reject undefined SCSS var constructed with a CSS custom prop with preprocessor' +
+        ' in name if undeclared and undefined variables is off',
     },
     {
       code: `--test--breadcrumb-title-top: $spacing-02; .foo { top: var(--#{$block-class}--breadcrumb-title-top); }`,
-      description: `Reject undefined SCSS var constructing a CSS custom prop with preprocessor in name if undeclared and undefined variables is off`,
+      description:
+        'Reject undefined SCSS var constructing a CSS custom prop with preprocessor in name if undeclared and undefined variables is off',
     },
   ],
 });
@@ -684,11 +687,15 @@ testRule(rule, {
   reject: [
     {
       code: `$block-class: 'test'; .foo { top: var(--#{$block-class}--breadcrumb-title-top); }`,
-      description: `Reject undefined SCSS var constructed with a CSS custom prop with preprocessor in name if undeclared and undefined variables is on`,
+      description:
+        'Reject undefined SCSS var constructed with a CSS custom prop with preprocessor' +
+        ' in name if undeclared and undefined variables is on',
     },
     {
       code: `--test--breadcrumb-title-top: $spacing-02; .foo { top: var(--#{$block-class}--breadcrumb-title-top); }`,
-      description: `Reject undefined SCSS var constructing a CSS custom prop with preprocessor in name if undeclared and undefined variables is on`,
+      description:
+        'Reject undefined SCSS var constructing a CSS custom prop with preprocessor' +
+        ' in name if undeclared and undefined variables is on',
     },
   ],
 });
