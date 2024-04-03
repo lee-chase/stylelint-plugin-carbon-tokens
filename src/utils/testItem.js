@@ -6,7 +6,7 @@
  */
 
 import { isVariable, normalizeVariableName, parseRangeValue, parseToRegexOrString } from '.';
-import { TOKEN_TYPES } from './tokenizeValue';
+import { TOKEN_TYPES } from './tokenizeValue.js';
 
 const sanitizeUnconnectedOperators = (val) => {
   // eslint-disable-next-line regexp/no-super-linear-backtracking

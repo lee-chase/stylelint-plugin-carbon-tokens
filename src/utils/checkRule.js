@@ -14,8 +14,8 @@ import {
   parseRangeValue,
   testItem,
   tokenizeValue,
-} from './';
-import { tryFix } from './fix-utils';
+} from './/index.js';
+import { tryFix } from './fix-utils.js';
 import { utils } from 'stylelint';
 
 // import valueParser from "postcss-value-parser";

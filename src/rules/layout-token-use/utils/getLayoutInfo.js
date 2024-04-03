@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { doInit } from './initAll';
-import { fixes } from './fixes';
+import { doInit } from './initAll.js';
+import { fixes } from './fixes.js';
 
 export default async function getLayoutInfo(options) {
   const { containerTokens, fluidSpacingTokens, iconSizeTokens, layoutFunctions, layoutTokens, spacingTokens, version } =

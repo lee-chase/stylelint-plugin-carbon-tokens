@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { checkRule, getMessages, isValidOption, namespace, parseOptions } from '../../utils';
-import { getThemeInfo } from './utils';
+import { checkRule, getMessages, isValidOption, namespace, parseOptions } from '../../utils/index.js';
+import { getThemeInfo } from './utils/index.js';
 import { utils } from 'stylelint';
 
 export const ruleName = namespace('theme-token-use');

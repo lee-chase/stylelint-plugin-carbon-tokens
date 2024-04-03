@@ -5,4 +5,4 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export { default as getThemeInfo } from './getThemeInfo';
+export { default as getThemeInfo } from './getThemeInfo.js';

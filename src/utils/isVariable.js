@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { TOKEN_TYPES } from './tokenizeValue';
+import { TOKEN_TYPES } from './tokenizeValue.js';
 
 export default function isVariable(val) {
   if (typeof val === 'string') {

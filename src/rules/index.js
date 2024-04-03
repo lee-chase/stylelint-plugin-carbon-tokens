@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import layoutTokenUse from './layout-token-use';
-import motionDurationUse from './motion-duration-use';
-import motionEasingUse from './motion-easing-use';
-import themeTokenUse from './theme-token-use';
-import typeTokenUse from './type-token-use';
+import layoutTokenUse from './layout-token-use/index.js';
+import motionDurationUse from './motion-duration-use/index.js';
+import motionEasingUse from './motion-easing-use/index.js';
+import themeTokenUse from './theme-token-use/index.js';
+import typeTokenUse from './type-token-use/index.js';
 
 export default {
   'theme-token-use': themeTokenUse,

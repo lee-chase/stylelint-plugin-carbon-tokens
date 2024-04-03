@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { getPropSpec } from './propUtils';
+import { getPropSpec } from './propUtils.js';
 
 export default function isValidOption(option) {
   /* istanbul ignore next */

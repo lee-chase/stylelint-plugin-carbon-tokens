@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { doInitColors } from './initCarbonColor';
-import { doInitTheme } from './initCarbonTheme';
-import { fixes } from './fixes';
-import { sassColorFunctions } from './initSassFunctions';
+import { doInitColors } from './initCarbonColor.js';
+import { doInitTheme } from './initCarbonTheme.js';
+import { fixes } from './fixes.js';
+import { sassColorFunctions } from './initSassFunctions.js';
 
 export default async function getThemeInfo(options) {
   // eslint-disable-next-line

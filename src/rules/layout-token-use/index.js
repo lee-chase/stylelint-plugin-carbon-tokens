@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { checkRule, getMessages, isValidOption, namespace, parseOptions } from '../../utils';
-import { getLayoutInfo } from './utils';
+import { checkRule, getMessages, isValidOption, namespace, parseOptions } from '../../utils/index.js';
+import { getLayoutInfo } from './utils/index.js';
 import { utils } from 'stylelint';
 
 export const ruleName = namespace('layout-token-use');

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import parseToRegexOrString from './parseToRegexOrString';
+import parseToRegexOrString from './parseToRegexOrString.js';
 
 const getPropSpec = (prop) => {
   // starts with / and has another /
