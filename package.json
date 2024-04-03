@@ -1,6 +1,6 @@
 {
   "name": "stylelint-plugin-carbon-tokens",
-  "version": "2.3.2-rc.0",
+  "version": "2.3.2-rc.1",
   "description": "A stylelint plugin to support the use of carbon component tokens.",
   "keywords": [
     "stylelint",
@@ -11,14 +11,16 @@
   ],
   "author": "Lee Chase <lee.chase@uk.ibm.com>",
   "license": "MIT",
+  "type": "module",
   "babel": {
     "presets": [
       [
         "@babel/env",
         {
           "targets": {
-            "node": "14"
-          }
+            "node": "18"
+          },
+          "modules": false
         }
       ]
     ]
@@ -72,7 +74,7 @@
     "@carbon/type": ">=10 <= 11"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
   },
   "eslintConfig": {
     "extends": [
