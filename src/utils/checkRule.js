@@ -14,7 +14,7 @@ import {
   parseRangeValue,
   testItem,
   tokenizeValue,
-} from './/index.js';
+} from './index.js';
 import { tryFix } from './fix-utils.js';
 import { utils } from 'stylelint';
 

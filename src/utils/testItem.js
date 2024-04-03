@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { isVariable, normalizeVariableName, parseRangeValue, parseToRegexOrString } from '.';
+import { isVariable, normalizeVariableName, parseRangeValue, parseToRegexOrString } from './index.js';
 import { TOKEN_TYPES } from './tokenizeValue.js';
 
 const sanitizeUnconnectedOperators = (val) => {
