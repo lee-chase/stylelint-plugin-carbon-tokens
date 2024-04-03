@@ -9,9 +9,9 @@ import { colors as installedColors } from '@carbon/colors';
 // colors comes in as object depth 2
 // keys are color names, values are objects
 // value objects container key: intensity number, value actual color
-import { formatTokenName } from '../../../utils/token-name';
+import { formatTokenName } from '../../../utils/token-name.js';
 import { version as installedVersion } from '@carbon/colors/package.json';
-import loadModules from '../../../utils/loadModules';
+import loadModules from '../../../utils/loadModules.js';
 
 const carbonColorPrefix = '$carbon--';
 const ibmColorPrefix = '$ibm-color__';

@@ -10,10 +10,10 @@
 // here we split based on the name excluding the numeric part.
 // This is to maintain the ability to separate out sizes not called out
 // on the carbon designs system website.
-import { formatTokenName } from '../../../utils/token-name';
+import { formatTokenName } from '../../../utils/token-name.js';
 import { unstable_tokens as installedTokens } from '@carbon/layout';
 import { version as installedVersion } from '@carbon/layout/package.json';
-import loadModules from '../../../utils/loadModules';
+import loadModules from '../../../utils/loadModules.js';
 
 const carbonPrefix = '$carbon--';
 

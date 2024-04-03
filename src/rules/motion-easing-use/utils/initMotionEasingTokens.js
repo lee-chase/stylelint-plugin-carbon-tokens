@@ -6,7 +6,7 @@
  */
 
 import { version as installedVersion } from '@carbon/motion/package.json';
-import loadModules from '../../../utils/loadModules';
+import loadModules from '../../../utils/loadModules.js';
 
 const doInit = async ({ carbonPath, carbonModulePostfix }) => {
   const baseTokens = ['ease-in', 'ease-out', 'standard-easing'];

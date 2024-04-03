@@ -10,11 +10,11 @@ import {
   tokens as installedTokens,
   white as installedWhite,
 } from '@carbon/themes';
-import { formatTokenName } from '../../../utils/token-name';
+import { formatTokenName } from '../../../utils/token-name.js';
 import { unstable_tokens as installedLayout } from '@carbon/layout';
 import { unstable_tokens as installedType } from '@carbon/type';
 import { version as installedVersion } from '@carbon/themes/package.json';
-import loadModules from '../../../utils/loadModules';
+import loadModules from '../../../utils/loadModules.js';
 
 const missingButtonTokens = [
   'button-danger-active',

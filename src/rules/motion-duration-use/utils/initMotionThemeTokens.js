@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { formatTokenName } from '../../../utils/token-name';
+import { formatTokenName } from '../../../utils/token-name.js';
 import { unstable_tokens as installedTokens } from '@carbon/motion';
 import { version as installedVersion } from '@carbon/motion/package.json';
-import loadModules from '../../../utils/loadModules';
+import loadModules from '../../../utils/loadModules.js';
 
 const doInit = async ({ carbonPath, carbonModulePostfix }) => {
   const motionTokens = [];

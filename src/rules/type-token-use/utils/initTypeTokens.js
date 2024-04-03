@@ -9,7 +9,7 @@
 // Types are applied via mixins and functions
 // const typeTokens = [];
 import { version as installedVersion } from '@carbon/type/package.json';
-import loadModules from '../../../utils/loadModules';
+import loadModules from '../../../utils/loadModules.js';
 
 const doInit = async ({ carbonPath, carbonModulePostfix }) => {
   // permitted carbon type functions

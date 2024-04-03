@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { fixUsingMap } from '../../../utils/fix-utils';
+import { fixUsingMap } from '../../../utils/fix-utils.js';
 
 // It would be really nice to be able to fix raw colors to theme tokens, however this is problematic
 // due to colors often being used by multiple tokens. In the 'White' theme the color 'white' is used
