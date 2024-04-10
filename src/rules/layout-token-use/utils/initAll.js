@@ -12,7 +12,7 @@
 // on the carbon designs system website.
 import { formatTokenName } from '../../../utils/token-name.js';
 import { unstable_tokens as installedTokens } from '@carbon/layout';
-import { version as installedVersion } from '@carbon/layout/package.json';
+// import { version as installedVersion } from '@carbon/layout/package.json';
 import loadModules from '../../../utils/loadModules.js';
 
 const carbonPrefix = '$carbon--';
@@ -26,8 +26,11 @@ const doInit = async ({ carbonPath, carbonModulePostfix }) => {
   let tokens;
   let _version;
 
+  // const pkgModule = loadModules('@carbon', ['layout'], '');
+  // console.log(pkgModule);
+  let installedVersion = 11;
+
   if (carbonPath) {
-    // eslint-disable-next-line node/no-unsupported-features/es-syntax
     const { layout, pkg } = await loadModules(carbonPath, ['layout'], carbonModulePostfix);
 
     _version = pkg.version;

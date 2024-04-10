@@ -79,7 +79,7 @@ modules.exports = {
 NOTE: Motion is shown above with a standard stylelint secondary option `severity` set to `warning` the default is
 `error`.
 
-FYI: There are no automated fixes with --fix. See [Why no --fix?](#Why%20no%20--fix?)
+FYI: There are few automated fixes with --fix. See [Automated fixes?](#Automated%20fixes)
 
 FYI: With regards to math. See [What math is OK?](#What%20math%20is%20OK?)
 
@@ -282,9 +282,12 @@ e.g. `calc(1)` or `translate(1,2)`.
 
 NOTE: this is not currently a user configurable option.
 
-## Why no --fix?
+## Automated fixes
 
-The main reason there are no automated fixes is that it is very hard to translate from physical value or scss variable
+Automated fixes are limited to those where a 1:1 mapping exists between a value and a carbon token. These values 
+can be either be Carbon tokens from older versions or hard coded values. E.g. `16px` to `$spacing-05`. 
+
+The main reason there are few automated fixes is that it is very hard to translate from physical value or scss variable
 or css custom property or function to a logical version. It is also the case that the user may not have imported the
 relevant SCSS file, or even have the package installed. Although the relevant Carbon packages are currently listed as
 dependencies they may be more loosely coupled in the future and a user would still need to import them in order to

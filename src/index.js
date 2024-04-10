@@ -5,12 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { createPlugin } from 'stylelint';
-import { namespace } from './utils/index.js';
 import rules from './rules/index.js';
+import stylelint from 'stylelint';
 
 const rulesPlugins = Object.keys(rules).map((ruleName) => {
-  return createPlugin(namespace(ruleName), rules[ruleName]);
+  return stylelint.createPlugin(`carbon/${ruleName}`, rules[ruleName]);
 });
 
 export default rulesPlugins;

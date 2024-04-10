@@ -13,19 +13,20 @@ const loadModules = async (carbonPath, modules, carbonModulePostfix) => {
   // returning { themes, type, pkg }
 
   const postFix = carbonModulePostfix || '';
+  // eslint-disable-next-line n/prefer-global/process
   const basePath = path.join(process.cwd(), carbonPath);
   const result = {};
 
   for (let m = 0; m < modules.length; m++) {
     const modulePath = path.join(basePath, modules[m] + postFix);
 
-    // eslint-disable-next-line node/no-unsupported-features/es-syntax
+
     const module = await import(modulePath);
 
     result[modules[m]] = module;
   }
 
-  // eslint-disable-next-line node/no-unsupported-features/es-syntax
+
   result.pkg = await import(path.join(basePath, modules[0] + postFix, 'package.json'));
 
   return result;

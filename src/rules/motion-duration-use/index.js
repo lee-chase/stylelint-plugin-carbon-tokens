@@ -7,7 +7,7 @@
 
 import { checkRule, getMessages, isValidOption, namespace, parseOptions } from '../../utils/index.js';
 import { getMotionInfo } from './utils/index.js';
-import { utils } from 'stylelint';
+import stylelint from 'stylelint';
 
 export const ruleName = namespace('motion-duration-use');
 export const messages = getMessages(ruleName, 'motion');
@@ -38,7 +38,7 @@ export default function rule(primaryOptions, secondaryOptions, context) {
   const options = parseOptions(secondaryOptions, defaultOptions);
 
   return async (root, result) => {
-    const validOptions = utils.validateOptions(
+    const validOptions = stylelint.utils.validateOptions(
       result,
       ruleName,
       {

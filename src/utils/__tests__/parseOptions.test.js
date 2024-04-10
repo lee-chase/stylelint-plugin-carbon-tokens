@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { parseOptions } from '..';
+import { parseOptions } from '../index.js';
 
 describe('parseOptions', () => {
   const defaults = {

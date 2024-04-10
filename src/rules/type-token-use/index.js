@@ -7,7 +7,7 @@
 
 import { checkRule, getMessages, isValidOption, namespace, parseOptions } from '../../utils/index.js';
 import { getTypeInfo } from './utils/index.js';
-import { utils } from 'stylelint';
+import stylelint from 'stylelint';
 
 export const ruleName = namespace('type-token-use');
 export const messages = getMessages(ruleName, 'type');
@@ -34,7 +34,7 @@ export default function rule(primaryOptions, secondaryOptions, context) {
   const options = parseOptions(secondaryOptions, defaultOptions);
 
   return async (root, result) => {
-    const validOptions = utils.validateOptions(
+    const validOptions = stylelint.utils.validateOptions(
       result,
       ruleName,
       {

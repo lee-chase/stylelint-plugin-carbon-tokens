@@ -15,8 +15,8 @@ import {
   testItem,
   tokenizeValue,
 } from './index.js';
+import stylelint from 'stylelint';
 import { tryFix } from './fix-utils.js';
-import { utils } from 'stylelint';
 
 // import valueParser from "postcss-value-parser";
 
@@ -142,7 +142,7 @@ export default async function checkRule(root, result, ruleName, options, message
           // at this point local scopes come from a known import at least in theory
           // other scopes we might accept are based on user
 
-          const nonCarbonThingRegex = // eslint-disable-next-line regexp/no-unused-capturing-group
+          const nonCarbonThingRegex = // eslint-disable-next-line
             /((.+)\/)*_?([^.]+)(\.scss)*/;
 
           const nonCarbonThing = nonCarbonThingRegex.exec(usedThing);
@@ -293,7 +293,7 @@ export default async function checkRule(root, result, ruleName, options, message
           if (!fixed) {
             // always report original warnings not those based on fix
             reports.forEach((report) => {
-              utils.report(report);
+              stylelint.report(report);
             });
           }
         }

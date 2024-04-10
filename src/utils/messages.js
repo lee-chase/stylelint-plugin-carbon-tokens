@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { utils } from 'stylelint';
+import stylelint from 'stylelint';
 
 const stringOrRegexMessage = (f, { label, ...options }) => {
   // strip empty values from options
@@ -34,7 +34,7 @@ const stringOrRegexMessage = (f, { label, ...options }) => {
 };
 
 const getMessages = (ruleName, label) => {
-  return utils.ruleMessages(ruleName, {
+  return stylelint.utils.ruleMessages(ruleName, {
     rejected: (property, value) =>
       stringOrRegexMessage(
         (o) => `Expected carbon ${o.label} token, mixin or function for "${o.property}" found "${o.value}".`,

@@ -23,7 +23,6 @@ const doInitColors = async ({ carbonPath, carbonModulePostfix }) => {
   const ibmColorTokens = []; // deprecated
 
   if (carbonPath) {
-    // eslint-disable-next-line node/no-unsupported-features/es-syntax
     const { colors, pkg } = await loadModules(carbonPath, ['colors'], carbonModulePostfix);
 
     colorTokens = colors.colors;

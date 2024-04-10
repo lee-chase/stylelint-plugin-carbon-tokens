@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { tokenizeValue /*, TOKEN_TYPES */ } from '..';
+import { tokenizeValue /*, TOKEN_TYPES */ } from '../index.js';
 
 describe('tokenizeValue', () => {
   let spyWarn;

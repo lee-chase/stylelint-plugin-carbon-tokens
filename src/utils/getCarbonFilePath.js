@@ -5,7 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {fileURLToPath} from 'url';
 import path from 'path';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const modulesPathIndex = __dirname.indexOf('/node_modules/');
 const inNodeModules = modulesPathIndex > -1;

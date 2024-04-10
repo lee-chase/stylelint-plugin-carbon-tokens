@@ -5,7 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { isValidOption } from '..';
+import { isValidOption } from '../index.js';
+// import {fileURLToPath} from 'url';
+// import path from 'path';
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
 describe('isValidOptions', () => {
   let spyWarn;

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { fixUsingMap } from '../fix-utils';
+import { fixUsingMap } from '../fix-utils.js';
 
 describe('fixUsingMap', () => {
   it('Does not loop forever', () => {
