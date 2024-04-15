@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// import { fixUsingMap } from "../../../utils/fix-utils";
+// import { fixUsingMap } from "../../../utils/fix-utils.js";
 
 export const fixes = [
   {

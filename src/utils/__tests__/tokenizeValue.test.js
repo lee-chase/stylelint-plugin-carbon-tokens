@@ -205,21 +205,9 @@ describe('tokenizeValue', () => {
       items: [
         {
           items: [
-            {
-              raw: '-1',
-              type: 'Numeric literal',
-              value: '-1',
-            },
-            {
-              value: '*',
-              type: 'operator',
-              raw: '*',
-            },
-            {
-              raw: '#{$test}',
-              type: 'Unknown',
-              value: '#{$test}',
-            },
+            { value: '-1', type: 'Numeric literal', raw: '-1', units: '' },
+            { type: 'operator', value: '*', raw: '*' },
+            { value: '#{$test}', type: 'Unknown', raw: '#{$test}' },
           ],
           type: 'Math',
           raw: '-1 * #{$test}',
