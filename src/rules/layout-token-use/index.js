@@ -51,7 +51,7 @@ const defaultOptions = {
   acceptIconSizeTokens: false,
   acceptFluidSpacingTokens: false,
   acceptCarbonMiniUnitsFunction: false,
-  acceptScopes: ["layout"],
+  acceptScopes: ["layout", "spacing"],
   carbonPath: undefined,
   carbonModulePostfix: undefined
 };

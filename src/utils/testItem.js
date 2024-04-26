@@ -105,7 +105,7 @@ const unquoteIfNeeded = (val) => {
   return val;
 };
 
-const preProcessToken = (variable, localVariables) => {
+export const preProcessToken = (variable, localVariables) => {
   const regex = /#\{([$\w-]*)\}/g;
   const replacements = [];
   let result = variable;

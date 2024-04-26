@@ -17,6 +17,7 @@ import {
 } from "./";
 import { tryFix } from "./fix-utils";
 import { utils } from "stylelint";
+import { preProcessToken } from "./testItem";
 
 // import valueParser from "postcss-value-parser";
 
@@ -228,7 +229,22 @@ export default async function checkRule(
 
   // **** walk rules and check values
   await root.walkDecls(async (decl) => {
-    const tokenizedValue = tokenizeValue(decl.value);
+    let valueToCheck = decl.value;
+
+    // replace any local variables first
+    Object.keys(localVariables).forEach((localVariable) => {
+      valueToCheck = valueToCheck.replace(
+        localVariable,
+        localVariables[localVariable].raw
+      );
+      // replace if wrapped with #{}
+      valueToCheck = valueToCheck.replace(
+        `#{${localVariable}}`,
+        localVariables[localVariable].raw
+      );
+    });
+
+    const tokenizedValue = tokenizeValue(valueToCheck);
 
     if (tokenizedValue && tokenizedValue.error) {
       // eslint-disable-next-line no-console
