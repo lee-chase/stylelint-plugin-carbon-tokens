@@ -1,6 +1,6 @@
 # Changelog
 
-##
+## 3.2.0-rc.0
 
 - feat: Introduce experimental fix theme hex
 - fix: enforceScopes to false (instead of undefiend).
