@@ -1638,3 +1638,19 @@ testRule({
     },
   ],
 });
+
+testRule({
+  plugins: [plugin],
+  ruleName,
+  config: [
+    true,
+    { acceptCarbonCustomProp: true, acceptValues: ['/^var\\(--abc-other.*/'] },
+  ],
+  customSyntax: 'postcss-scss',
+  accept: [
+    {
+      code: `.test { padding: var(--abc-other-one); }`,
+      description: 'Accept non-Carbon custom properties in acceptValues',
+    },
+  ],
+});

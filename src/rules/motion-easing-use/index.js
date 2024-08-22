@@ -41,6 +41,7 @@ const defaultOptions = {
   enforceScopes: false, // TODO: default in v3
   carbonPath: undefined,
   carbonModulePostfix: undefined,
+  acceptCarbonCubicBezier: false,
 };
 
 const ruleFunction = (primaryOptions, secondaryOptions, context) => {
@@ -65,6 +66,8 @@ const ruleFunction = (primaryOptions, secondaryOptions, context) => {
           carbonModulePostfix: (val) =>
             val === undefined || typeof val === 'string',
           enforceScopes: (val) => val === undefined || typeof val === 'boolean',
+          acceptCarbonCubicBezier: (val) =>
+            val === undefined || typeof val === 'boolean',
         },
         optional: true,
       }

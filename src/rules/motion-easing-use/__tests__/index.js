@@ -206,3 +206,54 @@ testRule({
     },
   ],
 });
+
+testRule({
+  plugins: [plugin],
+  ruleName,
+  config: true,
+  customSyntax: 'postcss-scss',
+  accept: [],
+  reject: [
+    {
+      code: `.foo { transition: background-color $duration-slow-02 cubic-bezier(0, 0, 0.3, 1); }`,
+      description: 'Rejects known cubic bezier as a literal',
+      message: messages.rejectedTransition(
+        'transition',
+        'cubic-bezier(0, 0, 0.3, 1)'
+      ),
+    },
+    {
+      code: `.foo { transition: background-color $duration-slow-02 cubic-bezier(0, 0, 0.6, 1); }`,
+      description: 'Rejects unknown cubic bezier as a literal',
+      message: messages.rejectedTransition(
+        'transition',
+        'cubic-bezier(0, 0, 0.6, 1)'
+      ),
+    },
+  ],
+});
+
+testRule({
+  plugins: [plugin],
+  ruleName,
+  config: [true, { acceptCarbonCubicBezier: true }],
+  customSyntax: 'postcss-scss',
+  accept: [
+    {
+      code: `.foo { transition: background-color $duration-slow-02 cubic-bezier(0, 0, 0.3, 1); }`,
+      description:
+        'Accepts known cubic bezier as a literal with acceptCarbonCubicBezier',
+    },
+  ],
+  reject: [
+    {
+      code: `.foo { transition: background-color $duration-slow-02 cubic-bezier(0, 0, 0.6, 1); }`,
+      description:
+        'Rejects unknown cubic bezier as a literal  with acceptCarbonCubicBezier',
+      message: messages.rejectedTransition(
+        'transition',
+        'cubic-bezier(0, 0, 0.6, 1)'
+      ),
+    },
+  ],
+});

@@ -332,10 +332,21 @@ const testItemInner = function (
   }
 
   // cope with css variables
-  const _item =
-    item.type === TOKEN_TYPES.FUNCTION && item.value === 'var'
-      ? item.items[0]
-      : item;
+  let _item = item;
+  if (item.type === TOKEN_TYPES.FUNCTION) {
+    switch (item.value) {
+      case 'var':
+        _item = item.items[0];
+        break;
+      case 'cubic-bezier':
+        if (options.acceptCarbonCubicBezier) {
+          item.type = TOKEN_TYPES.TEXT_LITERAL;
+        }
+        break;
+      default:
+        break;
+    }
+  }
 
   if (item.type === TOKEN_TYPES.BRACKETED_CONTENT) {
     // test all parts

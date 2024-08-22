@@ -6,8 +6,13 @@
  */
 
 import loadModules, { loadPackageJson } from '../../../utils/loadModules.js';
+import { easings } from '@carbon/motion';
 
-const doInit = async ({ carbonPath, carbonModulePostfix }) => {
+const doInit = async ({
+  carbonPath,
+  carbonModulePostfix,
+  acceptCarbonCubicBezier,
+}) => {
   const baseTokens = ['ease-in', 'ease-out', 'standard-easing'];
   const motionFunctions = ['motion'];
   let motionTokens;
@@ -34,6 +39,28 @@ const doInit = async ({ carbonPath, carbonModulePostfix }) => {
   } else {
     motionFunctions.push('motion');
     motionTokens = baseTokens.map((token) => `$${token}`);
+
+    if (acceptCarbonCubicBezier) {
+      // "easings": Object {
+      //   "entrance": Object {
+      //     "expressive": "cubic-bezier(0, 0, 0.3, 1)",
+      //     "productive": "cubic-bezier(0, 0, 0.38, 0.9)",
+      //   },
+      //   "exit": Object {
+      //     "expressive": "cubic-bezier(0.4, 0.14, 1, 1)",
+      //     "productive": "cubic-bezier(0.2, 0, 1, 0.9)",
+      //   },
+      //   "standard": Object {
+      //     "expressive": "cubic-bezier(0.4, 0.14, 0.3, 1)",
+      //     "productive": "cubic-bezier(0.2, 0, 0.38, 0.9)",
+      //   },
+      // },
+      for (let name in easings) {
+        for (let kind in easings[name]) {
+          motionTokens.push(easings[name][kind]);
+        }
+      }
+    }
   }
 
   return { motionTokens, motionFunctions, version: _version };
