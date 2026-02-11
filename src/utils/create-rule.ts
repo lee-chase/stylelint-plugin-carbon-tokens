@@ -20,6 +20,7 @@ import {
   validateCarbonTypeFunction,
   isCarbonMotionFunction,
   validateCarbonMotionFunction,
+  isValidSpacingValue,
 } from './validators.js';
 import {
   parseTransition,
@@ -520,6 +521,9 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
               validation = validateCalcExpression(value, tokens);
             } else if (isTransformFunction(value)) {
               validation = validateTransformFunction(value, tokens);
+            } else if (isValidSpacingValue(value, tokens)) {
+              // Valid spacing value (includes proportional units like -100%, 50vw, etc.)
+              validation = { isValid: true };
             } else {
               validation = validateValue(value, tokens, {
                 acceptUndefinedVariables: options.acceptUndefinedVariables,

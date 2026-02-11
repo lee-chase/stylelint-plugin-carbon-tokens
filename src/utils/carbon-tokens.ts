@@ -36,7 +36,8 @@ export function loadThemeTokens(): CarbonToken[] {
     );
 
     for (const token of colorTokens) {
-      const name = formatTokenName(token.name);
+      // Token names in unstable_metadata are already in kebab-case format
+      const name = token.name;
       // Add SCSS variable
       tokens.push({
         name: `$${name}`,
