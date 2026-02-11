@@ -34,7 +34,7 @@ describe('motion-easing-use rule', () => {
 
   it('should accept Carbon SCSS easing variables', async () => {
     const result = await stylelint.lint({
-      code: '.test { transition-timing-function: $fast01; }',
+      code: '.test { transition-timing-function: $fast-01; }',
       config: {
         plugins: [configPath],
         rules: {
@@ -48,7 +48,7 @@ describe('motion-easing-use rule', () => {
 
   it('should accept Carbon CSS custom properties', async () => {
     const result = await stylelint.lint({
-      code: '.test { animation-timing-function: var(--cds-fast01); }',
+      code: '.test { animation-timing-function: var(--cds-fast-01); }',
       config: {
         plugins: [configPath],
         rules: {

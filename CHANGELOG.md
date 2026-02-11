@@ -1,6 +1,15 @@
 # Changelog
 
-## 5.0.0-alpha.1 (Unreleased)
+## 5.0.0-alpha.2 (2026-02-11)
+
+### 🐛 Bug Fixes
+
+- **Token Name Formatting**: Fixed token name construction to properly convert camelCase to kebab-case
+  - Tokens like `spacing01`, `durationFast01`, `fast01`, `body01` are now correctly formatted as `spacing-01`, `duration-fast-01`, `fast-01`, `body-01`
+  - Updated `formatTokenName()` function to use proper regex pattern from v4 implementation
+  - This ensures SCSS variables (`$spacing-05`) and CSS custom properties (`--cds-spacing-05`) are correctly recognized
+
+## 5.0.0-alpha.1 (2026-02-11)
 
 ### 🎉 Major Rewrite - Alpha Release
 

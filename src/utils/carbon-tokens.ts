@@ -13,9 +13,14 @@ import type { CarbonToken, TokenCollection } from '../types/index.js';
 
 /**
  * Format token name to ensure consistent format
+ * Converts camelCase to kebab-case and handles number suffixes
+ * Examples: spacing01 -> spacing-01, fluidSpacing01 -> fluid-spacing-01
  */
 function formatTokenName(token: string): string {
-  return token.replace(/_/g, '-');
+  return token
+    .split(/(?<![A-Z])(?=[A-Z]|[0-9]{2})/) // Split before capital letters or 2-digit numbers (not preceded by capital)
+    .join('-')
+    .toLowerCase();
 }
 
 /**

@@ -34,7 +34,7 @@ describe('layout-use rule', () => {
 
   it('should accept Carbon SCSS spacing variables', async () => {
     const result = await stylelint.lint({
-      code: '.test { margin: $spacing05; }',
+      code: '.test { margin: $spacing-05; }',
       config: {
         plugins: [configPath],
         rules: {
@@ -48,7 +48,7 @@ describe('layout-use rule', () => {
 
   it('should accept Carbon CSS custom properties', async () => {
     const result = await stylelint.lint({
-      code: '.test { padding: var(--cds-spacing05); }',
+      code: '.test { padding: var(--cds-spacing-05); }',
       config: {
         plugins: [configPath],
         rules: {
