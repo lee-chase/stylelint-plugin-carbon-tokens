@@ -677,13 +677,27 @@ V5 Configuration (same):
 
 ## Documentation
 
-- [Migration Guide](./MIGRATION_V4_TO_V5.md) - Detailed V4 → V5 migration
-- [V4/V5 Comparison](./v5-rewrite-docs/V5_V4_COMPARISON.md) - Feature parity
-  analysis
-- [Deprecations](./v5-rewrite-docs/V5_DEPRECATIONS.md) - Deprecated features and
+### User Documentation
+
+- **[V5 Overview](./V5_OVERVIEW.md)** - Why V5? Complete feature comparison and
+  rationale
+- **[Migration Guide](./MIGRATION_V4_TO_V5.md)** - Detailed V4 → V5 migration
+  instructions
+- **[V5 Deprecations](./V5_DEPRECATIONS.md)** - Deprecated features and
   alternatives
+- **[V4/V5 Comparison](./V5_V4_COMPARISON.md)** - Detailed feature parity
+  analysis
+
+### Technical Documentation
+
+- [Implementation Status](./v5-rewrite-docs/V5_IMPLEMENTATION_STATUS.md) -
+  Current progress and roadmap
 - [Test Coverage](./v5-rewrite-docs/V5_TEST_COVERAGE.md) - Test coverage report
-- [V4 Documentation](./V4-README.md) - Legacy V4 documentation
+- [V5 Plan](./v5-rewrite-docs/V5_PLAN.md) - Original V5 vision and architecture
+- [Shorthand Strategy](./v5-rewrite-docs/V5_SHORTHAND_IMPLEMENTATION_STRATEGY.md) -
+  Shorthand property implementation
+- [Not Yet Supported](./v5-rewrite-docs/V5_NOT_YET_SUPPORTED.md) - Future
+  enhancements
 
 ## Testing
 
