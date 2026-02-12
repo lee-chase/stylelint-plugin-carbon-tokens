@@ -1,5 +1,48 @@
 # Changelog
 
+## 5.0.0-alpha.4 (2026-02-12)
+
+### ✨ Features
+
+- **Enhanced Auto-Fix Support**: Comprehensive auto-fix implementation for all
+  token types
+  - **Layout tokens**: Auto-fix now supports both `px` and `rem` values
+    - `16px` → `$spacing-05`
+    - `1rem` → `$spacing-05`
+  - **Motion duration tokens**: Auto-fix for millisecond values
+    - `110ms` → `$duration-fast-02`
+  - **Motion easing tokens**: Auto-fix for cubic-bezier functions
+    - `cubic-bezier(0.2, 0, 0.38, 0.9)` → `$easing-standard-productive`
+  - **Theme color tokens**: Opt-in auto-fix with `experimentalFixTheme` option
+    - `#0f62fe` → `$background-brand` (when `experimentalFixTheme: 'white'`)
+    - Requires explicit theme selection: `'white'`, `'g10'`, `'g90'`, or
+      `'g100'`
+    - Default behavior: no auto-fix for colors (safer)
+
+### 🔧 Technical Changes
+
+- **Token Value Loading**: Modified token loaders to store actual CSS values
+  instead of token names
+  - `loadLayoutTokens()`: Now loads actual rem/px values from `@carbon/layout`
+  - `loadMotionTokens()`: Now loads actual ms values and cubic-bezier functions
+    from `@carbon/motion`
+  - `loadThemeTokens()`: Optionally loads actual color values from
+    `@carbon/themes`
+- **Bidirectional Mapping**: Created mappings for both rem and px equivalents
+  - Both `1rem` and `16px` map to `$spacing-05`
+- **Type Safety**: Updated TypeScript interfaces to support optional parameters
+  in token loaders
+- **Rule Configuration**: Extended `ThemeRuleOptions` with
+  `experimentalFixTheme` parameter
+
+### 📚 Documentation
+
+- Updated README.md with comprehensive auto-fix examples and usage
+- Updated MIGRATION_V4_TO_V5.md to document `experimentalFixTheme` behavior
+  changes
+- Added warnings about color auto-fix ambiguity (same color used by multiple
+  tokens)
+
 ## 5.0.0-alpha.3 (2026-02-11)
 
 ### 🐛 Bug Fixes
