@@ -1,5 +1,15 @@
 # Changelog
 
+## 5.0.0-alpha.5 (2026-02-12)
+
+### 🐛 Bug Fixes
+
+- **Deprecation Warning**: Removed deprecated `context.fix` usage
+  - Updated to use modern Stylelint fix callback approach
+  - Fixes `[stylelint:005] DeprecationWarning: context.fix is being deprecated`
+    warning
+  - No functional changes to auto-fix behavior
+
 ## 5.0.0-alpha.4 (2026-02-12)
 
 ### ✨ Features

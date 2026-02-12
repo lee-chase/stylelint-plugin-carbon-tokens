@@ -409,8 +409,7 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
 
   const ruleFunction: stylelint.Rule<boolean, T> = (
     primaryOption,
-    secondaryOptions,
-    context
+    secondaryOptions
   ) => {
     return async (root, result) => {
       const validOptions = utils.validateOptions(
@@ -487,9 +486,7 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
                 result,
                 ruleName,
                 fix:
-                  validation.suggestedFix &&
-                  validation.originalValue &&
-                  context.fix
+                  validation.suggestedFix && validation.originalValue
                     ? () => {
                         // Replace the specific shorthand value with the fixed version
                         const newValue = decl.value.replace(
@@ -597,16 +594,15 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
               node: decl,
               result,
               ruleName,
-              fix:
-                validation.suggestedFix && context.fix
-                  ? () => {
-                      const newValue = decl.value.replace(
-                        value,
-                        validation.suggestedFix!
-                      );
-                      decl.value = newValue;
-                    }
-                  : undefined,
+              fix: validation.suggestedFix
+                ? () => {
+                    const newValue = decl.value.replace(
+                      value,
+                      validation.suggestedFix!
+                    );
+                    decl.value = newValue;
+                  }
+                : undefined,
             });
           }
         }
