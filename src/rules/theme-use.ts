@@ -34,8 +34,8 @@ const defaultOptions: ThemeRuleOptions = {
   carbonPrefix: 'cds',
 };
 
-export default createCarbonRule({
+export default createCarbonRule<ThemeRuleOptions>({
   ruleName,
   defaultOptions,
-  tokenLoader: loadThemeTokens,
+  tokenLoader: (options) => loadThemeTokens(options?.experimentalFixTheme),
 });

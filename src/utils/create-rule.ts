@@ -372,7 +372,7 @@ export interface RuleConfig<T extends BaseRuleOptions = BaseRuleOptions> {
   defaultOptions: T;
 
   /** Function to load tokens for this rule */
-  tokenLoader: () => CarbonToken[] | TokenCollection;
+  tokenLoader: (options?: T) => CarbonToken[] | TokenCollection;
 
   /** Optional function to check if a value should be skipped before validation */
   shouldSkipValue?: (value: string, prop: string) => boolean;
@@ -428,6 +428,7 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
             acceptUndefinedVariables: [() => true],
             acceptCarbonCustomProp: [() => true],
             carbonPrefix: [() => true],
+            experimentalFixTheme: [() => true],
           },
           optional: true,
         }
@@ -442,8 +443,8 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
         ...secondaryOptions,
       } as T;
 
-      // Load tokens
-      const loadedTokens = tokenLoader();
+      // Load tokens (pass options for rules that need them, like theme-use)
+      const loadedTokens = tokenLoader(options);
       const tokens = extractTokens
         ? extractTokens(loadedTokens)
         : (loadedTokens as CarbonToken[]);

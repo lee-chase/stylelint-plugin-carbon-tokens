@@ -6,8 +6,9 @@
  */
 
 import { unstable_tokens as layoutTokens } from '@carbon/layout';
+import * as layoutPackage from '@carbon/layout';
 import { unstable_tokens as typeTokens } from '@carbon/type';
-import { unstable_tokens as motionTokens } from '@carbon/motion';
+import * as motionPackage from '@carbon/motion';
 import * as themes from '@carbon/themes';
 import type { CarbonToken, TokenCollection } from '../types/index.js';
 
@@ -24,11 +25,55 @@ function formatTokenName(token: string): string {
 }
 
 /**
- * Load theme tokens from Carbon
+ * Convert rem value to px equivalent
+ * @param remValue - Value in rem (e.g., "1rem")
+ * @returns Value in px (e.g., "16px")
  */
-export function loadThemeTokens(): CarbonToken[] {
+function convertRemToPx(remValue: string): string {
+  const match = remValue.match(/^([\d.]+)rem$/);
+  if (match) {
+    const rem = parseFloat(match[1]);
+    return `${rem * 16}px`;
+  }
+  return remValue;
+}
+
+/**
+ * Load theme tokens from Carbon
+ * @param experimentalFixTheme - Optional theme name for color auto-fix
+ */
+export function loadThemeTokens(experimentalFixTheme?: string): CarbonToken[] {
   const tokens: CarbonToken[] = [];
 
+  // If experimentalFixTheme is enabled, load actual color values for auto-fix
+  if (experimentalFixTheme && (themes as any)[experimentalFixTheme]) {
+    const theme = (themes as any)[experimentalFixTheme];
+
+    for (const [tokenName, colorValue] of Object.entries(theme)) {
+      // Skip non-color values (like spacing, type tokens that might be in theme)
+      if (typeof colorValue !== 'string') continue;
+
+      const formattedName = formatTokenName(tokenName);
+
+      // Add SCSS variable with actual color value
+      tokens.push({
+        name: `$${formattedName}`,
+        value: colorValue as string,
+        type: 'scss',
+      });
+
+      // Add CSS custom property with actual color value
+      tokens.push({
+        name: `--cds-${formattedName}`,
+        value: colorValue as string,
+        type: 'css-custom-prop',
+      });
+    }
+
+    return tokens;
+  }
+
+  // Default behavior: load token names only (no auto-fix for colors)
   // Use unstable_metadata if available (v11.4+)
   if (themes.unstable_metadata) {
     const colorTokens = themes.unstable_metadata.v11.filter(
@@ -38,16 +83,16 @@ export function loadThemeTokens(): CarbonToken[] {
     for (const token of colorTokens) {
       // Token names in unstable_metadata are already in kebab-case format
       const name = token.name;
-      // Add SCSS variable
+      // Add SCSS variable (with token name as value, not actual color)
       tokens.push({
         name: `$${name}`,
-        value: token.value,
+        value: token.name, // Token name, not color value
         type: 'scss',
       });
       // Add CSS custom property
       tokens.push({
         name: `--cds-${name}`,
-        value: token.value,
+        value: token.name,
         type: 'css-custom-prop',
       });
     }
@@ -61,17 +106,16 @@ export function loadThemeTokens(): CarbonToken[] {
 
     for (const key of themeKeys) {
       const name = formatTokenName(key);
-      const value = themes.white[key as keyof typeof themes.white] as string;
-      // Add SCSS variable
+      // Add SCSS variable (with token name as value, not actual color)
       tokens.push({
         name: `$${name}`,
-        value,
+        value: name, // Token name, not color value
         type: 'scss',
       });
       // Add CSS custom property
       tokens.push({
         name: `--cds-${name}`,
-        value,
+        value: name,
         type: 'css-custom-prop',
       });
     }
@@ -94,6 +138,9 @@ export function loadLayoutTokens(): TokenCollection {
   for (const tokenName of layoutTokens) {
     const token = formatTokenName(tokenName);
 
+    // Get the actual CSS value from the Carbon package
+    const actualValue = (layoutPackage as any)[tokenName];
+
     // Determine which category this token belongs to
     let targetArray: CarbonToken[] | undefined;
 
@@ -114,19 +161,39 @@ export function loadLayoutTokens(): TokenCollection {
       targetArray = container;
     }
 
-    if (targetArray) {
-      // Add SCSS variable
+    if (targetArray && actualValue) {
+      // Add SCSS variable with rem value
       targetArray.push({
         name: `$${token}`,
-        value: tokenName, // Use original token name as value
+        value: actualValue, // Actual CSS value (e.g., "1rem")
         type: 'scss',
       });
-      // Add CSS custom property
+
+      // Add SCSS variable with px equivalent (for matching)
+      const pxValue = convertRemToPx(actualValue);
+      if (pxValue !== actualValue) {
+        targetArray.push({
+          name: `$${token}`,
+          value: pxValue, // px equivalent (e.g., "16px")
+          type: 'scss',
+        });
+      }
+
+      // Add CSS custom property with rem value
       targetArray.push({
         name: `--cds-${token}`,
-        value: tokenName,
+        value: actualValue,
         type: 'css-custom-prop',
       });
+
+      // Add CSS custom property with px equivalent (for matching)
+      if (pxValue !== actualValue) {
+        targetArray.push({
+          name: `--cds-${token}`,
+          value: pxValue,
+          type: 'css-custom-prop',
+        });
+      }
     }
   }
 
@@ -173,38 +240,78 @@ export function loadMotionTokens(): TokenCollection {
   const duration: CarbonToken[] = [];
   const easing: CarbonToken[] = [];
 
-  // motionTokens is an array of token names
-  for (const tokenName of motionTokens) {
+  // Load duration tokens with actual values
+  const durationTokenNames = [
+    'durationFast01',
+    'durationFast02',
+    'durationModerate01',
+    'durationModerate02',
+    'durationSlow01',
+    'durationSlow02',
+  ];
+
+  for (const tokenName of durationTokenNames) {
     const token = formatTokenName(tokenName);
+    const actualValue = (motionPackage as any)[tokenName];
 
-    let targetArray: CarbonToken[] | undefined;
-
-    // Duration tokens start with 'duration' or are named like 'fast01', 'moderate01', 'slow01'
-    if (token.startsWith('duration')) {
-      targetArray = duration;
-    } else if (
-      token.startsWith('fast') ||
-      token.startsWith('moderate') ||
-      token.startsWith('slow')
-    ) {
-      // These are easing function names (fast01, fast02, moderate01, etc.)
-      targetArray = easing;
-    }
-
-    if (targetArray) {
+    if (actualValue) {
       // Add SCSS variable
-      targetArray.push({
+      duration.push({
         name: `$${token}`,
-        value: tokenName, // Use original token name as value
+        value: actualValue, // Actual value (e.g., "110ms")
         type: 'scss',
       });
       // Add CSS custom property
-      targetArray.push({
+      duration.push({
         name: `--cds-${token}`,
-        value: tokenName,
+        value: actualValue,
         type: 'css-custom-prop',
       });
     }
+  }
+
+  // Load easing tokens with actual cubic-bezier values
+  const easings = (motionPackage as any).easings;
+  const easingMappings = [
+    {
+      name: 'easing-standard-productive',
+      value: easings.standard.productive,
+    },
+    {
+      name: 'easing-standard-expressive',
+      value: easings.standard.expressive,
+    },
+    {
+      name: 'easing-entrance-productive',
+      value: easings.entrance.productive,
+    },
+    {
+      name: 'easing-entrance-expressive',
+      value: easings.entrance.expressive,
+    },
+    {
+      name: 'easing-exit-productive',
+      value: easings.exit.productive,
+    },
+    {
+      name: 'easing-exit-expressive',
+      value: easings.exit.expressive,
+    },
+  ];
+
+  for (const { name, value } of easingMappings) {
+    // Add SCSS variable
+    easing.push({
+      name: `$${name}`,
+      value: value, // Actual cubic-bezier value
+      type: 'scss',
+    });
+    // Add CSS custom property
+    easing.push({
+      name: `--cds-${name}`,
+      value: value,
+      type: 'css-custom-prop',
+    });
   }
 
   return {
