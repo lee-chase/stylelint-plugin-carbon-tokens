@@ -468,6 +468,20 @@ V5 includes comprehensive auto-fix capabilities for hard-coded values:
 stylelint --fix "**/*.{css,scss}"
 ```
 
+**Note**: Auto-fixes can be applied applied in a number of ways:
+
+- via the CLI
+- "Fix all auto-fixable problems" command (VSCode or clone only).
+- on save (VSCode or clone only) with the following settings.
+
+```json
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.stylelint": "explicit"
+  }
+}
+```
+
 ### Always Enabled (Safe)
 
 These auto-fixes work automatically with no configuration needed:
