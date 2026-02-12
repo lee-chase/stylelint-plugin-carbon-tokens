@@ -38,6 +38,7 @@ const defaultOptions: LayoutRuleOptions = {
     '/^0$/',
     '/^100%$/',
     '/logical/', // inset keyword
+    '1px', // Common for thin borders, outlines, box-shadows
   ],
   acceptUndefinedVariables: false,
   acceptCarbonCustomProp: false,

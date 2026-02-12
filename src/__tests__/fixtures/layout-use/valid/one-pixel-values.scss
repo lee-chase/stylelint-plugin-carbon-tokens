@@ -1,0 +1,35 @@
+/**
+ * Copyright IBM Corp. 2026
+ *
+ * This source code is licensed under the Apache-2.0 license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+// 1px is commonly used for thin borders, outlines, and box-shadows
+// and should be accepted as a valid value
+
+.component {
+  // Border widths
+  border-width: 1px;
+  border-block-width: 1px;
+  border-inline-width: 1px;
+  border-top-width: 1px;
+
+  // Outline widths
+  outline-width: 1px;
+  outline-offset: 1px;
+
+  // Box shadow offsets
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 1px 1px 0 $focus;
+
+  // Positioning (rare but valid for pixel-perfect alignment)
+  inset-block-start: 1px;
+  inset-inline-start: 1px;
+  top: 1px;
+  left: 1px;
+
+  // Margins (rare but valid)
+  margin-block-start: 1px;
+  margin-inline-start: 1px;
+}

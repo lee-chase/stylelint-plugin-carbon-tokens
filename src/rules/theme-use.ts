@@ -30,6 +30,7 @@ const defaultOptions: ThemeRuleOptions = {
     '/currentColor|transparent/',
     '/inset|outset/', // box-shadow keywords
     '/padding-box|border-box|content-box/', // background-clip keywords
+    '1px', // Common for thin borders, outlines, box-shadows
   ],
   acceptUndefinedVariables: false,
   acceptCarbonCustomProp: false,
