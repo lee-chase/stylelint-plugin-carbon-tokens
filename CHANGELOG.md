@@ -1,5 +1,34 @@
 # Changelog
 
+## 5.0.0-alpha.6 (2026-02-12)
+
+### ✨ Features
+
+- **New `theme-layer-use` Rule**: Encourages contextual layer tokens over
+  numbered tokens
+  - Validates usage of layer tokens (`$layer-01`, `$layer-02`, etc.) vs
+    contextual tokens (`$layer`, `$border-subtle`, etc.)
+  - Contextual tokens automatically adapt to layer context when using Carbon's
+    Layer component
+  - Provides auto-fix to convert numbered tokens to contextual equivalents
+  - Configured as warning in `recommended` config, error in `strict` config,
+    disabled in `light-touch` config
+
+- **New `strict` Configuration Preset**: Maximum enforcement of Carbon Design
+  System best practices
+  - All rules set to error severity (including `theme-layer-use`)
+  - Use when you want strict enforcement of contextual layer tokens with the
+    Layer component
+  - Example: `extends: ['stylelint-plugin-carbon-tokens/strict']`
+
+### 📚 Documentation
+
+- Added comprehensive preset configurations section to README
+- Documented all three configuration presets: `recommended`, `strict`, and
+  `light-touch`
+- Added guidance on when to use contextual vs numbered layer tokens based on
+  Carbon MCP documentation
+
 ## 5.0.0-alpha.5 (2026-02-12)
 
 ### 🐛 Bug Fixes
