@@ -1,0 +1,35 @@
+/**
+ * Copyright IBM Corp. 2026
+ *
+ * This source code is licensed under the Apache-2.0 license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+// Valid: Non-spacing transform functions should not be validated
+.test-non-spacing-transforms {
+  // rotate transforms
+  transform: rotate(0deg);
+  transform: rotate(45deg);
+  transform: rotate(180deg);
+  transform: rotate(-180deg);
+  transform: rotate(360deg);
+
+  // scale transforms
+  transform: scale(0.9);
+  transform: scale(1.5);
+  transform: scaleX(1);
+  transform: scaleX(-1);
+  transform: scaleY(-1);
+  transform: scaleY(2);
+
+  // skew transforms
+  transform: skew(10deg);
+  transform: skew(10deg, 20deg);
+
+  // matrix transforms
+  transform: matrix(1, 0, 0, 1, 0, 0);
+
+  // perspective transforms
+  transform: perspective(500px);
+  transform: perspective(convert.to-rem(144px));
+}

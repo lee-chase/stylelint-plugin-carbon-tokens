@@ -520,6 +520,13 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
             } else if (isSpacingTransformFunction(value)) {
               // Only validate translate functions (spacing-related)
               validation = validateTransformFunction(value, tokens);
+            } else if (
+              value.match(
+                /^(rotate|scale|scaleX|scaleY|skew|matrix|perspective)\s*\(/
+              )
+            ) {
+              // Skip validation for non-spacing transform functions
+              validation = { isValid: true };
             } else if (isValidSpacingValue(value, tokens)) {
               // Valid spacing value (includes proportional units like -100%, 50vw, etc.)
               validation = { isValid: true };
