@@ -38,6 +38,7 @@ export default {
   plugins: ['stylelint-plugin-carbon-tokens'],
   rules: {
     'carbon/theme-use': true,
+    'carbon/theme-layer-use': true,
     'carbon/layout-use': true,
     'carbon/type-use': true,
     'carbon/motion-duration-use': true,
@@ -76,6 +77,39 @@ Validates color and theme tokens.
   color: var(--cds-link-primary);
 }
 ```
+
+### carbon/theme-layer-use
+
+Encourages contextual layer tokens over numbered tokens when using Carbon's
+Layer component.
+
+**Properties validated** (default):
+
+- `color`, `background-color`, `border-color`, `outline-color`
+- `fill`, `stroke`
+- Shorthand: `border`, `outline`
+
+**Example violations**:
+
+```css
+/* ❌ Numbered layer token */
+.component {
+  background-color: $layer-01;
+  border: 1px solid $border-subtle-02;
+}
+
+/* ✅ Contextual layer token (preferred with Layer component) */
+.component {
+  background-color: $layer;
+  border: 1px solid $border-subtle;
+}
+```
+
+**When to use**: When building components that use Carbon's Layer component
+wrapper, which automatically manages layer context.
+
+**When not to use**: When you need explicit layer control or aren't using the
+Layer component. This rule is disabled in the light-touch configuration.
 
 ### carbon/layout-use
 
