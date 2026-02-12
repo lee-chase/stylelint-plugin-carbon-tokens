@@ -1,0 +1,25 @@
+/**
+ * Copyright IBM Corp. 2026
+ *
+ * This source code is licensed under the Apache-2.0 license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+// Valid: Negative SCSS variables
+.test-negative-tokens {
+  // Plain negative tokens
+  margin-inline-start: -$spacing-07;
+  inset-inline-end: -$spacing-05;
+  margin-block-start: -$spacing-01;
+
+  // Negative tokens with interpolation
+  margin-inline: -#{$spacing-05};
+  padding-block: -#{$spacing-03};
+
+  // Negative tokens with namespace
+  margin: -spacing.$spacing-07;
+  inset-block-start: -layout.$spacing-02;
+
+  // Negative tokens with both
+  inset-inline-start: -#{spacing.$spacing-05};
+}

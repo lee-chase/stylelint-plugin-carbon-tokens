@@ -28,6 +28,18 @@ describe('validators', () => {
       assert.strictEqual(isScssVariable('16px'), false);
       assert.strictEqual(isScssVariable('var(--cds-spacing-05)'), false);
     });
+
+    it('should identify negative SCSS variables', () => {
+      assert.strictEqual(isScssVariable('-$spacing-05'), true);
+      assert.strictEqual(isScssVariable('-$spacing-07'), true);
+      assert.strictEqual(isScssVariable('-$spacing-01'), true);
+    });
+
+    it('should reject non-SCSS values', () => {
+      assert.strictEqual(isScssVariable('-16px'), false);
+      assert.strictEqual(isScssVariable('16px'), false);
+      assert.strictEqual(isScssVariable('-1rem'), false);
+    });
   });
 
   describe('isCssCustomProperty', () => {
@@ -188,6 +200,32 @@ describe('validators', () => {
     it('should trim whitespace', () => {
       assert.strictEqual(cleanScssValue('  $spacing-05  '), '$spacing-05');
       assert.strictEqual(cleanScssValue('  #{$spacing-05}  '), '$spacing-05');
+    });
+
+    it('should handle negative SCSS variables', () => {
+      assert.strictEqual(cleanScssValue('-$spacing-05'), '-$spacing-05');
+      assert.strictEqual(cleanScssValue('-$spacing-07'), '-$spacing-07');
+      assert.strictEqual(cleanScssValue('-$spacing-01'), '-$spacing-01');
+    });
+
+    it('should handle negative with interpolation', () => {
+      assert.strictEqual(cleanScssValue('-#{$spacing-05}'), '-$spacing-05');
+      assert.strictEqual(cleanScssValue('-#{$spacing-07}'), '-$spacing-07');
+    });
+
+    it('should handle negative with namespace', () => {
+      assert.strictEqual(
+        cleanScssValue('-spacing.$spacing-05'),
+        '-$spacing-05'
+      );
+      assert.strictEqual(cleanScssValue('-theme.$layer'), '-$layer');
+    });
+
+    it('should handle negative with both interpolation and namespace', () => {
+      assert.strictEqual(
+        cleanScssValue('-#{spacing.$spacing-05}'),
+        '-$spacing-05'
+      );
     });
   });
 

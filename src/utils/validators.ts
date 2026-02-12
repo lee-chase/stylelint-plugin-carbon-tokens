@@ -8,10 +8,11 @@
 import type { CarbonToken, ValidationResult } from '../types/index.js';
 
 /**
- * Check if a value is a SCSS variable
+ * Check if a value is a SCSS variable (including negative variables)
+ * Examples: $spacing-05, -$spacing-05
  */
 export function isScssVariable(value: string): boolean {
-  return value.startsWith('$');
+  return value.startsWith('$') || value.startsWith('-$');
 }
 
 /**
@@ -20,9 +21,17 @@ export function isScssVariable(value: string): boolean {
  *   #{$spacing-04} → $spacing-04
  *   spacing.$spacing-04 → $spacing-04
  *   theme.$layer → $layer
+ *   -$spacing-05 → -$spacing-05 (preserved)
+ *   -#{$spacing-05} → -$spacing-05
  */
 export function cleanScssValue(value: string): string {
   let cleaned = value.trim();
+
+  // Handle negative values
+  const isNegative = cleaned.startsWith('-');
+  if (isNegative) {
+    cleaned = cleaned.substring(1); // Remove leading '-'
+  }
 
   // Remove interpolation: #{$token} → $token
   cleaned = cleaned.replace(/^#\{|\}$/g, '');
@@ -30,6 +39,11 @@ export function cleanScssValue(value: string): string {
   // Remove namespace: module.$token → $token
   // Match: word.$token → $token
   cleaned = cleaned.replace(/^[a-zA-Z_][\w-]*\.\$/, '$');
+
+  // Restore negative sign if present
+  if (isNegative) {
+    cleaned = '-' + cleaned;
+  }
 
   return cleaned;
 }
