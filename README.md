@@ -47,6 +47,25 @@ export default {
 };
 ```
 
+Or use one of the preset configurations:
+
+```js
+// Recommended (balanced strictness)
+export default {
+  extends: ['stylelint-plugin-carbon-tokens/recommended'],
+};
+
+// Strict (enforces all rules including contextual layer tokens)
+export default {
+  extends: ['stylelint-plugin-carbon-tokens/strict'],
+};
+
+// Light-touch (minimal enforcement)
+export default {
+  extends: ['stylelint-plugin-carbon-tokens/light-touch'],
+};
+```
+
 ## Available Rules
 
 All rules are fully implemented and production-ready:
@@ -105,11 +124,16 @@ Layer component.
 }
 ```
 
-**When to use**: When building components that use Carbon's Layer component
-wrapper, which automatically manages layer context.
+**Rationale**: Contextual tokens automatically adapt to the layer context
+provided by Carbon's Layer component, making components more flexible and
+maintainable. The Carbon Design System documentation explicitly marks these
+tokens as "automatically matches contextual layer background."
 
-**When not to use**: When you need explicit layer control or aren't using the
-Layer component. This rule is disabled in the light-touch configuration.
+**Severity**: Warning in `recommended` config, error in `strict` config,
+disabled in `light-touch` config.
+
+**When to disable**: If you need explicit layer control or aren't using the
+Layer component, disable this rule or use the light-touch configuration.
 
 ### carbon/layout-use
 
@@ -226,6 +250,65 @@ Validates motion easing functions.
   transition: transform 300ms motion(standard, productive);
 }
 ```
+
+## Preset Configurations
+
+The plugin provides three preset configurations to suit different project needs:
+
+### Recommended (Default)
+
+Balanced approach with most rules as errors and `theme-layer-use` as a warning:
+
+```js
+export default {
+  extends: ['stylelint-plugin-carbon-tokens/recommended'],
+};
+```
+
+**Rule severities:**
+
+- `theme-use`: error
+- `theme-layer-use`: **warning** (encourages contextual tokens)
+- `layout-use`: error
+- `type-use`: error
+- `motion-duration-use`: error
+- `motion-easing-use`: error
+
+### Strict
+
+Enforces all rules including contextual layer tokens as errors:
+
+```js
+export default {
+  extends: ['stylelint-plugin-carbon-tokens/strict'],
+};
+```
+
+**Rule severities:**
+
+- All rules: **error** (including `theme-layer-use`)
+
+Use this configuration when you want maximum enforcement of Carbon Design System
+best practices, including the use of contextual layer tokens with the Layer
+component.
+
+### Light-touch
+
+Minimal enforcement for gradual adoption:
+
+```js
+export default {
+  extends: ['stylelint-plugin-carbon-tokens/light-touch'],
+};
+```
+
+**Rule severities:**
+
+- Most rules: warning
+- `theme-layer-use`: **disabled**
+
+Use this configuration when migrating existing projects or when you need more
+flexibility.
 
 ## Configuration Options
 
