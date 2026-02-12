@@ -1,5 +1,37 @@
 # Changelog
 
+## 5.0.0-alpha.7 (2026-02-12)
+
+### ✨ Features
+
+- **Improved SCSS Validation**: Significantly reduced false positives in v5
+  - Added `cleanScssValue()` to properly handle SCSS interpolation (`#{}`) and
+    module namespaces
+  - Added `isSpacingTransformFunction()` to only validate spacing-related
+    transform functions (`translate*`)
+  - Added `isGradientFunction()` to always permit gradient functions without
+    validation
+  - Extended `acceptValues` with CSS keywords (`inset`, `padding-box`,
+    `border-box`)
+  - Updated `validateCarbonMotionFunction()` to accept `motion(standard)`
+    shorthand syntax
+
+### 🧪 Testing
+
+- Added comprehensive test coverage for new validation functions
+  - 6 tests for `cleanScssValue()` covering interpolation and namespace
+    stripping
+  - 4 tests for `isSpacingTransformFunction()` covering transform detection
+  - 6 tests for `isGradientFunction()` covering gradient pattern detection
+  - Updated `validateCarbonMotionFunction()` tests to include shorthand syntax
+  - All 289 tests passing
+
+### 📝 Notes
+
+This release focuses on reducing false positives by properly handling SCSS
+syntax patterns, limiting transform validation to spacing-related functions, and
+supporting common CSS patterns that don't require Carbon tokens.
+
 ## 5.0.0-alpha.6 (2026-02-12)
 
 ### ✨ Features
