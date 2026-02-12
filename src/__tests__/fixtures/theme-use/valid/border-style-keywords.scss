@@ -1,0 +1,21 @@
+/**
+ * Copyright IBM Corp. 2026
+ *
+ * This source code is licensed under the Apache-2.0 license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+.component {
+  border: 1px solid $border-strong;
+  border: 2px dashed $border-subtle;
+  border: 1px dotted $focus;
+  border: 3px double $border-inverse;
+  border: 2px groove $layer-accent-01;
+  border: 2px ridge $layer-accent-02;
+  border: 1px inset $border-strong;
+  border: 1px outset $border-strong;
+
+  outline: 1px solid $focus;
+  outline: 2px dashed $link-primary;
+  outline: 1px dotted $border-strong;
+}

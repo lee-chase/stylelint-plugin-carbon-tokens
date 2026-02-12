@@ -39,6 +39,8 @@ const defaultOptions: LayoutRuleOptions = {
     '/^100%$/',
     '/logical/', // inset keyword
     '1px', // Common for thin borders, outlines, box-shadows
+    '/^\\$(?!spacing-|layout-|container-|fluid-spacing-|icon-size-)/', // Accept non-layout tokens (e.g., theme tokens in box-shadow)
+    '/^--cds-(?!spacing-|layout-|container-|fluid-spacing-|icon-size-)/', // Accept non-layout CSS custom properties
   ],
   acceptUndefinedVariables: false,
   acceptCarbonCustomProp: false,

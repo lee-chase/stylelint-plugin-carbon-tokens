@@ -30,7 +30,10 @@ const defaultOptions: ThemeRuleOptions = {
     '/currentColor|transparent/',
     '/inset|outset/', // box-shadow keywords
     '/padding-box|border-box|content-box/', // background-clip keywords
+    '/^(solid|dashed|dotted|double|groove|ridge|inset|outset|none|hidden)$/', // border-style keywords
     '1px', // Common for thin borders, outlines, box-shadows
+    '/^\\$spacing-/', // Accept spacing tokens in box-shadow, border, outline
+    '/^--cds-spacing-/', // Accept spacing CSS custom properties
   ],
   acceptUndefinedVariables: false,
   acceptCarbonCustomProp: false,

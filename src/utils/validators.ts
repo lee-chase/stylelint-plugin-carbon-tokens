@@ -250,7 +250,11 @@ export function parseValue(value: string): string[] {
       current += char;
     } else if (char === ' ' && depth === 0) {
       if (current.trim()) {
-        values.push(current.trim());
+        // Remove trailing punctuation (commas, semicolons) from values
+        const cleaned = current.trim().replace(/[,;]+$/, '');
+        if (cleaned) {
+          values.push(cleaned);
+        }
         current = '';
       }
     } else {
@@ -259,7 +263,11 @@ export function parseValue(value: string): string[] {
   }
 
   if (current.trim()) {
-    values.push(current.trim());
+    // Remove trailing punctuation from final value
+    const cleaned = current.trim().replace(/[,;]+$/, '');
+    if (cleaned) {
+      values.push(cleaned);
+    }
   }
 
   return values.filter((v) => v.length > 0);
