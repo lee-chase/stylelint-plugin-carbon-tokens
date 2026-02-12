@@ -28,6 +28,8 @@ const defaultOptions: ThemeRuleOptions = {
     '/inherit|initial|none|unset/',
     '/^0$/',
     '/currentColor|transparent/',
+    '/inset|outset/', // box-shadow keywords
+    '/padding-box|border-box|content-box/', // background-clip keywords
   ],
   acceptUndefinedVariables: false,
   acceptCarbonCustomProp: false,

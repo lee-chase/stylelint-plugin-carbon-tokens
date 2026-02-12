@@ -15,6 +15,26 @@ export function isScssVariable(value: string): boolean {
 }
 
 /**
+ * Clean SCSS value by removing interpolation and namespaces
+ * Examples:
+ *   #{$spacing-04} → $spacing-04
+ *   spacing.$spacing-04 → $spacing-04
+ *   theme.$layer → $layer
+ */
+export function cleanScssValue(value: string): string {
+  let cleaned = value.trim();
+
+  // Remove interpolation: #{$token} → $token
+  cleaned = cleaned.replace(/^#\{|\}$/g, '');
+
+  // Remove namespace: module.$token → $token
+  // Match: word.$token → $token
+  cleaned = cleaned.replace(/^[a-zA-Z_][\w-]*\.\$/, '$');
+
+  return cleaned;
+}
+
+/**
  * Check if a value is a CSS custom property
  */
 export function isCssCustomProperty(value: string): boolean {
@@ -108,10 +128,18 @@ export function validateValue(
     return { isValid: true };
   }
 
-  // Check if it's a SCSS variable
-  if (isScssVariable(value)) {
+  // Always accept gradient functions
+  if (isGradientFunction(value)) {
+    return { isValid: true };
+  }
+
+  // Clean SCSS value (remove interpolation and namespaces)
+  const cleanValue = cleanScssValue(value);
+
+  // Check if it's a SCSS variable (after cleaning)
+  if (isScssVariable(cleanValue)) {
     const isCarbon = tokens.some(
-      (token) => token.type === 'scss' && token.name === value
+      (token) => token.type === 'scss' && token.name === cleanValue
     );
     if (isCarbon) {
       return { isValid: true };
@@ -122,7 +150,7 @@ export function validateValue(
     return {
       isValid: false,
       message: `SCSS variable "${value}" is not a Carbon token`,
-      suggestedFix: findClosestToken(value, tokens, 'scss'),
+      suggestedFix: findClosestToken(cleanValue, tokens, 'scss'),
     };
   }
 
@@ -258,7 +286,7 @@ function validateProportionalCalc(
   const [, , , , tokenPart] = match;
 
   // Validate the token part (could be #{$token} or $token or var(--token))
-  const cleanToken = tokenPart.replace(/^#\{|\}$/g, '').trim();
+  const cleanToken = cleanScssValue(tokenPart);
 
   // Check if it's a valid Carbon token
   const isValidToken =
@@ -311,8 +339,8 @@ function validateNegationCalc(
     tokenPart = token;
   }
 
-  // Clean the token (remove #{} wrapper if present)
-  const cleanToken = tokenPart.replace(/^#\{|\}$/g, '').trim();
+  // Clean the token (remove #{} wrapper and namespace if present)
+  const cleanToken = cleanScssValue(tokenPart);
 
   // Check if it's a valid Carbon token
   const isValidToken =
@@ -386,6 +414,21 @@ export function isTransformFunction(value: string): boolean {
 }
 
 /**
+ * Check if a transform function should be validated for spacing
+ * Only translate functions use spacing values
+ */
+export function isSpacingTransformFunction(value: string): boolean {
+  return /^translate(X|Y|3d)?\s*\(/.test(value.trim());
+}
+
+/**
+ * Check if value is a gradient function
+ */
+export function isGradientFunction(value: string): boolean {
+  return /^(linear|radial|conic)-gradient\s*\(/.test(value.trim());
+}
+
+/**
  * Extract function name and parameters from a function call
  * Returns null if not a valid function
  */
@@ -455,10 +498,11 @@ export function isValidSpacingValue(
     /^-?\d*\.?\d+(vw|vh|svw|lvw|dvw|svh|lvh|dvh|vi|vb|vmin|vmax|%)$/;
   if (relativeUnitPattern.test(trimmed)) return true;
 
-  // Check for Carbon SCSS variable
-  if (isScssVariable(trimmed)) {
+  // Check for Carbon SCSS variable (clean first to handle interpolation/namespaces)
+  const cleanValue = cleanScssValue(trimmed);
+  if (isScssVariable(cleanValue)) {
     return tokens.some(
-      (token) => token.type === 'scss' && token.name === trimmed
+      (token) => token.type === 'scss' && token.name === cleanValue
     );
   }
 
@@ -674,27 +718,38 @@ export function isCarbonMotionFunction(value: string): boolean {
 
 /**
  * Validate Carbon motion function parameters
- * Signature: motion(easing_type, motion_style)
+ * Signature: motion(easing_type, motion_style) or motion(easing_type)
  * - easing_type: 'standard' | 'entrance' | 'exit'
- * - motion_style: 'productive' | 'expressive'
+ * - motion_style: 'productive' | 'expressive' (optional)
+ * SCSS processes motion(standard) as a string, so shorthand is permitted
  */
 export function validateCarbonMotionFunction(value: string): ValidationResult {
   if (!isCarbonMotionFunction(value)) {
     return { isValid: false, message: 'Not a Carbon motion function' };
   }
 
-  // Match motion(easing_type, motion_style) with optional quotes
-  const match = value.match(
+  // Match full syntax: motion(easing_type, motion_style) with optional quotes
+  const fullMatch = value.match(
     /\bmotion\s*\(\s*['"]?(standard|entrance|exit)['"]?\s*,\s*['"]?(productive|expressive)['"]?\s*\)/
   );
 
-  if (!match) {
-    return {
-      isValid: false,
-      message:
-        "Invalid motion() parameters. Expected: motion('standard'|'entrance'|'exit', 'productive'|'expressive')",
-    };
+  if (fullMatch) {
+    return { isValid: true };
   }
 
-  return { isValid: true };
+  // Allow shorthand syntax: motion(standard) without quotes
+  // SCSS processes this as a string
+  const shorthandMatch = value.match(
+    /\bmotion\s*\(\s*(standard|entrance|exit)\s*\)/
+  );
+
+  if (shorthandMatch) {
+    return { isValid: true };
+  }
+
+  return {
+    isValid: false,
+    message:
+      "Invalid motion() parameters. Expected: motion('standard'|'entrance'|'exit', 'productive'|'expressive') or motion(standard|entrance|exit)",
+  };
 }

@@ -12,7 +12,7 @@ import {
   parseValue,
   isCalcExpression,
   validateCalcExpression,
-  isTransformFunction,
+  isSpacingTransformFunction,
   validateTransformFunction,
   isRgbaFunction,
   validateRgbaFunction,
@@ -514,10 +514,11 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
           // Check for special function validation based on rule
           let validation;
           if (ruleName === 'carbon/layout-use') {
-            // Layout rule: validate calc() and transform functions
+            // Layout rule: validate calc() and spacing-related transform functions
             if (isCalcExpression(value)) {
               validation = validateCalcExpression(value, tokens);
-            } else if (isTransformFunction(value)) {
+            } else if (isSpacingTransformFunction(value)) {
+              // Only validate translate functions (spacing-related)
               validation = validateTransformFunction(value, tokens);
             } else if (isValidSpacingValue(value, tokens)) {
               // Valid spacing value (includes proportional units like -100%, 50vw, etc.)
