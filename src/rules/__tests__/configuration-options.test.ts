@@ -381,4 +381,158 @@ describe('Configuration Options', () => {
       assert.ok(result.results[0].warnings[0].text.includes('transition'));
     });
   });
+
+  describe('trackFileVariables option', () => {
+    it('should resolve local SCSS variables when enabled', async () => {
+      const result = await stylelint.lint({
+        code: `
+          @use '@carbon/styles/scss/spacing' as *;
+          $indicator-width: $spacing-02;
+          .test { margin: $indicator-width; }
+        `,
+        config: {
+          plugins: [configPath],
+          rules: {
+            'carbon/layout-use': [
+              true,
+              { trackFileVariables: true, acceptUndefinedVariables: false },
+            ],
+          },
+        },
+      });
+
+      assert.strictEqual(result.errored, false);
+    });
+
+    it('should reject unresolved local variables when disabled', async () => {
+      const result = await stylelint.lint({
+        code: `
+          @use '@carbon/styles/scss/spacing' as *;
+          $indicator-width: $spacing-02;
+          .test { margin: $indicator-width; }
+        `,
+        config: {
+          plugins: [configPath],
+          rules: {
+            'carbon/layout-use': [
+              true,
+              {
+                trackFileVariables: false,
+                acceptUndefinedVariables: false,
+                acceptValues: [], // Clear default acceptValues to ensure strict validation
+              },
+            ],
+          },
+        },
+      });
+
+      assert.strictEqual(result.errored, true);
+    });
+
+    it('should resolve variables in calc() expressions', async () => {
+      const result = await stylelint.lint({
+        code: `
+          @use '@carbon/styles/scss/spacing' as *;
+          $indicator-height: $spacing-05;
+          .test { inset-block-end: calc(-1 * $indicator-height); }
+        `,
+        config: {
+          plugins: [configPath],
+          rules: {
+            'carbon/layout-use': [
+              true,
+              { trackFileVariables: true, acceptUndefinedVariables: false },
+            ],
+          },
+        },
+      });
+
+      assert.strictEqual(result.errored, false);
+    });
+
+    it('should resolve negative variables', async () => {
+      const result = await stylelint.lint({
+        code: `
+          @use '@carbon/styles/scss/spacing' as *;
+          $indicator-width: $spacing-02;
+          .test { margin-inline: -$indicator-width; }
+        `,
+        config: {
+          plugins: [configPath],
+          rules: {
+            'carbon/layout-use': [
+              true,
+              { trackFileVariables: true, acceptUndefinedVariables: false },
+            ],
+          },
+        },
+      });
+
+      assert.strictEqual(result.errored, false);
+    });
+
+    it('should resolve variable chains (transitive resolution)', async () => {
+      const result = await stylelint.lint({
+        code: `
+          @use '@carbon/styles/scss/spacing' as *;
+          $base-spacing: $spacing-03;
+          $derived-spacing: $base-spacing;
+          .test { padding: $derived-spacing; }
+        `,
+        config: {
+          plugins: [configPath],
+          rules: {
+            'carbon/layout-use': [
+              true,
+              { trackFileVariables: true, acceptUndefinedVariables: false },
+            ],
+          },
+        },
+      });
+
+      assert.strictEqual(result.errored, false);
+    });
+
+    it('should work with theme-use rule', async () => {
+      const result = await stylelint.lint({
+        code: `
+          @use '@carbon/styles/scss/theme' as *;
+          $custom-bg: $background;
+          .test { background-color: $custom-bg; }
+        `,
+        config: {
+          plugins: [configPath],
+          rules: {
+            'carbon/theme-use': [
+              true,
+              { trackFileVariables: true, acceptUndefinedVariables: false },
+            ],
+          },
+        },
+      });
+
+      assert.strictEqual(result.errored, false);
+    });
+
+    it('should handle multiple variables in one value', async () => {
+      const result = await stylelint.lint({
+        code: `
+          @use '@carbon/styles/scss/spacing' as *;
+          $indicator-width: $spacing-02;
+          .test { margin: $spacing-05 $indicator-width; }
+        `,
+        config: {
+          plugins: [configPath],
+          rules: {
+            'carbon/layout-use': [
+              true,
+              { trackFileVariables: true, acceptUndefinedVariables: false },
+            ],
+          },
+        },
+      });
+
+      assert.strictEqual(result.errored, false);
+    });
+  });
 });

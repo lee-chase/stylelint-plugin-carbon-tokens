@@ -21,6 +21,8 @@ import {
   isCarbonMotionFunction,
   validateCarbonMotionFunction,
   isValidSpacingValue,
+  resolveFileVariables,
+  isVariableDeclaration,
 } from './validators.js';
 import {
   parseTransition,
@@ -428,6 +430,7 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
             acceptCarbonCustomProp: [() => true],
             carbonPrefix: [() => true],
             experimentalFixTheme: [() => true],
+            trackFileVariables: [() => true],
           },
           optional: true,
         }
@@ -440,6 +443,8 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
       const options: T = {
         ...defaultOptions,
         ...secondaryOptions,
+        // Default trackFileVariables to true for v4 compatibility
+        trackFileVariables: secondaryOptions?.trackFileVariables ?? true,
       } as T;
 
       // Load tokens (pass options for rules that need them, like theme-use)
@@ -447,6 +452,24 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
       const tokens = extractTokens
         ? extractTokens(loadedTokens)
         : (loadedTokens as CarbonToken[]);
+
+      // Track file-level SCSS variable declarations if enabled
+      const fileVariables = new Map<string, string>();
+
+      if (options.trackFileVariables) {
+        // First pass: collect variable declarations
+        root.walkDecls((decl) => {
+          if (isVariableDeclaration(decl.prop)) {
+            // Resolve the value using currently known variables (for variable chains)
+            const resolvedValue = resolveFileVariables(
+              decl.value,
+              fileVariables
+            );
+            // Store the resolved value
+            fileVariables.set(decl.prop, resolvedValue);
+          }
+        });
+      }
 
       root.walkDecls((decl) => {
         const prop = decl.prop;
@@ -502,8 +525,13 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
           return;
         }
 
-        // Parse the value into individual parts
-        const values = parseValue(decl.value);
+        // Resolve file variables if tracking is enabled
+        const resolvedDeclValue = options.trackFileVariables
+          ? resolveFileVariables(decl.value, fileVariables)
+          : decl.value;
+
+        // Parse the resolved value into individual parts
+        const values = parseValue(resolvedDeclValue);
 
         for (const value of values) {
           // Allow rule-specific skipping logic

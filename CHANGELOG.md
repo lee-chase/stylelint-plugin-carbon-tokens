@@ -1,5 +1,63 @@
 # Changelog
 
+## 5.0.0-alpha.13 (2026-02-13)
+
+### ✨ Features
+
+- **Local Variable Tracking**: Added `trackFileVariables` option to resolve
+  file-level SCSS variable declarations
+  - New option `trackFileVariables` (default: `true` for v4 compatibility)
+    enables tracking and resolution of local SCSS variables
+  - Supports simple variable declarations: `$indicator-width: $spacing-02;`
+  - Supports variable chains (transitive resolution):
+    `$base: $spacing-03; $derived: $base;`
+  - Works with calc() expressions: `calc(-1 * $indicator-height)`
+  - Works with negative variables: `-$indicator-width`
+  - Works with multiple variables in one value: `$spacing-05 $indicator-width`
+  - Variables must be declared before use (module-level only)
+  - Variables are resolved when stored, enabling efficient lookups
+
+### 📝 Use Cases
+
+This feature is designed for projects that use local variable abstractions over
+Carbon tokens:
+
+```scss
+@use '@carbon/styles/scss/spacing' as *;
+
+// Declare local variables
+$indicator-width: $spacing-02;
+$indicator-height: $spacing-05;
+
+.component {
+  width: $indicator-width; // ✅ Resolves to $spacing-02
+  height: $indicator-height; // ✅ Resolves to $spacing-05
+  inset-block-end: calc(-1 * $indicator-height); // ✅ Works in calc()
+  margin-inline: -$indicator-width; // ✅ Works with negatives
+}
+```
+
+### 🔧 Configuration
+
+**Enabled by default** for v4 compatibility. To disable:
+
+```js
+{
+  'carbon/layout-use': [true, {
+    trackFileVariables: false
+  }]
+}
+```
+
+**Note**: The `strict` preset disables `trackFileVariables` to enforce direct
+Carbon token usage without local variable abstractions.
+
+### 📊 Testing
+
+- Added 7 new tests for `trackFileVariables` option
+- All 304 tests passing
+- Comprehensive coverage of variable resolution scenarios
+
 ## 5.0.0-alpha.12 (2026-02-13)
 
 ### 🐛 Bug Fixes

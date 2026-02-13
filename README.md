@@ -287,10 +287,12 @@ export default {
 **Rule severities:**
 
 - All rules: **error** (including `theme-layer-use`)
+- `trackFileVariables`: **disabled** (enforces direct Carbon token usage)
 
 Use this configuration when you want maximum enforcement of Carbon Design System
 best practices, including the use of contextual layer tokens with the Layer
-component.
+component. This config disables local variable tracking to ensure all values use
+direct Carbon tokens.
 
 ### Light-touch
 
@@ -345,6 +347,11 @@ Each rule supports these options:
 
       // Custom Carbon prefix for CSS custom properties
       carbonPrefix: 'cds',  // default
+
+      // Track and resolve file-level SCSS variable declarations
+      // When true: resolves local variables to their Carbon token values
+      // When false: validates variables as-is without resolution
+      trackFileVariables: true,  // default (v4 compatibility)
     },
   ],
 }
@@ -428,6 +435,78 @@ properties.
       '/^#[0-9a-f]{6}$/i'  // Any 6-digit hex color
     ]
   }]
+}
+```
+
+#### Track File-Level Variables (Enabled by Default)
+
+File-level variable tracking is **enabled by default** for v4 compatibility.
+This allows local SCSS variable declarations that resolve to Carbon tokens:
+
+```scss
+@use '@carbon/styles/scss/spacing' as *;
+
+// Declare local variables
+$indicator-width: $spacing-02;
+$indicator-height: $spacing-05;
+
+.component {
+  /* ✅ Accepted - resolves to $spacing-02 */
+  width: $indicator-width;
+
+  /* ✅ Accepted - resolves to $spacing-05 */
+  height: $indicator-height;
+
+  /* ✅ Accepted - resolves in calc() */
+  inset-block-end: calc(-1 * $indicator-height);
+
+  /* ✅ Accepted - resolves negative variables */
+  margin-inline: -$indicator-width;
+}
+
+// Variable chains work too
+$base-spacing: $spacing-03;
+$derived-spacing: $base-spacing;
+
+.container {
+  /* ✅ Accepted - resolves through chain to $spacing-03 */
+  padding: $derived-spacing;
+}
+```
+
+**How it works:**
+
+- Variables must be declared before use (module-level only)
+- Supports transitive resolution (variable chains)
+- Works with calc(), negative values, and multiple variables
+- Variables are resolved when stored, enabling efficient lookups
+
+**When to use:**
+
+- Projects with local variable abstractions over Carbon tokens
+- Migrating codebases that use intermediate variable names
+- Teams that prefer semantic variable names (e.g., `$indicator-width` instead of
+  `$spacing-02`)
+
+**To disable** (not recommended):
+
+```js
+{
+  'carbon/layout-use': [true, {
+    trackFileVariables: false
+  }]
+}
+```
+
+When disabled, only direct Carbon token references are accepted:
+
+```scss
+.component {
+  /* ✅ Accepted - direct Carbon token */
+  width: $spacing-02;
+
+  /* ❌ Rejected - local variable not resolved */
+  width: $indicator-width;
 }
 ```
 

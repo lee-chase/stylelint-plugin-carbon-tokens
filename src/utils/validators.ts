@@ -49,6 +49,62 @@ export function cleanScssValue(value: string): string {
 }
 
 /**
+ * Resolve SCSS variables in a value using file-level variable declarations
+ * Supports:
+ * - Simple variables: $indicator-width → $spacing-02
+ * - Variables in calc(): calc(-1 * $indicator-width) → calc(-1 * $spacing-02)
+ * - Multiple variables: $a $b → $spacing-05 $spacing-03
+ * - Negative variables: -$indicator-width → -$spacing-02
+ *
+ * @param value The value to resolve
+ * @param fileVariables Map of variable names to their resolved values
+ * @returns The value with variables resolved
+ */
+export function resolveFileVariables(
+  value: string,
+  fileVariables: Map<string, string>
+): string {
+  if (fileVariables.size === 0) {
+    return value; // No variables to resolve
+  }
+
+  let resolved = value;
+
+  // Match SCSS variables: $variable-name or -$variable-name
+  // Use word boundary to avoid matching partial variable names
+  const varRegex = /(-?\$[\w-]+)/g;
+  const matches = value.match(varRegex);
+
+  if (matches) {
+    for (const match of matches) {
+      // Handle negative variables
+      const isNegative = match.startsWith('-$');
+      const varName = isNegative ? match.substring(1) : match; // Remove leading '-' for lookup
+
+      const varValue = fileVariables.get(varName);
+      if (varValue) {
+        // Replace variable with its value
+        // If original was negative, prepend '-' to the resolved value
+        const replacement = isNegative ? `-${varValue}` : varValue;
+        resolved = resolved.replace(match, replacement);
+      }
+      // If variable not found, leave as-is (will fail validation later)
+    }
+  }
+
+  return resolved;
+}
+
+/**
+ * Check if a declaration is a SCSS variable declaration
+ * @param prop The property name (e.g., "$indicator-width")
+ * @returns True if this is a variable declaration
+ */
+export function isVariableDeclaration(prop: string): boolean {
+  return prop.startsWith('$');
+}
+
+/**
  * Check if a value is a CSS custom property
  */
 export function isCssCustomProperty(value: string): boolean {

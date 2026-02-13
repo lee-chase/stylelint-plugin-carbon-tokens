@@ -1,0 +1,19 @@
+{
+  "plugins": ["./dist/index.js"],
+  "rules": {
+    "carbon/layout-use": [
+      true,
+      {
+        "trackFileVariables": true,
+        "acceptUndefinedVariables": false
+      }
+    ],
+    "carbon/theme-use": [
+      true,
+      {
+        "trackFileVariables": true,
+        "acceptUndefinedVariables": false
+      }
+    ]
+  }
+}

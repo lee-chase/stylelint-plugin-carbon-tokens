@@ -37,6 +37,8 @@ export interface BaseRuleOptions {
   acceptCarbonCustomProp?: boolean;
   /** Custom Carbon prefix for CSS custom properties */
   carbonPrefix?: string;
+  /** Track and resolve file-level SCSS variable declarations */
+  trackFileVariables?: boolean;
 }
 
 /**
