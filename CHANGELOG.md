@@ -1,5 +1,48 @@
 # Changelog
 
+## 5.0.0-alpha.8 (2026-02-13)
+
+### 🐛 Bug Fixes
+
+- **Negative SCSS Variables**: Fixed recognition of negative SCSS variables like
+  `-$spacing-07`
+  - Updated `isScssVariable()` and `cleanScssValue()` to handle leading minus
+    signs
+  - Resolves false positives for negative spacing values in positioning and
+    margins
+- **Non-Spacing Transform Functions**: Fixed incorrect validation of non-spacing
+  transforms
+  - Added skip logic for `rotate()`, `scale()`, `scaleX()`, `scaleY()` functions
+  - These transforms don't use spacing tokens and should not be validated by
+    layout-use rule
+- **1px Values Support**: Added support for 1px values in borders and
+  box-shadows
+  - 1px is valid for hairline borders and should not require a token
+  - Added to acceptValues in both `theme-use` and `layout-use` rules
+- **Box-Shadow and Cross-Token Properties**: Fixed validation of properties that
+  mix token types
+  - Added spacing token patterns to `theme-use` acceptValues (for box-shadow
+    offsets)
+  - Added theme token patterns to `layout-use` acceptValues (for border colors
+    in shorthand)
+  - Fixed trailing punctuation parsing in multi-value properties
+- **Border Style Keywords**: Added support for CSS border-style keywords
+  - Keywords like `solid`, `dashed`, `inset`, `outset` are now accepted
+  - Prevents false positives when using standard CSS border styles
+- **Motion Easing Aliases**: Added support for `@carbon/styles` convenience
+  aliases
+  - `$standard-easing` → `cubic-bezier(0.5, 0, 0.1, 1)`
+  - `$ease-in` → `cubic-bezier(0.25, 0, 1, 1)`
+  - `$ease-out` → `cubic-bezier(0, 0, 0.25, 1)`
+  - These aliases are defined in `@carbon/styles/scss/_motion.scss` for backward
+    compatibility
+
+### 📝 Impact
+
+These fixes significantly reduce false positives when testing with IBM Products
+and other Carbon-based projects. The changes address common patterns that are
+valid but were incorrectly flagged by the plugin.
+
 ## 5.0.0-alpha.7 (2026-02-12)
 
 ### ✨ Features
