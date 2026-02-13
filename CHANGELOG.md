@@ -6,10 +6,12 @@
 
 - **Negative SCSS Variables**: Fixed recognition of negative SCSS variables like
   `-$spacing-07`
-  - Updated `isScssVariable()` and `cleanScssValue()` to handle leading minus
-    signs
+  - Updated `validateValue()` to check tokens without the negative sign
   - Resolves false positives for negative spacing values in positioning and
     margins
+- **Negative 1px Values**: Added support for `-1px` values
+  - Added to acceptValues in both `theme-use` and `layout-use` rules
+  - Common for negative offsets in box-shadows and positioning
 - **Non-Spacing Transform Functions**: Fixed incorrect validation of non-spacing
   transforms
   - Added skip logic for `rotate()`, `scale()`, `scaleX()`, `scaleY()` functions

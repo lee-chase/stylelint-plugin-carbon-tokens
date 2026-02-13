@@ -152,8 +152,13 @@ export function validateValue(
 
   // Check if it's a SCSS variable (after cleaning)
   if (isScssVariable(cleanValue)) {
+    // For negative variables, check the token without the minus sign
+    const tokenToCheck = cleanValue.startsWith('-$')
+      ? cleanValue.substring(1) // Remove leading '-' for token lookup
+      : cleanValue;
+
     const isCarbon = tokens.some(
-      (token) => token.type === 'scss' && token.name === cleanValue
+      (token) => token.type === 'scss' && token.name === tokenToCheck
     );
     if (isCarbon) {
       return { isValid: true };

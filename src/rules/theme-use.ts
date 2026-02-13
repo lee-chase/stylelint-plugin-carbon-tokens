@@ -32,6 +32,7 @@ const defaultOptions: ThemeRuleOptions = {
     '/padding-box|border-box|content-box/', // background-clip keywords
     '/^(solid|dashed|dotted|double|groove|ridge|inset|outset|none|hidden)$/', // border-style keywords
     '1px', // Common for thin borders, outlines, box-shadows
+    '-1px', // Common for negative offsets in box-shadows
     '/^\\$spacing-/', // Accept spacing tokens in box-shadow, border, outline
     '/^--cds-spacing-/', // Accept spacing CSS custom properties
   ],

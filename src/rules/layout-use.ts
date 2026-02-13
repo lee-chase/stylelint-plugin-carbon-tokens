@@ -39,6 +39,7 @@ const defaultOptions: LayoutRuleOptions = {
     '/^100%$/',
     '/logical/', // inset keyword
     '1px', // Common for thin borders, outlines, box-shadows
+    '-1px', // Common for negative offsets
     '/^\\$(?!spacing-|layout-|container-|fluid-spacing-|icon-size-)/', // Accept non-layout tokens (e.g., theme tokens in box-shadow)
     '/^--cds-(?!spacing-|layout-|container-|fluid-spacing-|icon-size-)/', // Accept non-layout CSS custom properties
   ],
