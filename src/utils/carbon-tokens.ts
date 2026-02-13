@@ -314,6 +314,26 @@ export function loadMotionTokens(): TokenCollection {
     });
   }
 
+  // Add @carbon/styles convenience aliases
+  // These are defined in @carbon/styles/scss/_motion.scss
+  // $ease-in: cubic-bezier(0.25, 0, 1, 1) - for removing elements
+  // $ease-out: cubic-bezier(0, 0, 0.25, 1) - for adding elements
+  // $standard-easing: cubic-bezier(0.5, 0, 0.1, 1) - for majority of animations
+  const aliases = [
+    { name: 'standard-easing', value: 'cubic-bezier(0.5, 0, 0.1, 1)' },
+    { name: 'ease-in', value: 'cubic-bezier(0.25, 0, 1, 1)' },
+    { name: 'ease-out', value: 'cubic-bezier(0, 0, 0.25, 1)' },
+  ];
+
+  for (const { name, value } of aliases) {
+    // Add SCSS variable (aliases are SCSS-only, no CSS custom properties)
+    easing.push({
+      name: `$${name}`,
+      value: value,
+      type: 'scss',
+    });
+  }
+
   return {
     duration,
     easing,
