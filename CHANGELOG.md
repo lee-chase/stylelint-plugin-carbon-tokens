@@ -52,6 +52,17 @@ $indicator-height: $spacing-05;
 **Note**: The `strict` preset disables `trackFileVariables` to enforce direct
 Carbon token usage without local variable abstractions.
 
+### 🐛 Bug Fixes
+
+- **Transform Functions**: Fixed validation of negative SCSS variables in
+  transform functions (e.g., `translateY(-$spacing-04)`)
+  - `isValidSpacingValue()` now properly handles negative variables by stripping
+    the leading `-` before token lookup
+  - Affects `translateX()`, `translateY()`, `translate()`, and `translate3d()`
+  - Added test coverage for negative variables in transform functions
+  - This bug wasn't caught earlier because our fixture tests didn't include
+    negative SCSS variables in transform functions
+
 ### 📊 Testing
 
 - Added 7 new tests for `trackFileVariables` option

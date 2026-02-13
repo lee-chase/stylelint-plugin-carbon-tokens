@@ -593,8 +593,13 @@ export function isValidSpacingValue(
   // Check for Carbon SCSS variable (clean first to handle interpolation/namespaces)
   const cleanValue = cleanScssValue(trimmed);
   if (isScssVariable(cleanValue)) {
+    // For negative variables, check the token without the minus sign
+    const tokenToCheck = cleanValue.startsWith('-$')
+      ? cleanValue.substring(1) // Remove leading '-' for token lookup
+      : cleanValue;
+
     return tokens.some(
-      (token) => token.type === 'scss' && token.name === cleanValue
+      (token) => token.type === 'scss' && token.name === tokenToCheck
     );
   }
 
