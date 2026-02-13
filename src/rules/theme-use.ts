@@ -31,8 +31,7 @@ const defaultOptions: ThemeRuleOptions = {
     '/inset|outset/', // box-shadow keywords
     '/padding-box|border-box|content-box/', // background-clip keywords
     '/^(solid|dashed|dotted|double|groove|ridge|inset|outset|none|hidden)$/', // border-style keywords
-    '1px', // Common for thin borders, outlines, box-shadows
-    '-1px', // Common for negative offsets in box-shadows
+    '/^-?\\d+\\.?\\d*(px|rem|em)$/', // Length values (1px, -1px, 4px, etc.) for borders, box-shadow blur/spread
     '/^\\$spacing-/', // Accept spacing tokens in box-shadow, border, outline
     '/^--cds-spacing-/', // Accept spacing CSS custom properties
   ],

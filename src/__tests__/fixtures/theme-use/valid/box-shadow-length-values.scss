@@ -1,0 +1,32 @@
+/**
+ * Copyright IBM Corp. 2026
+ *
+ * This source code is licensed under the Apache-2.0 license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+// Valid: box-shadow with length values for blur and spread radius
+.box-shadow-blur-spread {
+  // Standard box-shadow with blur radius
+  box-shadow: 0 0 4px 1px $layer-accent-01;
+
+  // Box-shadow with larger blur
+  box-shadow: 0 2px 8px 0 $layer-accent-01;
+
+  // Box-shadow with rem units
+  box-shadow: 0 0 0.25rem 0.125rem $layer-accent-01;
+
+  // Box-shadow with em units
+  box-shadow: 0 0 0.5em 0.25em $layer-accent-01;
+
+  // Multiple shadows
+  box-shadow:
+    0 0 4px 1px $layer-accent-01,
+    0 0 10px 2px $focus;
+
+  // Inset shadow with blur
+  box-shadow: inset 0 0 4px 1px $layer-accent-01;
+
+  // Negative offsets with blur
+  box-shadow: -1px -1px 4px 0 $layer-accent-01;
+}

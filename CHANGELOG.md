@@ -1,5 +1,25 @@
 # Changelog
 
+## 5.0.0-alpha.9 (2026-02-13)
+
+### 🐛 Bug Fixes
+
+- **Box-Shadow Length Values**: Fixed incorrect validation of blur and spread
+  radius in box-shadow
+  - Added pattern `/^-?\d+\.?\d*(px|rem|em)$/` to theme-use acceptValues
+  - Box-shadow syntax:
+    `[inset?] <offset-x> <offset-y> <blur-radius>? <spread-radius>? <color>?`
+  - Blur and spread radius are spacing values (px, rem, em) but were incorrectly
+    flagged as needing theme tokens
+  - Example: `box-shadow: 0 0 4px 1px $layer-accent-01` - the `4px` blur radius
+    is now correctly accepted
+
+### 📝 Impact
+
+This fix resolves false positives for box-shadow declarations that use length
+values for blur and spread radius. These are valid spacing values that don't
+need to be Carbon tokens.
+
 ## 5.0.0-alpha.8 (2026-02-13)
 
 ### 🐛 Bug Fixes
