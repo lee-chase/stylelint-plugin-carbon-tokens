@@ -175,6 +175,9 @@ These options are still available in V5:
 - `acceptUndefinedVariables` - Allow user-defined variables
 - `acceptCarbonCustomProp` - Allow Carbon CSS custom properties
 - `carbonPrefix` - Custom Carbon prefix for CSS custom properties
+- `trackFileVariables` - Track and resolve file-level SCSS variables (new in v5,
+  default: `true`)
+- `validateVariables` - Accept component-specific variables (new in v5)
 
 ### New Options in V5
 
@@ -193,6 +196,45 @@ These options are still available in V5:
   ```
 - **Warning**: Color auto-fix is experimental because the same color may be used
   by multiple tokens. Always review the suggested replacements.
+
+**`trackFileVariables`** (all rules):
+
+- Type: `boolean`
+- Default: `true` (for v4 compatibility)
+- Purpose: Tracks and resolves file-level SCSS variable declarations
+- Example:
+  ```js
+  {
+    'carbon/layout-use': [true, {
+      trackFileVariables: true  // Resolve local variables
+    }]
+  }
+  ```
+- When enabled, resolves local SCSS variables to their Carbon token values
+- When disabled, validates variables as-is without resolution
+- Useful for projects that use local variable abstractions over Carbon tokens
+
+**`validateVariables`** (all rules):
+
+- Type: `string[]`
+- Default: `[]`
+- Purpose: Accept component-specific SCSS variables and CSS custom properties
+- Example:
+  ```js
+  {
+    'carbon/layout-use': [true, {
+      validateVariables: [
+        '$c4p-spacing-01',      // Exact match
+        '/^\\$c4p-/',           // SCSS variables with prefix
+        '/^--my-component-/'    // CSS custom properties with prefix
+      ]
+    }]
+  }
+  ```
+- Validates AND accepts specific variable patterns
+- Different from `acceptUndefinedVariables` which accepts ALL undefined
+  variables
+- Useful for Carbon for IBM Products variables or custom component libraries
 
 ## Migration Steps
 

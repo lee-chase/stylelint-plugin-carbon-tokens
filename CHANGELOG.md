@@ -1,5 +1,47 @@
 # Changelog
 
+## 5.0.0-alpha.14 (2026-02-13)
+
+### ✨ Features
+
+- **Component-Specific Variables**: Added `validateVariables` option to accept
+  project-specific design tokens
+  - New option `validateVariables` allows specifying patterns for
+    component-specific SCSS variables and CSS custom properties
+  - Supports exact matches: `['$c4p-spacing-01', '--my-component-color']`
+  - Supports regex patterns: `['/^\\$c4p-/', '/^--my-component-/']`
+  - Different from `acceptUndefinedVariables`: validates AND accepts specific
+    patterns instead of accepting all undefined variables
+  - Useful for Carbon for IBM Products variables or custom component libraries
+
+### 📝 Use Cases
+
+Accept component library variables while still validating against Carbon tokens:
+
+```scss
+.component {
+  // ✅ Accepted - matches validateVariables pattern
+  margin: $c4p-spacing-01;
+  padding: var(--my-component-spacing);
+
+  // ❌ Rejected - doesn't match pattern
+  margin: $other-spacing;
+}
+```
+
+### 🔧 Configuration
+
+```js
+{
+  'carbon/layout-use': [true, {
+    validateVariables: [
+      '/^\\$c4p-/',              // Carbon for IBM Products variables
+      '/^--my-component-/'       // Custom component variables
+    ]
+  }]
+}
+```
+
 ## 5.0.0-alpha.13 (2026-02-13)
 
 ### ✨ Features

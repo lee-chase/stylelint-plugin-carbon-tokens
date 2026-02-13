@@ -352,6 +352,14 @@ Each rule supports these options:
       // When true: resolves local variables to their Carbon token values
       // When false: validates variables as-is without resolution
       trackFileVariables: true,  // default (v4 compatibility)
+
+      // Component-specific variables to validate and accept
+      // Useful for accepting project-specific design tokens
+      validateVariables: [
+        '$c4p-spacing-01',           // Exact match
+        '/^\\$c4p-/',                // SCSS variables with prefix
+        '/^--my-component-/'         // CSS custom properties with prefix
+      ],
     },
   ],
 }
@@ -437,6 +445,43 @@ properties.
   }]
 }
 ```
+
+#### Accept Component-Specific Variables
+
+Use `validateVariables` to accept project-specific design tokens or component
+library variables:
+
+```js
+{
+  'carbon/layout-use': [true, {
+    validateVariables: [
+      '/^\\$c4p-/',              // Carbon for IBM Products variables
+      '/^--my-component-/'       // Custom component variables
+    ]
+  }]
+}
+```
+
+Now accepts matching variables:
+
+```css
+.component {
+  /* ✅ Accepted - matches pattern */
+  margin: $c4p-spacing-01;
+  padding: var(--my-component-spacing);
+}
+
+.component {
+  /* ❌ Rejected - doesn't match pattern */
+  margin: $other-spacing;
+}
+```
+
+**Note**: `validateVariables` is different from `acceptUndefinedVariables`:
+
+- `validateVariables`: Accepts specific variable patterns (validates AND accepts
+  them)
+- `acceptUndefinedVariables`: Accepts ALL undefined variables without validation
 
 #### Track File-Level Variables (Enabled by Default)
 

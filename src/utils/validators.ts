@@ -189,6 +189,7 @@ export function validateValue(
     acceptCarbonCustomProp?: boolean;
     acceptValues?: string[];
     carbonPrefix?: string;
+    validateVariables?: string[];
   } = {}
 ): ValidationResult {
   const {
@@ -196,6 +197,7 @@ export function validateValue(
     acceptCarbonCustomProp: _acceptCarbonCustomProp = false,
     acceptValues = [],
     carbonPrefix: _carbonPrefix = 'cds',
+    validateVariables = [],
   } = options;
 
   // Check if value matches accepted patterns
@@ -227,6 +229,12 @@ export function validateValue(
     if (acceptUndefinedVariables) {
       return { isValid: true };
     }
+
+    // Check if this SCSS variable matches validateVariables (for component-specific variables)
+    if (shouldValidateProperty(cleanValue, validateVariables)) {
+      return { isValid: true };
+    }
+
     return {
       isValid: false,
       message: `SCSS variable "${value}" is not a Carbon token`,
@@ -252,6 +260,11 @@ export function validateValue(
 
     // If acceptUndefinedVariables is enabled, accept any CSS custom property
     if (acceptUndefinedVariables) {
+      return { isValid: true };
+    }
+
+    // Check if this CSS custom property matches validateVariables (for component-specific properties)
+    if (!isCarbon && shouldValidateProperty(varName, validateVariables)) {
       return { isValid: true };
     }
 

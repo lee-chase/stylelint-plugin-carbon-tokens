@@ -431,6 +431,7 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
             carbonPrefix: [() => true],
             experimentalFixTheme: [() => true],
             trackFileVariables: [() => true],
+            validateVariables: [() => true],
           },
           optional: true,
         }
@@ -564,6 +565,7 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
                 acceptCarbonCustomProp: options.acceptCarbonCustomProp,
                 acceptValues: options.acceptValues,
                 carbonPrefix: options.carbonPrefix,
+                validateVariables: options.validateVariables,
               });
             }
           } else if (ruleName === 'carbon/theme-use') {
@@ -576,6 +578,7 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
                 acceptCarbonCustomProp: options.acceptCarbonCustomProp,
                 acceptValues: options.acceptValues,
                 carbonPrefix: options.carbonPrefix,
+                validateVariables: options.validateVariables,
               });
             }
           } else if (ruleName === 'carbon/type-use') {
@@ -588,6 +591,7 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
                 acceptCarbonCustomProp: options.acceptCarbonCustomProp,
                 acceptValues: options.acceptValues,
                 carbonPrefix: options.carbonPrefix,
+                validateVariables: options.validateVariables,
               });
             }
           } else if (
@@ -603,6 +607,7 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
                 acceptCarbonCustomProp: options.acceptCarbonCustomProp,
                 acceptValues: options.acceptValues,
                 carbonPrefix: options.carbonPrefix,
+                validateVariables: options.validateVariables,
               });
             }
           } else {
@@ -612,6 +617,7 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
               acceptCarbonCustomProp: options.acceptCarbonCustomProp,
               acceptValues: options.acceptValues,
               carbonPrefix: options.carbonPrefix,
+              validateVariables: options.validateVariables,
             });
           }
 

@@ -337,6 +337,91 @@ describe('Configuration Options', () => {
     });
   });
 
+  describe('validateVariables option', () => {
+    it('should accept component-specific SCSS variables', async () => {
+      const result = await stylelint.lint({
+        code: '.test { margin: $my-component-spacing; }',
+        config: {
+          plugins: [configPath],
+          rules: {
+            'carbon/layout-use': [
+              true,
+              { validateVariables: ['$my-component-spacing'] },
+            ],
+          },
+        },
+      });
+
+      assert.strictEqual(result.errored, false);
+    });
+
+    it('should accept component-specific CSS custom properties', async () => {
+      const result = await stylelint.lint({
+        code: '.test { color: var(--my-component-color); }',
+        config: {
+          plugins: [configPath],
+          rules: {
+            'carbon/theme-use': [
+              true,
+              { validateVariables: ['--my-component-color'] },
+            ],
+          },
+        },
+      });
+
+      assert.strictEqual(result.errored, false);
+    });
+
+    it('should support regex patterns for variables', async () => {
+      const result = await stylelint.lint({
+        code: '.test { margin: $c4p-spacing-01; padding: $c4p-spacing-02; }',
+        config: {
+          plugins: [configPath],
+          rules: {
+            'carbon/layout-use': [true, { validateVariables: ['/^\\$c4p-/'] }],
+          },
+        },
+      });
+
+      assert.strictEqual(result.errored, false);
+    });
+
+    it('should support regex patterns for CSS custom properties', async () => {
+      const result = await stylelint.lint({
+        code: '.test { color: var(--c4p-color-primary); background: var(--c4p-color-secondary); }',
+        config: {
+          plugins: [configPath],
+          rules: {
+            'carbon/theme-use': [true, { validateVariables: ['/^--c4p-/'] }],
+          },
+        },
+      });
+
+      assert.strictEqual(result.errored, false);
+    });
+
+    it('should reject variables not matching patterns', async () => {
+      const result = await stylelint.lint({
+        code: '.test { margin: $other-spacing; }',
+        config: {
+          plugins: [configPath],
+          rules: {
+            'carbon/layout-use': [
+              true,
+              {
+                validateVariables: ['/^\\$c4p-/'],
+                trackFileVariables: false, // Disable to ensure validation happens
+                acceptValues: [], // Clear default acceptValues to ensure only validateVariables is checked
+              },
+            ],
+          },
+        },
+      });
+
+      assert.strictEqual(result.errored, true);
+    });
+  });
+
   describe('Combined options', () => {
     it('should work with multiple options together', async () => {
       const result = await stylelint.lint({

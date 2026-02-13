@@ -39,6 +39,8 @@ export interface BaseRuleOptions {
   carbonPrefix?: string;
   /** Track and resolve file-level SCSS variable declarations */
   trackFileVariables?: boolean;
+  /** Component-specific CSS custom properties and SCSS variables to validate and accept as values */
+  validateVariables?: string[];
 }
 
 /**
