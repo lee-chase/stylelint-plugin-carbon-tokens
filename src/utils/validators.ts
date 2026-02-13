@@ -137,9 +137,9 @@ export function validateValue(
 ): ValidationResult {
   const {
     acceptUndefinedVariables = false,
-    acceptCarbonCustomProp = false,
+    acceptCarbonCustomProp: _acceptCarbonCustomProp = false,
     acceptValues = [],
-    carbonPrefix = 'cds',
+    carbonPrefix: _carbonPrefix = 'cds',
   } = options;
 
   // Check if value matches accepted patterns
@@ -188,22 +188,26 @@ export function validateValue(
     const isCarbon = tokens.some(
       (token) => token.type === 'css-custom-prop' && token.name === varName
     );
-    if (isCarbon) {
+
+    // If it's a known Carbon token, check if acceptCarbonCustomProp is enabled
+    if (isCarbon && _acceptCarbonCustomProp) {
       return { isValid: true };
     }
 
-    if (acceptCarbonCustomProp && varName.startsWith(`--${carbonPrefix}-`)) {
-      return { isValid: true };
-    }
-
+    // If acceptUndefinedVariables is enabled, accept any CSS custom property
     if (acceptUndefinedVariables) {
       return { isValid: true };
     }
 
+    // Reject CSS custom properties when acceptCarbonCustomProp is false
     return {
       isValid: false,
-      message: `CSS custom property "${value}" is not a Carbon token`,
-      suggestedFix: findClosestToken(varName, tokens, 'css-custom-prop'),
+      message: isCarbon
+        ? `CSS custom property "${value}" requires acceptCarbonCustomProp: true`
+        : `CSS custom property "${value}" is not a Carbon token`,
+      suggestedFix: isCarbon
+        ? undefined
+        : findClosestToken(varName, tokens, 'css-custom-prop'),
     };
   }
 

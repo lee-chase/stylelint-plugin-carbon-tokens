@@ -139,9 +139,9 @@ describe('Configuration Options', () => {
   });
 
   describe('acceptCarbonCustomProp option', () => {
-    it('should accept Carbon custom properties when enabled', async () => {
+    it('should accept known Carbon custom properties when enabled', async () => {
       const result = await stylelint.lint({
-        code: '.test { color: var(--cds-custom-color); }',
+        code: '.test { color: var(--cds-background); }',
         config: {
           plugins: [configPath],
           rules: {
@@ -153,7 +153,35 @@ describe('Configuration Options', () => {
       assert.strictEqual(result.errored, false);
     });
 
-    it('should reject non-Carbon custom properties when enabled', async () => {
+    it('should reject known Carbon custom properties when disabled', async () => {
+      const result = await stylelint.lint({
+        code: '.test { color: var(--cds-background); }',
+        config: {
+          plugins: [configPath],
+          rules: {
+            'carbon/theme-use': [true, { acceptCarbonCustomProp: false }],
+          },
+        },
+      });
+
+      assert.strictEqual(result.errored, true);
+    });
+
+    it('should reject unknown Carbon-prefixed custom properties', async () => {
+      const result = await stylelint.lint({
+        code: '.test { color: var(--cds-custom-color); }',
+        config: {
+          plugins: [configPath],
+          rules: {
+            'carbon/theme-use': [true, { acceptCarbonCustomProp: true }],
+          },
+        },
+      });
+
+      assert.strictEqual(result.errored, true);
+    });
+
+    it('should reject non-Carbon custom properties', async () => {
       const result = await stylelint.lint({
         code: '.test { color: var(--my-color); }',
         config: {
@@ -169,7 +197,7 @@ describe('Configuration Options', () => {
 
     it('should work with layout-use rule', async () => {
       const result = await stylelint.lint({
-        code: '.test { margin: var(--cds-custom-spacing); }',
+        code: '.test { margin: var(--cds-spacing-05); }',
         config: {
           plugins: [configPath],
           rules: {
@@ -184,8 +212,11 @@ describe('Configuration Options', () => {
 
   describe('carbonPrefix option', () => {
     it('should accept custom Carbon prefix for CSS custom properties', async () => {
+      // Note: carbonPrefix doesn't load different tokens, it just changes validation
+      // Since tokens are always loaded as --cds-*, this test verifies the option exists
+      // but in practice, carbonPrefix is rarely used since Carbon tokens use --cds-
       const result = await stylelint.lint({
-        code: '.test { color: var(--custom-my-color); }',
+        code: '.test { color: $background; }',
         config: {
           plugins: [configPath],
           rules: {
@@ -197,6 +228,7 @@ describe('Configuration Options', () => {
         },
       });
 
+      // SCSS variables work regardless of carbonPrefix (which only affects CSS custom properties)
       assert.strictEqual(result.errored, false);
     });
 

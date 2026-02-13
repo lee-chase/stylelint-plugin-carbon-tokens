@@ -338,7 +338,9 @@ Each rule supports these options:
       // Allow user-defined SCSS/CSS variables
       acceptUndefinedVariables: false,
 
-      // Allow Carbon CSS custom properties with custom prefix
+      // Allow known Carbon CSS custom properties
+      // When true: accepts CSS custom properties that are in the loaded Carbon token list
+      // When false: rejects all CSS custom properties (even known Carbon tokens)
       acceptCarbonCustomProp: false,
 
       // Custom Carbon prefix for CSS custom properties
@@ -360,7 +362,7 @@ Each rule supports these options:
 }
 ```
 
-Now accepts:
+Now accepts any SCSS variable or CSS custom property:
 
 ```css
 .custom {
@@ -370,6 +372,35 @@ Now accepts:
   color: var(--my-custom-color);
 }
 ```
+
+#### Allow Carbon CSS Custom Properties
+
+```js
+{
+  'carbon/theme-use': [true, {
+    acceptCarbonCustomProp: true
+  }]
+}
+```
+
+Now accepts known Carbon CSS custom properties:
+
+```css
+.component {
+  /* ✅ Accepted - known Carbon token */
+  color: var(--cds-link-primary);
+  background: var(--cds-background);
+}
+
+.component {
+  /* ❌ Rejected - not in Carbon token list */
+  color: var(--cds-custom-color);
+}
+```
+
+**Note**: `acceptCarbonCustomProp` only accepts CSS custom properties that are
+in the loaded Carbon token list. It does NOT accept arbitrary `--cds-*`
+properties.
 
 #### Custom Property Patterns
 

@@ -52,7 +52,7 @@ describe('type-use rule', () => {
       config: {
         plugins: [configPath],
         rules: {
-          'carbon/type-use': true,
+          'carbon/type-use': [true, { acceptCarbonCustomProp: true }],
         },
       },
     });

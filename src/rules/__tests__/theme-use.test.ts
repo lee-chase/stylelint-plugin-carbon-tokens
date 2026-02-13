@@ -52,7 +52,7 @@ describe('theme-use rule', () => {
       config: {
         plugins: [configPath],
         rules: {
-          'carbon/theme-use': true,
+          'carbon/theme-use': [true, { acceptCarbonCustomProp: true }],
         },
       },
     });

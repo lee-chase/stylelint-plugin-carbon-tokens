@@ -1,5 +1,30 @@
 # Changelog
 
+## 5.0.0-alpha.12 (2026-02-13)
+
+### 🐛 Bug Fixes
+
+- **acceptCarbonCustomProp Behavior**: Fixed CSS custom property validation to
+  only accept known Carbon tokens
+  - Removed wildcard acceptance of any `--cds-*` CSS custom property
+  - Now only accepts CSS custom properties that are in the loaded Carbon token
+    list
+  - When `acceptCarbonCustomProp: false`, all CSS custom properties are rejected
+    (even known Carbon tokens)
+  - When `acceptCarbonCustomProp: true`, only known Carbon CSS custom properties
+    are accepted
+  - Example: `var(--cds-spacing-05)` is accepted when
+    `acceptCarbonCustomProp: true` because it's a known Carbon token
+  - Example: `var(--cds-custom-value)` is rejected even when
+    `acceptCarbonCustomProp: true` because it's not in the token list
+
+### 📝 Impact
+
+This fix ensures that `acceptCarbonCustomProp` properly gates access to CSS
+custom properties, preventing arbitrary `--cds-*` properties from being accepted
+when they're not actually Carbon tokens. This provides better validation and
+catches typos or non-existent tokens.
+
 ## 5.0.0-alpha.11 (2026-02-13)
 
 ### 🐛 Bug Fixes

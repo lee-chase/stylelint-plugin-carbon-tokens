@@ -54,7 +54,10 @@ describe('motion-duration-use rule', () => {
       config: {
         plugins: [configPath],
         rules: {
-          'carbon/motion-duration-use': true,
+          'carbon/motion-duration-use': [
+            true,
+            { acceptCarbonCustomProp: true },
+          ],
         },
       },
     });

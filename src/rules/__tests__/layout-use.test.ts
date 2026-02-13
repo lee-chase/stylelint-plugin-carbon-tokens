@@ -52,7 +52,7 @@ describe('layout-use rule', () => {
       config: {
         plugins: [configPath],
         rules: {
-          'carbon/layout-use': true,
+          'carbon/layout-use': [true, { acceptCarbonCustomProp: true }],
         },
       },
     });

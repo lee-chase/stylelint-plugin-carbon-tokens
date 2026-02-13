@@ -52,7 +52,7 @@ describe('motion-easing-use rule', () => {
       config: {
         plugins: [configPath],
         rules: {
-          'carbon/motion-easing-use': true,
+          'carbon/motion-easing-use': [true, { acceptCarbonCustomProp: true }],
         },
       },
     });
