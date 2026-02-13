@@ -62,17 +62,22 @@ export function isCarbonCustomProperty(
   value: string,
   carbonPrefix = 'cds'
 ): boolean {
-  const match = value.match(/var\(--([^)]+)\)/);
+  // Match var(--name) or var(--name, fallback)
+  // Capture only the variable name, not the fallback
+  const match = value.match(/var\(--([^,)]+)/);
   if (!match) return false;
-  return match[1].startsWith(`${carbonPrefix}-`);
+  return match[1].trim().startsWith(`${carbonPrefix}-`);
 }
 
 /**
  * Extract variable name from CSS custom property
+ * Handles fallback values: var(--name, fallback) → --name
  */
 export function extractCssVarName(value: string): string | null {
-  const match = value.match(/var\(--([^)]+)\)/);
-  return match ? `--${match[1]}` : null;
+  // Match var(--name) or var(--name, fallback)
+  // Capture only the variable name, not the fallback
+  const match = value.match(/var\(--([^,)]+)/);
+  return match ? `--${match[1].trim()}` : null;
 }
 
 /**

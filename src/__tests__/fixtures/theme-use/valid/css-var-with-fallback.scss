@@ -1,0 +1,24 @@
+/**
+ * Copyright IBM Corp. 2026
+ *
+ * This source code is licensed under the Apache-2.0 license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+// Valid: CSS custom properties with fallback values
+.css-var-fallbacks {
+  // Carbon token with hex fallback
+  background-color: var(--cds-background, #ffffff);
+
+  // Carbon token with named color fallback
+  color: var(--cds-text-primary, black);
+
+  // Carbon token with another var fallback
+  border-color: var(--cds-border-subtle, var(--fallback-color));
+
+  // Carbon token with rgb fallback
+  fill: var(--cds-icon-primary, rgb(0, 0, 0));
+
+  // Multiple properties with fallbacks
+  box-shadow: 0 0 4px var(--cds-shadow, rgba(0, 0, 0, 0.3));
+}

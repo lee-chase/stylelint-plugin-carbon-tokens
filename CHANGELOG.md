@@ -1,5 +1,24 @@
 # Changelog
 
+## 5.0.0-alpha.11 (2026-02-13)
+
+### 🐛 Bug Fixes
+
+- **CSS Custom Property Fallbacks**: Fixed validation of CSS custom properties
+  with fallback values
+  - Updated regex in `isCarbonCustomProperty()` and `extractCssVarName()` to
+    stop at comma (fallback separator)
+  - Now correctly handles `var(--cds-background, #ffffff)` by extracting only
+    `--cds-background`
+  - Previously would incorrectly capture `--cds-background, #ffffff` as the
+    variable name
+
+### 📝 Impact
+
+This fix resolves false positives for CSS custom properties that include
+fallback values, which is a common and recommended pattern for providing
+graceful degradation.
+
 ## 5.0.0-alpha.10 (2026-02-13)
 
 ### 🧹 Code Cleanup
