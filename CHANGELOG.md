@@ -1,5 +1,15 @@
 # Changelog
 
+## 5.0.0-alpha.10 (2026-02-13)
+
+### 🧹 Code Cleanup
+
+- **Simplified acceptValues**: Removed redundant `1px` and `-1px` entries from
+  theme-use rule
+  - These are now covered by the more general regex pattern
+    `/^-?\d+\.?\d*(px|rem|em)$/`
+  - Cleaner, more maintainable configuration
+
 ## 5.0.0-alpha.9 (2026-02-13)
 
 ### 🐛 Bug Fixes
