@@ -1,5 +1,14 @@
 # Changelog
 
+## 5.0.0-alpha.16 (2026-02-16)
+
+### 🔒 Security
+
+- **dependencies**: Updated ajv from 8.17.1 to 8.18.0 to address security
+  vulnerability
+  - Added resolution in package.json to force ajv@^8.18.0
+  - ajv 8.17.x versions have known security issues
+
 ## 5.0.0-alpha.15 (2026-02-16)
 
 ### 🐛 Bug Fixes
