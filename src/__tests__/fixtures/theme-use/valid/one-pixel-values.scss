@@ -1,0 +1,20 @@
+/**
+ * Copyright IBM Corp. 2026
+ *
+ * This source code is licensed under the Apache-2.0 license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+.component {
+  border: 1px solid $border-strong;
+  outline: 1px solid $focus;
+  box-shadow: 1px 1px 4px rgba($background, 0.2);
+  box-shadow: inset 1px 1px 0 $focus;
+  box-shadow: 0 1px 2px $layer-accent-01;
+}
+
+.component-multi {
+  box-shadow:
+    1px 1px $layer-accent-01,
+    1px 0 $focus;
+}

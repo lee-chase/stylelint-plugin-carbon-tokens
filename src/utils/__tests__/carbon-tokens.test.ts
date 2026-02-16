@@ -42,6 +42,24 @@ describe('carbon-tokens', () => {
         'CSS tokens should start with --cds-'
       );
     });
+
+    it('should properly format tokens with hyphens and numbers', () => {
+      const tokens = loadThemeTokens();
+      // Check for layer-hover-01 token (not layer-hover--01 with double dash)
+      const layerHoverToken = tokens.find((t) => t.name === '$layer-hover-01');
+      assert.ok(
+        layerHoverToken,
+        'Should have $layer-hover-01 token with single dash before number'
+      );
+
+      // Verify no tokens have double dashes before numbers
+      const tokensWithDoubleDash = tokens.filter((t) => t.name.match(/--\d/));
+      assert.strictEqual(
+        tokensWithDoubleDash.length,
+        0,
+        'Should not have tokens with double dashes before numbers'
+      );
+    });
   });
 
   describe('loadLayoutTokens', () => {

@@ -36,7 +36,7 @@ describe('motion-duration-use rule', () => {
 
   it('should accept Carbon SCSS duration variables', async () => {
     const result = await stylelint.lint({
-      code: '.test { transition-duration: $durationFast01; }',
+      code: '.test { transition-duration: $duration-fast-01; }',
       config: {
         plugins: [configPath],
         rules: {
@@ -50,11 +50,14 @@ describe('motion-duration-use rule', () => {
 
   it('should accept Carbon CSS custom properties', async () => {
     const result = await stylelint.lint({
-      code: '.test { animation-duration: var(--cds-durationFast01); }',
+      code: '.test { animation-duration: var(--cds-duration-fast-01); }',
       config: {
         plugins: [configPath],
         rules: {
-          'carbon/motion-duration-use': true,
+          'carbon/motion-duration-use': [
+            true,
+            { acceptCarbonCustomProp: true },
+          ],
         },
       },
     });

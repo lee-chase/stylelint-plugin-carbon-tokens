@@ -37,12 +37,24 @@ export interface BaseRuleOptions {
   acceptCarbonCustomProp?: boolean;
   /** Custom Carbon prefix for CSS custom properties */
   carbonPrefix?: string;
+  /** Track and resolve file-level SCSS variable declarations */
+  trackFileVariables?: boolean;
+  /** Component-specific CSS custom properties and SCSS variables to validate and accept as values */
+  validateVariables?: string[];
 }
 
 /**
  * Theme rule specific options
  */
-export type ThemeRuleOptions = BaseRuleOptions;
+export interface ThemeRuleOptions extends BaseRuleOptions {
+  /**
+   * Experimental: Enable auto-fix for hard-coded color values
+   * Specify which theme to use for color-to-token mapping
+   * WARNING: Colors can be ambiguous (same color used by multiple tokens)
+   * @example 'white' | 'g10' | 'g90' | 'g100'
+   */
+  experimentalFixTheme?: 'white' | 'g10' | 'g90' | 'g100';
+}
 
 /**
  * Layout rule specific options

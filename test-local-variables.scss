@@ -1,0 +1,43 @@
+/**
+ * Copyright IBM Corp. 2026
+ *
+ * This source code is licensed under the Apache-2.0 license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+@use '@carbon/styles/scss/spacing' as *;
+
+/* Test 1: Simple variable declaration and use */
+$indicator-width: $spacing-02;
+$indicator-height: $spacing-05;
+
+.test-simple {
+  width: $indicator-width;
+  height: $indicator-height;
+}
+
+/* Test 2: Variable in calc() */
+.test-calc {
+  inset-block-end: calc(-1 * $indicator-height);
+  inset-inline-start: calc(-1 * $indicator-width);
+  inset-inline-end: calc(-1 * $indicator-width);
+}
+
+/* Test 3: Negative variable */
+.test-negative {
+  margin-block-start: -$indicator-height;
+  margin-inline: -$indicator-width;
+}
+
+/* Test 4: Variable chain (transitive resolution) */
+$base-spacing: $spacing-03;
+$derived-spacing: $base-spacing;
+
+.test-chain {
+  padding: $derived-spacing;
+}
+
+/* Test 5: Multiple variables in one value */
+.test-multiple {
+  margin: $spacing-05 $indicator-width;
+}

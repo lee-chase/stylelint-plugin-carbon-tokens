@@ -28,14 +28,20 @@ const defaultOptions: ThemeRuleOptions = {
     '/inherit|initial|none|unset/',
     '/^0$/',
     '/currentColor|transparent/',
+    '/inset|outset/', // box-shadow keywords
+    '/padding-box|border-box|content-box/', // background-clip keywords
+    '/^(solid|dashed|dotted|double|groove|ridge|inset|outset|none|hidden)$/', // border-style keywords
+    '/^-?\\d+\\.?\\d*(px|rem|em)$/', // Length values (1px, -1px, 4px, etc.) for borders, box-shadow blur/spread
+    '/^\\$spacing-/', // Accept spacing tokens in box-shadow, border, outline
+    '/^--cds-spacing-/', // Accept spacing CSS custom properties
   ],
   acceptUndefinedVariables: false,
   acceptCarbonCustomProp: false,
   carbonPrefix: 'cds',
 };
 
-export default createCarbonRule({
+export default createCarbonRule<ThemeRuleOptions>({
   ruleName,
   defaultOptions,
-  tokenLoader: loadThemeTokens,
+  tokenLoader: (options) => loadThemeTokens(options?.experimentalFixTheme),
 });

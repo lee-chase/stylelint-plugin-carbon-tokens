@@ -1,0 +1,38 @@
+/**
+ * Valid: Negative proportional values for positioning
+ * These should be accepted without requiring Carbon tokens
+ */
+
+.negative-percentage {
+  /* Negative percentages */
+  inset-block-start: -100%;
+  inset-block-end: -50%;
+  top: -100%;
+  bottom: -75%;
+  left: -50%;
+  right: -25%;
+}
+
+.negative-viewport {
+  /* Negative viewport units */
+  top: -100vh;
+  left: -100vw;
+  margin-top: -50vh;
+  margin-left: -50vw;
+}
+
+.negative-modern-viewport {
+  /* Negative modern viewport units */
+  top: -100svh;
+  left: -100svw;
+  margin: -50lvh -50lvw;
+  padding: -25dvh -25dvw;
+}
+
+.mixed-negative-positive {
+  /* Mix of negative and positive */
+  top: -100%;
+  bottom: 50%;
+  left: -100vw;
+  right: 50vw;
+}

@@ -34,7 +34,7 @@ describe('type-use rule', () => {
 
   it('should accept Carbon SCSS type variables', async () => {
     const result = await stylelint.lint({
-      code: '.test { font-size: $body01; }',
+      code: '.test { font-size: $body-01; }',
       config: {
         plugins: [configPath],
         rules: {
@@ -48,11 +48,11 @@ describe('type-use rule', () => {
 
   it('should accept Carbon CSS custom properties', async () => {
     const result = await stylelint.lint({
-      code: '.test { font-size: var(--cds-body01); }',
+      code: '.test { font-size: var(--cds-body-01); }',
       config: {
         plugins: [configPath],
         rules: {
-          'carbon/type-use': true,
+          'carbon/type-use': [true, { acceptCarbonCustomProp: true }],
         },
       },
     });

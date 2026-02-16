@@ -8,10 +8,100 @@
 import type { CarbonToken, ValidationResult } from '../types/index.js';
 
 /**
- * Check if a value is a SCSS variable
+ * Check if a value is a SCSS variable (including negative variables)
+ * Examples: $spacing-05, -$spacing-05
  */
 export function isScssVariable(value: string): boolean {
-  return value.startsWith('$');
+  return value.startsWith('$') || value.startsWith('-$');
+}
+
+/**
+ * Clean SCSS value by removing interpolation and namespaces
+ * Examples:
+ *   #{$spacing-04} → $spacing-04
+ *   spacing.$spacing-04 → $spacing-04
+ *   theme.$layer → $layer
+ *   -$spacing-05 → -$spacing-05 (preserved)
+ *   -#{$spacing-05} → -$spacing-05
+ */
+export function cleanScssValue(value: string): string {
+  let cleaned = value.trim();
+
+  // Handle negative values
+  const isNegative = cleaned.startsWith('-');
+  if (isNegative) {
+    cleaned = cleaned.substring(1); // Remove leading '-'
+  }
+
+  // Remove interpolation: #{$token} → $token
+  cleaned = cleaned.replace(/^#\{|\}$/g, '');
+
+  // Remove namespace: module.$token → $token
+  // Match: word.$token → $token
+  cleaned = cleaned.replace(/^[a-zA-Z_][\w-]*\.\$/, '$');
+
+  // Restore negative sign if present
+  if (isNegative) {
+    cleaned = '-' + cleaned;
+  }
+
+  return cleaned;
+}
+
+/**
+ * Resolve SCSS variables in a value using file-level variable declarations
+ * Supports:
+ * - Simple variables: $indicator-width → $spacing-02
+ * - Variables in calc(): calc(-1 * $indicator-width) → calc(-1 * $spacing-02)
+ * - Multiple variables: $a $b → $spacing-05 $spacing-03
+ * - Negative variables: -$indicator-width → -$spacing-02
+ *
+ * @param value The value to resolve
+ * @param fileVariables Map of variable names to their resolved values
+ * @returns The value with variables resolved
+ */
+export function resolveFileVariables(
+  value: string,
+  fileVariables: Map<string, string>
+): string {
+  if (fileVariables.size === 0) {
+    return value; // No variables to resolve
+  }
+
+  let resolved = value;
+
+  // Match SCSS variables: $variable-name or -$variable-name
+  // Use word boundary to avoid matching partial variable names
+  const varRegex = /(-?\$[\w-]+)/g;
+  const matches = value.match(varRegex);
+
+  if (matches) {
+    for (const match of matches) {
+      // Handle negative variables
+      const isNegative = match.startsWith('-$');
+      const varName = isNegative ? match.substring(1) : match; // Remove leading '-' for lookup
+
+      const varValue = fileVariables.get(varName);
+      if (varValue) {
+        // Replace variable with its value
+        // If original was negative, prepend '-' to the resolved value
+        const replacement = isNegative ? `-${varValue}` : varValue;
+        resolved = resolved.replace(match, replacement);
+      }
+      // If variable not found, leave as-is (will fail validation later)
+    }
+  }
+
+  return resolved;
+}
+
+/**
+ * Check if a declaration is a SCSS variable declaration
+ * @param prop The property name (e.g., "$indicator-width")
+ * @returns True if this is a variable declaration
+ */
+export function isVariableDeclaration(prop: string): boolean {
+  return prop.startsWith('$');
 }
 
 /**
@@ -28,17 +118,22 @@ export function isCarbonCustomProperty(
   value: string,
   carbonPrefix = 'cds'
 ): boolean {
-  const match = value.match(/var\(--([^)]+)\)/);
+  // Match var(--name) or var(--name, fallback)
+  // Capture only the variable name, not the fallback
+  const match = value.match(/var\(--([^,)]+)/);
   if (!match) return false;
-  return match[1].startsWith(`${carbonPrefix}-`);
+  return match[1].trim().startsWith(`${carbonPrefix}-`);
 }
 
 /**
  * Extract variable name from CSS custom property
+ * Handles fallback values: var(--name, fallback) → --name
  */
 export function extractCssVarName(value: string): string | null {
-  const match = value.match(/var\(--([^)]+)\)/);
-  return match ? `--${match[1]}` : null;
+  // Match var(--name) or var(--name, fallback)
+  // Capture only the variable name, not the fallback
+  const match = value.match(/var\(--([^,)]+)/);
+  return match ? `--${match[1].trim()}` : null;
 }
 
 /**
@@ -94,13 +189,15 @@ export function validateValue(
     acceptCarbonCustomProp?: boolean;
     acceptValues?: string[];
     carbonPrefix?: string;
+    validateVariables?: string[];
   } = {}
 ): ValidationResult {
   const {
     acceptUndefinedVariables = false,
-    acceptCarbonCustomProp = false,
+    acceptCarbonCustomProp: _acceptCarbonCustomProp = false,
     acceptValues = [],
-    carbonPrefix = 'cds',
+    carbonPrefix: _carbonPrefix = 'cds',
+    validateVariables = [],
   } = options;
 
   // Check if value matches accepted patterns
@@ -108,10 +205,23 @@ export function validateValue(
     return { isValid: true };
   }
 
-  // Check if it's a SCSS variable
-  if (isScssVariable(value)) {
+  // Always accept gradient functions
+  if (isGradientFunction(value)) {
+    return { isValid: true };
+  }
+
+  // Clean SCSS value (remove interpolation and namespaces)
+  const cleanValue = cleanScssValue(value);
+
+  // Check if it's a SCSS variable (after cleaning)
+  if (isScssVariable(cleanValue)) {
+    // For negative variables, check the token without the minus sign
+    const tokenToCheck = cleanValue.startsWith('-$')
+      ? cleanValue.substring(1) // Remove leading '-' for token lookup
+      : cleanValue;
+
     const isCarbon = tokens.some(
-      (token) => token.type === 'scss' && token.name === value
+      (token) => token.type === 'scss' && token.name === tokenToCheck
     );
     if (isCarbon) {
       return { isValid: true };
@@ -119,10 +229,16 @@ export function validateValue(
     if (acceptUndefinedVariables) {
       return { isValid: true };
     }
+
+    // Check if this SCSS variable matches validateVariables (for component-specific variables)
+    if (shouldValidateProperty(cleanValue, validateVariables)) {
+      return { isValid: true };
+    }
+
     return {
       isValid: false,
       message: `SCSS variable "${value}" is not a Carbon token`,
-      suggestedFix: findClosestToken(value, tokens, 'scss'),
+      suggestedFix: findClosestToken(cleanValue, tokens, 'scss'),
     };
   }
 
@@ -136,22 +252,31 @@ export function validateValue(
     const isCarbon = tokens.some(
       (token) => token.type === 'css-custom-prop' && token.name === varName
     );
-    if (isCarbon) {
+
+    // If it's a known Carbon token, check if acceptCarbonCustomProp is enabled
+    if (isCarbon && _acceptCarbonCustomProp) {
       return { isValid: true };
     }
 
-    if (acceptCarbonCustomProp && varName.startsWith(`--${carbonPrefix}-`)) {
-      return { isValid: true };
-    }
-
+    // If acceptUndefinedVariables is enabled, accept any CSS custom property
     if (acceptUndefinedVariables) {
       return { isValid: true };
     }
 
+    // Check if this CSS custom property matches validateVariables (for component-specific properties)
+    if (!isCarbon && shouldValidateProperty(varName, validateVariables)) {
+      return { isValid: true };
+    }
+
+    // Reject CSS custom properties when acceptCarbonCustomProp is false
     return {
       isValid: false,
-      message: `CSS custom property "${value}" is not a Carbon token`,
-      suggestedFix: findClosestToken(varName, tokens, 'css-custom-prop'),
+      message: isCarbon
+        ? `CSS custom property "${value}" requires acceptCarbonCustomProp: true`
+        : `CSS custom property "${value}" is not a Carbon token`,
+      suggestedFix: isCarbon
+        ? undefined
+        : findClosestToken(varName, tokens, 'css-custom-prop'),
     };
   }
 
@@ -208,7 +333,11 @@ export function parseValue(value: string): string[] {
       current += char;
     } else if (char === ' ' && depth === 0) {
       if (current.trim()) {
-        values.push(current.trim());
+        // Remove trailing punctuation (commas, semicolons) from values
+        const cleaned = current.trim().replace(/[,;]+$/, '');
+        if (cleaned) {
+          values.push(cleaned);
+        }
         current = '';
       }
     } else {
@@ -217,7 +346,11 @@ export function parseValue(value: string): string[] {
   }
 
   if (current.trim()) {
-    values.push(current.trim());
+    // Remove trailing punctuation from final value
+    const cleaned = current.trim().replace(/[,;]+$/, '');
+    if (cleaned) {
+      values.push(cleaned);
+    }
   }
 
   return values.filter((v) => v.length > 0);
@@ -258,7 +391,7 @@ function validateProportionalCalc(
   const [, , , , tokenPart] = match;
 
   // Validate the token part (could be #{$token} or $token or var(--token))
-  const cleanToken = tokenPart.replace(/^#\{|\}$/g, '').trim();
+  const cleanToken = cleanScssValue(tokenPart);
 
   // Check if it's a valid Carbon token
   const isValidToken =
@@ -311,8 +444,8 @@ function validateNegationCalc(
     tokenPart = token;
   }
 
-  // Clean the token (remove #{} wrapper if present)
-  const cleanToken = tokenPart.replace(/^#\{|\}$/g, '').trim();
+  // Clean the token (remove #{} wrapper and namespace if present)
+  const cleanToken = cleanScssValue(tokenPart);
 
   // Check if it's a valid Carbon token
   const isValidToken =
@@ -386,6 +519,21 @@ export function isTransformFunction(value: string): boolean {
 }
 
 /**
+ * Check if a transform function should be validated for spacing
+ * Only translate functions use spacing values
+ */
+export function isSpacingTransformFunction(value: string): boolean {
+  return /^translate(X|Y|3d)?\s*\(/.test(value.trim());
+}
+
+/**
+ * Check if value is a gradient function
+ */
+export function isGradientFunction(value: string): boolean {
+  return /^(linear|radial|conic)-gradient\s*\(/.test(value.trim());
+}
+
+/**
  * Extract function name and parameters from a function call
  * Returns null if not a valid function
  */
@@ -455,10 +603,16 @@ export function isValidSpacingValue(
     /^-?\d*\.?\d+(vw|vh|svw|lvw|dvw|svh|lvh|dvh|vi|vb|vmin|vmax|%)$/;
   if (relativeUnitPattern.test(trimmed)) return true;
 
-  // Check for Carbon SCSS variable
-  if (isScssVariable(trimmed)) {
+  // Check for Carbon SCSS variable (clean first to handle interpolation/namespaces)
+  const cleanValue = cleanScssValue(trimmed);
+  if (isScssVariable(cleanValue)) {
+    // For negative variables, check the token without the minus sign
+    const tokenToCheck = cleanValue.startsWith('-$')
+      ? cleanValue.substring(1) // Remove leading '-' for token lookup
+      : cleanValue;
+
     return tokens.some(
-      (token) => token.type === 'scss' && token.name === trimmed
+      (token) => token.type === 'scss' && token.name === tokenToCheck
     );
   }
 
@@ -674,27 +828,38 @@ export function isCarbonMotionFunction(value: string): boolean {
 
 /**
  * Validate Carbon motion function parameters
- * Signature: motion(easing_type, motion_style)
+ * Signature: motion(easing_type, motion_style) or motion(easing_type)
  * - easing_type: 'standard' | 'entrance' | 'exit'
- * - motion_style: 'productive' | 'expressive'
+ * - motion_style: 'productive' | 'expressive' (optional)
+ * SCSS processes motion(standard) as a string, so shorthand is permitted
  */
 export function validateCarbonMotionFunction(value: string): ValidationResult {
   if (!isCarbonMotionFunction(value)) {
     return { isValid: false, message: 'Not a Carbon motion function' };
   }
 
-  // Match motion(easing_type, motion_style) with optional quotes
-  const match = value.match(
+  // Match full syntax: motion(easing_type, motion_style) with optional quotes
+  const fullMatch = value.match(
     /\bmotion\s*\(\s*['"]?(standard|entrance|exit)['"]?\s*,\s*['"]?(productive|expressive)['"]?\s*\)/
   );
 
-  if (!match) {
-    return {
-      isValid: false,
-      message:
-        "Invalid motion() parameters. Expected: motion('standard'|'entrance'|'exit', 'productive'|'expressive')",
-    };
+  if (fullMatch) {
+    return { isValid: true };
   }
 
-  return { isValid: true };
+  // Allow shorthand syntax: motion(standard) without quotes
+  // SCSS processes this as a string
+  const shorthandMatch = value.match(
+    /\bmotion\s*\(\s*(standard|entrance|exit)\s*\)/
+  );
+
+  if (shorthandMatch) {
+    return { isValid: true };
+  }
+
+  return {
+    isValid: false,
+    message:
+      "Invalid motion() parameters. Expected: motion('standard'|'entrance'|'exit', 'productive'|'expressive') or motion(standard|entrance|exit)",
+  };
 }

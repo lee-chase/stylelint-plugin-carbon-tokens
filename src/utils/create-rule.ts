@@ -12,7 +12,7 @@ import {
   parseValue,
   isCalcExpression,
   validateCalcExpression,
-  isTransformFunction,
+  isSpacingTransformFunction,
   validateTransformFunction,
   isRgbaFunction,
   validateRgbaFunction,
@@ -20,6 +20,9 @@ import {
   validateCarbonTypeFunction,
   isCarbonMotionFunction,
   validateCarbonMotionFunction,
+  isValidSpacingValue,
+  resolveFileVariables,
+  isVariableDeclaration,
 } from './validators.js';
 import {
   parseTransition,
@@ -371,7 +374,7 @@ export interface RuleConfig<T extends BaseRuleOptions = BaseRuleOptions> {
   defaultOptions: T;
 
   /** Function to load tokens for this rule */
-  tokenLoader: () => CarbonToken[] | TokenCollection;
+  tokenLoader: (options?: T) => CarbonToken[] | TokenCollection;
 
   /** Optional function to check if a value should be skipped before validation */
   shouldSkipValue?: (value: string, prop: string) => boolean;
@@ -408,8 +411,7 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
 
   const ruleFunction: stylelint.Rule<boolean, T> = (
     primaryOption,
-    secondaryOptions,
-    context
+    secondaryOptions
   ) => {
     return async (root, result) => {
       const validOptions = utils.validateOptions(
@@ -427,6 +429,9 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
             acceptUndefinedVariables: [() => true],
             acceptCarbonCustomProp: [() => true],
             carbonPrefix: [() => true],
+            experimentalFixTheme: [() => true],
+            trackFileVariables: [() => true],
+            validateVariables: [() => true],
           },
           optional: true,
         }
@@ -439,13 +444,147 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
       const options: T = {
         ...defaultOptions,
         ...secondaryOptions,
+        // Default trackFileVariables to true for v4 compatibility
+        trackFileVariables: secondaryOptions?.trackFileVariables ?? true,
       } as T;
 
-      // Load tokens
-      const loadedTokens = tokenLoader();
+      // Load tokens (pass options for rules that need them, like theme-use)
+      const loadedTokens = tokenLoader(options);
       const tokens = extractTokens
         ? extractTokens(loadedTokens)
         : (loadedTokens as CarbonToken[]);
+
+      // Track file-level SCSS variable declarations if enabled
+      const fileVariables = new Map<string, string>();
+
+      if (options.trackFileVariables) {
+        // First pass: collect variable declarations
+        root.walkDecls((decl) => {
+          if (isVariableDeclaration(decl.prop)) {
+            // Resolve the value using currently known variables (for variable chains)
+            const resolvedValue = resolveFileVariables(
+              decl.value,
+              fileVariables
+            );
+            // Store the resolved value
+            fileVariables.set(decl.prop, resolvedValue);
+          }
+        });
+      }
+
+      // Validate variable declarations if validateVariables is configured
+      if (options.validateVariables && options.validateVariables.length > 0) {
+        root.walkDecls((decl) => {
+          // Check if this is a SCSS variable declaration that matches validateVariables
+          if (
+            isVariableDeclaration(decl.prop) &&
+            shouldValidateProperty(decl.prop, options.validateVariables || [])
+          ) {
+            // Validate the value assigned to this variable
+            const values = parseValue(decl.value);
+
+            for (const value of values) {
+              // Skip validation for values that are already valid (Carbon tokens, etc.)
+              let validation;
+
+              // Check for special function validation based on rule
+              if (ruleName === 'carbon/layout-use') {
+                if (isCalcExpression(value)) {
+                  validation = validateCalcExpression(value, tokens);
+                } else if (isSpacingTransformFunction(value)) {
+                  validation = validateTransformFunction(value, tokens);
+                } else {
+                  validation = validateValue(value, tokens, {
+                    acceptUndefinedVariables: options.acceptUndefinedVariables,
+                    acceptCarbonCustomProp: options.acceptCarbonCustomProp,
+                    acceptValues: options.acceptValues,
+                    carbonPrefix: options.carbonPrefix,
+                    validateVariables: [], // Don't recursively validate
+                  });
+                }
+              } else if (ruleName === 'carbon/motion-duration-use') {
+                validation = validateValue(value, tokens, {
+                  acceptUndefinedVariables: options.acceptUndefinedVariables,
+                  acceptCarbonCustomProp: options.acceptCarbonCustomProp,
+                  acceptValues: options.acceptValues,
+                  carbonPrefix: options.carbonPrefix,
+                  validateVariables: [],
+                });
+              } else if (ruleName === 'carbon/motion-easing-use') {
+                if (isCarbonMotionFunction(value)) {
+                  validation = validateCarbonMotionFunction(value);
+                } else {
+                  validation = validateValue(value, tokens, {
+                    acceptUndefinedVariables: options.acceptUndefinedVariables,
+                    acceptCarbonCustomProp: options.acceptCarbonCustomProp,
+                    acceptValues: options.acceptValues,
+                    carbonPrefix: options.carbonPrefix,
+                    validateVariables: [],
+                  });
+                }
+              } else if (ruleName === 'carbon/type-use') {
+                if (isCarbonTypeFunction(value)) {
+                  validation = validateCarbonTypeFunction(value);
+                } else {
+                  validation = validateValue(value, tokens, {
+                    acceptUndefinedVariables: options.acceptUndefinedVariables,
+                    acceptCarbonCustomProp: options.acceptCarbonCustomProp,
+                    acceptValues: options.acceptValues,
+                    carbonPrefix: options.carbonPrefix,
+                    validateVariables: [],
+                  });
+                }
+              } else if (ruleName === 'carbon/theme-use') {
+                if (isRgbaFunction(value)) {
+                  validation = validateRgbaFunction(value, tokens);
+                } else {
+                  validation = validateValue(value, tokens, {
+                    acceptUndefinedVariables: options.acceptUndefinedVariables,
+                    acceptCarbonCustomProp: options.acceptCarbonCustomProp,
+                    acceptValues: options.acceptValues,
+                    carbonPrefix: options.carbonPrefix,
+                    validateVariables: [],
+                  });
+                }
+              } else {
+                // Default validation for other rules
+                validation = validateValue(value, tokens, {
+                  acceptUndefinedVariables: options.acceptUndefinedVariables,
+                  acceptCarbonCustomProp: options.acceptCarbonCustomProp,
+                  acceptValues: options.acceptValues,
+                  carbonPrefix: options.carbonPrefix,
+                  validateVariables: [],
+                });
+              }
+
+              if (!validation.isValid) {
+                const message = validation.suggestedFix
+                  ? messages.expected(decl.prop, value, validation.suggestedFix)
+                  : messages.rejected(
+                      decl.prop,
+                      value,
+                      validation.message || 'Invalid value'
+                    );
+
+                utils.report({
+                  message,
+                  node: decl,
+                  result,
+                  ruleName,
+                  fix: validation.suggestedFix
+                    ? () => {
+                        decl.value = decl.value.replace(
+                          value,
+                          validation.suggestedFix!
+                        );
+                      }
+                    : undefined,
+                });
+              }
+            }
+          }
+        });
+      }
 
       root.walkDecls((decl) => {
         const prop = decl.prop;
@@ -485,9 +624,7 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
                 result,
                 ruleName,
                 fix:
-                  validation.suggestedFix &&
-                  validation.originalValue &&
-                  context.fix
+                  validation.suggestedFix && validation.originalValue
                     ? () => {
                         // Replace the specific shorthand value with the fixed version
                         const newValue = decl.value.replace(
@@ -503,8 +640,13 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
           return;
         }
 
-        // Parse the value into individual parts
-        const values = parseValue(decl.value);
+        // Resolve file variables if tracking is enabled
+        const resolvedDeclValue = options.trackFileVariables
+          ? resolveFileVariables(decl.value, fileVariables)
+          : decl.value;
+
+        // Parse the resolved value into individual parts
+        const values = parseValue(resolvedDeclValue);
 
         for (const value of values) {
           // Allow rule-specific skipping logic
@@ -515,17 +657,29 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
           // Check for special function validation based on rule
           let validation;
           if (ruleName === 'carbon/layout-use') {
-            // Layout rule: validate calc() and transform functions
+            // Layout rule: validate calc() and spacing-related transform functions
             if (isCalcExpression(value)) {
               validation = validateCalcExpression(value, tokens);
-            } else if (isTransformFunction(value)) {
+            } else if (isSpacingTransformFunction(value)) {
+              // Only validate translate functions (spacing-related)
               validation = validateTransformFunction(value, tokens);
+            } else if (
+              value.match(
+                /^(rotate|scale|scaleX|scaleY|skew|matrix|perspective)\s*\(/
+              )
+            ) {
+              // Skip validation for non-spacing transform functions
+              validation = { isValid: true };
+            } else if (isValidSpacingValue(value, tokens)) {
+              // Valid spacing value (includes proportional units like -100%, 50vw, etc.)
+              validation = { isValid: true };
             } else {
               validation = validateValue(value, tokens, {
                 acceptUndefinedVariables: options.acceptUndefinedVariables,
                 acceptCarbonCustomProp: options.acceptCarbonCustomProp,
                 acceptValues: options.acceptValues,
                 carbonPrefix: options.carbonPrefix,
+                validateVariables: options.validateVariables,
               });
             }
           } else if (ruleName === 'carbon/theme-use') {
@@ -538,6 +692,7 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
                 acceptCarbonCustomProp: options.acceptCarbonCustomProp,
                 acceptValues: options.acceptValues,
                 carbonPrefix: options.carbonPrefix,
+                validateVariables: options.validateVariables,
               });
             }
           } else if (ruleName === 'carbon/type-use') {
@@ -550,6 +705,7 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
                 acceptCarbonCustomProp: options.acceptCarbonCustomProp,
                 acceptValues: options.acceptValues,
                 carbonPrefix: options.carbonPrefix,
+                validateVariables: options.validateVariables,
               });
             }
           } else if (
@@ -565,6 +721,7 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
                 acceptCarbonCustomProp: options.acceptCarbonCustomProp,
                 acceptValues: options.acceptValues,
                 carbonPrefix: options.carbonPrefix,
+                validateVariables: options.validateVariables,
               });
             }
           } else {
@@ -574,6 +731,7 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
               acceptCarbonCustomProp: options.acceptCarbonCustomProp,
               acceptValues: options.acceptValues,
               carbonPrefix: options.carbonPrefix,
+              validateVariables: options.validateVariables,
             });
           }
 
@@ -592,16 +750,15 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
               node: decl,
               result,
               ruleName,
-              fix:
-                validation.suggestedFix && context.fix
-                  ? () => {
-                      const newValue = decl.value.replace(
-                        value,
-                        validation.suggestedFix!
-                      );
-                      decl.value = newValue;
-                    }
-                  : undefined,
+              fix: validation.suggestedFix
+                ? () => {
+                    const newValue = decl.value.replace(
+                      value,
+                      validation.suggestedFix!
+                    );
+                    decl.value = newValue;
+                  }
+                : undefined,
             });
           }
         }

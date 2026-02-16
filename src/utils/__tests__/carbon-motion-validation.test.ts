@@ -112,6 +112,22 @@ describe('Carbon motion() function validation', () => {
         );
         assert.equal(result.isValid, true);
       });
+
+      it('should validate shorthand syntax (SCSS processes as string)', () => {
+        const result1 = validateCarbonMotionFunction('motion(standard)');
+        assert.equal(result1.isValid, true);
+
+        const result2 = validateCarbonMotionFunction('motion(entrance)');
+        assert.equal(result2.isValid, true);
+
+        const result3 = validateCarbonMotionFunction('motion(exit)');
+        assert.equal(result3.isValid, true);
+      });
+
+      it('should validate shorthand with whitespace', () => {
+        const result = validateCarbonMotionFunction('motion( standard )');
+        assert.equal(result.isValid, true);
+      });
     });
 
     describe('invalid motion() calls', () => {
@@ -131,12 +147,16 @@ describe('Carbon motion() function validation', () => {
         assert.ok(result.message?.includes('Invalid motion() parameters'));
       });
 
-      it('should reject missing parameters', () => {
-        const result1 = validateCarbonMotionFunction('motion(standard)');
-        assert.equal(result1.isValid, false);
+      it('should reject empty motion() call', () => {
+        const result = validateCarbonMotionFunction('motion()');
+        assert.equal(result.isValid, false);
+        assert.ok(result.message?.includes('Invalid motion() parameters'));
+      });
 
-        const result2 = validateCarbonMotionFunction('motion()');
-        assert.equal(result2.isValid, false);
+      it('should reject invalid shorthand parameter', () => {
+        const result = validateCarbonMotionFunction('motion(invalid)');
+        assert.equal(result.isValid, false);
+        assert.ok(result.message?.includes('Invalid motion() parameters'));
       });
 
       it('should reject non-motion functions', () => {

@@ -33,7 +33,16 @@ const defaultOptions: LayoutRuleOptions = {
     'translate',
     'transform',
   ],
-  acceptValues: ['/inherit|initial|none|unset|auto/', '/^0$/', '/^100%$/'],
+  acceptValues: [
+    '/inherit|initial|none|unset|auto/',
+    '/^0$/',
+    '/^100%$/',
+    '/logical/', // inset keyword
+    '1px', // Common for thin borders, outlines, box-shadows
+    '-1px', // Common for negative offsets
+    '/^\\$(?!spacing-|layout-|container-|fluid-spacing-|icon-size-)/', // Accept non-layout SCSS variables (e.g., theme tokens in box-shadow)
+    '/^--cds-(?!spacing-|layout-|container-|fluid-spacing-|icon-size-)/', // Accept non-layout Carbon CSS custom properties
+  ],
   acceptUndefinedVariables: false,
   acceptCarbonCustomProp: false,
   carbonPrefix: 'cds',

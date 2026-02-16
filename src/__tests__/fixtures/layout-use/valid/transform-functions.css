@@ -46,6 +46,13 @@
   transform: translate(calc(50% - #{$spacing-01}), $spacing-03);
 }
 
+.valid-negative-variables {
+  /* Negative SCSS variables are allowed */
+  transform: translateY(-$spacing-04);
+  transform: translateX(-$spacing-02);
+  transform: translate(-$spacing-01, -$spacing-03);
+}
+
 .valid-complex {
   /* Transform functions with other transforms (only translate validated) */
   transform: translateX($spacing-05) rotate(45deg);

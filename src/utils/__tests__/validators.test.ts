@@ -15,6 +15,9 @@ import {
   matchesAcceptedValue,
   shouldValidateProperty,
   parseValue,
+  cleanScssValue,
+  isSpacingTransformFunction,
+  isGradientFunction,
 } from '../validators.js';
 
 describe('validators', () => {
@@ -24,6 +27,18 @@ describe('validators', () => {
       assert.strictEqual(isScssVariable('$background'), true);
       assert.strictEqual(isScssVariable('16px'), false);
       assert.strictEqual(isScssVariable('var(--cds-spacing-05)'), false);
+    });
+
+    it('should identify negative SCSS variables', () => {
+      assert.strictEqual(isScssVariable('-$spacing-05'), true);
+      assert.strictEqual(isScssVariable('-$spacing-07'), true);
+      assert.strictEqual(isScssVariable('-$spacing-01'), true);
+    });
+
+    it('should reject non-SCSS values', () => {
+      assert.strictEqual(isScssVariable('-16px'), false);
+      assert.strictEqual(isScssVariable('16px'), false);
+      assert.strictEqual(isScssVariable('-1rem'), false);
     });
   });
 
@@ -142,6 +157,175 @@ describe('validators', () => {
 
     it('should handle extra whitespace', () => {
       assert.deepStrictEqual(parseValue('  16px  24px  '), ['16px', '24px']);
+    });
+  });
+
+  describe('cleanScssValue', () => {
+    it('should strip SCSS interpolation syntax', () => {
+      assert.strictEqual(cleanScssValue('#{$spacing-05}'), '$spacing-05');
+      assert.strictEqual(cleanScssValue('#{$background}'), '$background');
+      assert.strictEqual(
+        cleanScssValue('#{$layer-accent-01}'),
+        '$layer-accent-01'
+      );
+    });
+
+    it('should strip SCSS module namespaces', () => {
+      assert.strictEqual(cleanScssValue('spacing.$spacing-05'), '$spacing-05');
+      assert.strictEqual(cleanScssValue('theme.$background'), '$background');
+      assert.strictEqual(
+        cleanScssValue('motion.$duration-fast-01'),
+        '$duration-fast-01'
+      );
+    });
+
+    it('should handle both interpolation and namespace', () => {
+      assert.strictEqual(
+        cleanScssValue('#{spacing.$spacing-05}'),
+        '$spacing-05'
+      );
+      assert.strictEqual(cleanScssValue('#{theme.$layer}'), '$layer');
+    });
+
+    it('should leave plain tokens unchanged', () => {
+      assert.strictEqual(cleanScssValue('$spacing-05'), '$spacing-05');
+      assert.strictEqual(cleanScssValue('$background'), '$background');
+    });
+
+    it('should handle values without tokens', () => {
+      assert.strictEqual(cleanScssValue('16px'), '16px');
+      assert.strictEqual(cleanScssValue('transparent'), 'transparent');
+    });
+
+    it('should trim whitespace', () => {
+      assert.strictEqual(cleanScssValue('  $spacing-05  '), '$spacing-05');
+      assert.strictEqual(cleanScssValue('  #{$spacing-05}  '), '$spacing-05');
+    });
+
+    it('should handle negative SCSS variables', () => {
+      assert.strictEqual(cleanScssValue('-$spacing-05'), '-$spacing-05');
+      assert.strictEqual(cleanScssValue('-$spacing-07'), '-$spacing-07');
+      assert.strictEqual(cleanScssValue('-$spacing-01'), '-$spacing-01');
+    });
+
+    it('should handle negative with interpolation', () => {
+      assert.strictEqual(cleanScssValue('-#{$spacing-05}'), '-$spacing-05');
+      assert.strictEqual(cleanScssValue('-#{$spacing-07}'), '-$spacing-07');
+    });
+
+    it('should handle negative with namespace', () => {
+      assert.strictEqual(
+        cleanScssValue('-spacing.$spacing-05'),
+        '-$spacing-05'
+      );
+      assert.strictEqual(cleanScssValue('-theme.$layer'), '-$layer');
+    });
+
+    it('should handle negative with both interpolation and namespace', () => {
+      assert.strictEqual(
+        cleanScssValue('-#{spacing.$spacing-05}'),
+        '-$spacing-05'
+      );
+    });
+  });
+
+  describe('isSpacingTransformFunction', () => {
+    it('should identify translate functions', () => {
+      assert.strictEqual(
+        isSpacingTransformFunction('translate(10px, 20px)'),
+        true
+      );
+      assert.strictEqual(isSpacingTransformFunction('translateX(10px)'), true);
+      assert.strictEqual(isSpacingTransformFunction('translateY(20px)'), true);
+      assert.strictEqual(
+        isSpacingTransformFunction('translate3d(10px, 20px, 0)'),
+        true
+      );
+    });
+
+    it('should reject non-spacing transform functions', () => {
+      assert.strictEqual(isSpacingTransformFunction('rotate(45deg)'), false);
+      assert.strictEqual(isSpacingTransformFunction('scale(1.5)'), false);
+      assert.strictEqual(isSpacingTransformFunction('scaleX(2)'), false);
+      assert.strictEqual(isSpacingTransformFunction('scaleY(0.5)'), false);
+      assert.strictEqual(isSpacingTransformFunction('skew(10deg)'), false);
+      assert.strictEqual(
+        isSpacingTransformFunction('matrix(1, 0, 0, 1, 0, 0)'),
+        false
+      );
+    });
+
+    it('should handle whitespace variations', () => {
+      assert.strictEqual(
+        isSpacingTransformFunction('translate (10px, 20px)'),
+        true
+      );
+      assert.strictEqual(
+        isSpacingTransformFunction('  translateX(10px)  '),
+        true
+      );
+    });
+
+    it('should reject non-function values', () => {
+      assert.strictEqual(isSpacingTransformFunction('10px'), false);
+      assert.strictEqual(isSpacingTransformFunction('$spacing-05'), false);
+    });
+  });
+
+  describe('isGradientFunction', () => {
+    it('should identify linear gradients', () => {
+      assert.strictEqual(
+        isGradientFunction('linear-gradient(to right, red, blue)'),
+        true
+      );
+      assert.strictEqual(
+        isGradientFunction(
+          'linear-gradient(90deg, $blue-90 0%, $purple-70 100%)'
+        ),
+        true
+      );
+    });
+
+    it('should identify radial gradients', () => {
+      assert.strictEqual(
+        isGradientFunction('radial-gradient(circle, red, blue)'),
+        true
+      );
+      assert.strictEqual(
+        isGradientFunction('radial-gradient(ellipse at center, red, blue)'),
+        true
+      );
+    });
+
+    it('should identify conic gradients', () => {
+      assert.strictEqual(isGradientFunction('conic-gradient(red, blue)'), true);
+      assert.strictEqual(
+        isGradientFunction('conic-gradient(from 90deg, red, blue)'),
+        true
+      );
+    });
+
+    it('should handle whitespace variations', () => {
+      assert.strictEqual(
+        isGradientFunction('linear-gradient (to right, red, blue)'),
+        true
+      );
+      assert.strictEqual(
+        isGradientFunction('  radial-gradient(circle, red, blue)  '),
+        true
+      );
+    });
+
+    it('should reject non-gradient functions', () => {
+      assert.strictEqual(isGradientFunction('rgba(255, 0, 0, 0.5)'), false);
+      assert.strictEqual(isGradientFunction('calc(100% - 20px)'), false);
+      assert.strictEqual(isGradientFunction('var(--my-color)'), false);
+    });
+
+    it('should reject non-function values', () => {
+      assert.strictEqual(isGradientFunction('red'), false);
+      assert.strictEqual(isGradientFunction('$background'), false);
+      assert.strictEqual(isGradientFunction('#ffffff'), false);
     });
   });
 });
