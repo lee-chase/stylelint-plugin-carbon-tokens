@@ -493,6 +493,10 @@ $c4p-spacing-01: 16px;
 - `acceptUndefinedVariables`: Accepts ALL undefined variables without any
   validation
 
+**Configuration**: This option is not included in the pre-canned configs
+(`recommended`, `strict`, `light-touch`) because variable patterns are
+project-specific. Add it to your custom configuration as needed.
+
 #### Track File-Level Variables (Enabled by Default)
 
 File-level variable tracking is **enabled by default** for v4 compatibility.
