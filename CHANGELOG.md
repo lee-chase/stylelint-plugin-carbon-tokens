@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.0.3
+
+- fix: CVE-2025-69873 - Updated ajv from 8.17.1 to 8.18.0 to address security
+  vulnerability
+  - Added resolution in package.json to force ajv@^8.18.0
+
 ## 4.0.2
 
 - Various minor dependency updates.
