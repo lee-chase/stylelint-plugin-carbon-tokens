@@ -66,6 +66,7 @@
     "typescript": "^5.7.3"
   },
   "resolutions": {
+    "ajv": "^8.18.0",
     "js-yaml": "^4.1.1"
   },
   "engines": {
