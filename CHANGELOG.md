@@ -1,5 +1,35 @@
 # Changelog
 
+## 5.0.0-alpha.15 (2026-02-16)
+
+### 🐛 Bug Fixes
+
+- **validateVariables**: Now validates values assigned to variables in
+  `validateVariables` list
+  - Previously only accepted variables when used, but didn't validate their
+    assigned values
+  - Now validates both SCSS variable declarations (`$component-color: #fff;`)
+    and CSS custom property declarations (`--component-color: #fff;`)
+  - Hard-coded values assigned to validated variables are now rejected
+  - Carbon tokens assigned to validated variables are accepted
+  - Supports both exact matches and regex patterns
+  - Added comprehensive test coverage for variable declaration validation
+
+### 📝 Example
+
+```scss
+// Configuration: validateVariables: ['/^$c4p-/']
+
+// ❌ Rejected - hard-coded value assigned to validated variable
+$c4p-spacing: 16px;
+
+// ✅ Accepted - Carbon token assigned to validated variable
+$c4p-spacing: $spacing-05;
+
+// ✅ Accepted - validated variable used in property
+margin: $c4p-spacing;
+```
+
 ## 5.0.0-alpha.14 (2026-02-13)
 
 ### ✨ Features

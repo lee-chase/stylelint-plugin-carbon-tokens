@@ -449,7 +449,8 @@ properties.
 #### Accept Component-Specific Variables
 
 Use `validateVariables` to accept project-specific design tokens or component
-library variables:
+library variables. This option both validates variable declarations and accepts
+their usage:
 
 ```js
 {
@@ -462,26 +463,35 @@ library variables:
 }
 ```
 
-Now accepts matching variables:
+Validates variable declarations and accepts their usage:
 
-```css
+```scss
+// ✅ Accepted - Carbon token assigned to validated variable
+$c4p-spacing-01: $spacing-05;
+--my-component-spacing: var(--cds-spacing-05);
+
+// ❌ Rejected - hard-coded value assigned to validated variable
+$c4p-spacing-01: 16px;
+--my-component-spacing: 16px;
+
 .component {
-  /* ✅ Accepted - matches pattern */
+  /* ✅ Accepted - validated variable used in property */
   margin: $c4p-spacing-01;
   padding: var(--my-component-spacing);
 }
 
 .component {
-  /* ❌ Rejected - doesn't match pattern */
+  /* ❌ Rejected - doesn't match validateVariables pattern */
   margin: $other-spacing;
 }
 ```
 
 **Note**: `validateVariables` is different from `acceptUndefinedVariables`:
 
-- `validateVariables`: Accepts specific variable patterns (validates AND accepts
-  them)
-- `acceptUndefinedVariables`: Accepts ALL undefined variables without validation
+- `validateVariables`: Validates variable declarations AND accepts their usage
+  for specific patterns
+- `acceptUndefinedVariables`: Accepts ALL undefined variables without any
+  validation
 
 #### Track File-Level Variables (Enabled by Default)
 
