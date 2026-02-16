@@ -420,6 +420,180 @@ describe('Configuration Options', () => {
 
       assert.strictEqual(result.errored, true);
     });
+
+    it('should validate values assigned to validateVariables - reject hard-coded values', async () => {
+      const result = await stylelint.lint({
+        code: `
+          $my-component-spacing: 16px;
+          .test { margin: $my-component-spacing; }
+        `,
+        config: {
+          plugins: [configPath],
+          rules: {
+            'carbon/layout-use': [
+              true,
+              {
+                validateVariables: ['$my-component-spacing'],
+                acceptValues: [], // Clear default acceptValues
+              },
+            ],
+          },
+        },
+      });
+
+      assert.strictEqual(result.errored, true);
+      const warnings = result.results[0].warnings;
+
+      // EXPECTED: Error should be on declaration line (line 2) where hard-coded value is assigned
+      // ACTUAL: Error is on usage line (line 3) - validateVariables does NOT validate declarations
+      const declarationError = warnings.find(
+        (w) => w.line === 2 && w.text.includes('16px')
+      );
+      assert.ok(
+        declarationError,
+        'Should report error on variable declaration line (line 2), not usage line (line 3)'
+      );
+    });
+
+    it('should validate values assigned to validateVariables - accept Carbon tokens', async () => {
+      const result = await stylelint.lint({
+        code: `
+          @use '@carbon/styles/scss/spacing' as *;
+          $my-component-spacing: $spacing-05;
+          .test { margin: $my-component-spacing; }
+        `,
+        config: {
+          plugins: [configPath],
+          rules: {
+            'carbon/layout-use': [
+              true,
+              {
+                validateVariables: ['$my-component-spacing'],
+              },
+            ],
+          },
+        },
+      });
+
+      assert.strictEqual(result.errored, false);
+    });
+
+    it('should validate CSS custom property values - reject hard-coded values', async () => {
+      const result = await stylelint.lint({
+        code: `
+          :root {
+            --my-component-color: #ff0000;
+          }
+          .test { color: var(--my-component-color); }
+        `,
+        config: {
+          plugins: [configPath],
+          rules: {
+            'carbon/theme-use': [
+              true,
+              {
+                validateVariables: ['--my-component-color'],
+                acceptValues: [], // Clear default acceptValues
+              },
+            ],
+          },
+        },
+      });
+
+      assert.strictEqual(result.errored, true);
+      // Verify error is on the declaration line (line 3)
+      const declarationError = result.results[0].warnings.find(
+        (w) => w.line === 3 && w.text.includes('#ff0000')
+      );
+      assert.ok(
+        declarationError,
+        'Should report error on CSS custom property declaration line'
+      );
+    });
+
+    it('should validate CSS custom property values - accept Carbon tokens', async () => {
+      // Note: CSS custom property declarations in :root are not currently tracked
+      // like SCSS variables, so this test validates direct usage instead
+      const result = await stylelint.lint({
+        code: `
+          .test {
+            --my-component-color: var(--cds-background);
+            color: var(--my-component-color);
+          }
+        `,
+        config: {
+          plugins: [configPath],
+          rules: {
+            'carbon/theme-use': [
+              true,
+              {
+                validateVariables: ['--my-component-color'],
+                acceptCarbonCustomProp: true,
+              },
+            ],
+          },
+        },
+      });
+
+      assert.strictEqual(result.errored, false);
+    });
+
+    it('should validate regex pattern variables - reject hard-coded values', async () => {
+      const result = await stylelint.lint({
+        code: `
+          $c4p-spacing-custom: 24px;
+          .test { margin: $c4p-spacing-custom; }
+        `,
+        config: {
+          plugins: [configPath],
+          rules: {
+            'carbon/layout-use': [
+              true,
+              {
+                validateVariables: ['/^\\$c4p-/'],
+                acceptValues: [], // Clear default acceptValues
+              },
+            ],
+          },
+        },
+      });
+
+      assert.strictEqual(result.errored, true);
+      const warnings = result.results[0].warnings;
+
+      // EXPECTED: Error should be on declaration line (line 2) where hard-coded value is assigned
+      // ACTUAL: Error is on usage line (line 3) - validateVariables does NOT validate declarations
+      const declarationError = warnings.find(
+        (w) => w.line === 2 && w.text.includes('24px')
+      );
+      assert.ok(
+        declarationError,
+        'Should report error on variable declaration line (line 2), not usage line (line 3)'
+      );
+    });
+
+    it('should validate regex pattern variables - accept Carbon tokens', async () => {
+      const result = await stylelint.lint({
+        code: `
+          @use '@carbon/styles/scss/spacing' as *;
+          $c4p-spacing-custom: $spacing-07;
+          .test { margin: $c4p-spacing-custom; }
+        `,
+        config: {
+          plugins: [configPath],
+          rules: {
+            'carbon/layout-use': [
+              true,
+              {
+                validateVariables: ['/^\\$c4p-/'],
+              },
+            ],
+          },
+        },
+      });
+
+      assert.strictEqual(result.errored, false);
+    });
   });
 
   describe('Combined options', () => {

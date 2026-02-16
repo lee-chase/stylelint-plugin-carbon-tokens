@@ -472,6 +472,120 @@ export function createCarbonRule<T extends BaseRuleOptions = BaseRuleOptions>(
         });
       }
 
+      // Validate variable declarations if validateVariables is configured
+      if (options.validateVariables && options.validateVariables.length > 0) {
+        root.walkDecls((decl) => {
+          // Check if this is a SCSS variable declaration that matches validateVariables
+          if (
+            isVariableDeclaration(decl.prop) &&
+            shouldValidateProperty(decl.prop, options.validateVariables || [])
+          ) {
+            // Validate the value assigned to this variable
+            const values = parseValue(decl.value);
+
+            for (const value of values) {
+              // Skip validation for values that are already valid (Carbon tokens, etc.)
+              let validation;
+
+              // Check for special function validation based on rule
+              if (ruleName === 'carbon/layout-use') {
+                if (isCalcExpression(value)) {
+                  validation = validateCalcExpression(value, tokens);
+                } else if (isSpacingTransformFunction(value)) {
+                  validation = validateTransformFunction(value, tokens);
+                } else {
+                  validation = validateValue(value, tokens, {
+                    acceptUndefinedVariables: options.acceptUndefinedVariables,
+                    acceptCarbonCustomProp: options.acceptCarbonCustomProp,
+                    acceptValues: options.acceptValues,
+                    carbonPrefix: options.carbonPrefix,
+                    validateVariables: [], // Don't recursively validate
+                  });
+                }
+              } else if (ruleName === 'carbon/motion-duration-use') {
+                validation = validateValue(value, tokens, {
+                  acceptUndefinedVariables: options.acceptUndefinedVariables,
+                  acceptCarbonCustomProp: options.acceptCarbonCustomProp,
+                  acceptValues: options.acceptValues,
+                  carbonPrefix: options.carbonPrefix,
+                  validateVariables: [],
+                });
+              } else if (ruleName === 'carbon/motion-easing-use') {
+                if (isCarbonMotionFunction(value)) {
+                  validation = validateCarbonMotionFunction(value);
+                } else {
+                  validation = validateValue(value, tokens, {
+                    acceptUndefinedVariables: options.acceptUndefinedVariables,
+                    acceptCarbonCustomProp: options.acceptCarbonCustomProp,
+                    acceptValues: options.acceptValues,
+                    carbonPrefix: options.carbonPrefix,
+                    validateVariables: [],
+                  });
+                }
+              } else if (ruleName === 'carbon/type-use') {
+                if (isCarbonTypeFunction(value)) {
+                  validation = validateCarbonTypeFunction(value);
+                } else {
+                  validation = validateValue(value, tokens, {
+                    acceptUndefinedVariables: options.acceptUndefinedVariables,
+                    acceptCarbonCustomProp: options.acceptCarbonCustomProp,
+                    acceptValues: options.acceptValues,
+                    carbonPrefix: options.carbonPrefix,
+                    validateVariables: [],
+                  });
+                }
+              } else if (ruleName === 'carbon/theme-use') {
+                if (isRgbaFunction(value)) {
+                  validation = validateRgbaFunction(value, tokens);
+                } else {
+                  validation = validateValue(value, tokens, {
+                    acceptUndefinedVariables: options.acceptUndefinedVariables,
+                    acceptCarbonCustomProp: options.acceptCarbonCustomProp,
+                    acceptValues: options.acceptValues,
+                    carbonPrefix: options.carbonPrefix,
+                    validateVariables: [],
+                  });
+                }
+              } else {
+                // Default validation for other rules
+                validation = validateValue(value, tokens, {
+                  acceptUndefinedVariables: options.acceptUndefinedVariables,
+                  acceptCarbonCustomProp: options.acceptCarbonCustomProp,
+                  acceptValues: options.acceptValues,
+                  carbonPrefix: options.carbonPrefix,
+                  validateVariables: [],
+                });
+              }
+
+              if (!validation.isValid) {
+                const message = validation.suggestedFix
+                  ? messages.expected(decl.prop, value, validation.suggestedFix)
+                  : messages.rejected(
+                      decl.prop,
+                      value,
+                      validation.message || 'Invalid value'
+                    );
+
+                utils.report({
+                  message,
+                  node: decl,
+                  result,
+                  ruleName,
+                  fix: validation.suggestedFix
+                    ? () => {
+                        decl.value = decl.value.replace(
+                          value,
+                          validation.suggestedFix!
+                        );
+                      }
+                    : undefined,
+                });
+              }
+            }
+          }
+        });
+      }
+
       root.walkDecls((decl) => {
         const prop = decl.prop;
 
