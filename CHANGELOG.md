@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.0.5
+
+- fix: Completely resolve circular structure JSON serialization error in VSCode
+  - Remove `syntax` property from PostCSS nodes before reporting to prevent
+    circular references from postcss-scss's Lexer
+  - This fixes the "Converting circular structure to JSON" error that was still
+    occurring in VSCode/Bob when using the plugin
+- fix: Remove ajv resolution that was causing ESLint compatibility issues
+  - The ajv ^8.18.0 resolution (added in 4.0.3 for CVE-2025-59873) caused
+    @eslint/eslintrc to fail with "Cannot set properties of undefined"
+  - Removed the resolution to restore ESLint functionality
+
 ## 4.0.4
 
 - fix: Stylelint v17 compatibility - Fixed circular structure JSON serialization
