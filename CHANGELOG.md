@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.0.4
+
+- fix: Stylelint v17 compatibility - Fixed circular structure JSON serialization
+  error
+  - Replaced `JSON.stringify(decl)` with safe property extraction in error
+    logging
+  - Updated stylelint dependency to support both v16 and v17:
+    `"^16.26.1 || ^17.0.0"`
+  - Fixes "Converting circular structure to JSON" error in VSCode extension when
+    using Stylelint v17
+
 ## 4.0.3
 
 - fix: CVE-2025-69873 - Updated ajv from 8.17.1 to 8.18.0 to address security

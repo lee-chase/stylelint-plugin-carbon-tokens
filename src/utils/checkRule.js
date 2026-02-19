@@ -1,5 +1,5 @@
 /**
- * Copyright IBM Corp. 2020, 2024
+ * Copyright IBM Corp. 2020, 2026
  *
  * This source code is licensed under the Apache-2.0 license found in the
  * LICENSE file in the root directory of this source tree.
@@ -252,9 +252,7 @@ export default async function checkRule(
 
     if (tokenizedValue && tokenizedValue.error) {
       console.warn(
-        `Unexpected syntax in decl: ${JSON.stringify(
-          decl
-        )}. \n\n HELP. If you see this message PLEASE copy the contents of the message above and raise a github issue. Thankyou in advance for helping us to improve the tool.`
+        `Unexpected syntax in decl: prop="${decl.prop}", value="${decl.value}", source="${decl.source?.start?.line}:${decl.source?.start?.column}". \n\n HELP. If you see this message PLEASE copy the contents of the message above and raise a github issue. Thankyou in advance for helping us to improve the tool.`
       );
     } else if (tokenizedValue && tokenizedValue.warning) {
       console.warn(tokenizedValue.warning);
