@@ -370,7 +370,18 @@ export default async function checkRule(
         };
 
         reports.forEach((report) => {
-          utils.report({ ...report, fix: fixFunction });
+          // Remove circular references from the node to prevent serialization errors
+          // in VSCode extension (postcss-scss adds syntax.lexer which has circular refs)
+          // We need to keep the original node for stylelint's rangeBy() method to work,
+          // but remove the syntax property which contains the circular reference
+          if (report.node && report.node.syntax) {
+            delete report.node.syntax;
+          }
+
+          utils.report({
+            ...report,
+            fix: fixFunction,
+          });
         });
       }
     }

@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.0.5
+
+- fix: Completely resolve circular structure JSON serialization error in VSCode
+  - Remove `syntax` property from PostCSS nodes before reporting to prevent
+    circular references from postcss-scss's Lexer
+  - This fixes the "Converting circular structure to JSON" error that was still
+    occurring in VSCode/Bob when using the plugin
+
 ## 4.0.4
 
 - fix: Stylelint v17 compatibility - Fixed circular structure JSON serialization

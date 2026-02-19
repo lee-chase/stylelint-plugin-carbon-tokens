@@ -123,5 +123,3 @@ export default [
   // Prettier config (must be last to override other rules)
   eslintConfigPrettier,
 ];
-
-// Made with Bob
