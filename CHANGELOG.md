@@ -1,5 +1,17 @@
 # Changelog
 
+## 5.0.0-alpha.17 (2026-02-19)
+
+### 🐛 Bug Fixes
+
+- **stylelint v17**: Added support for Stylelint v17
+  - Updated stylelint dependency to support both v16 and v17:
+    `"^16.26.1 || ^17.0.0"`
+  - Fixes "Converting circular structure to JSON" error in VSCode extension when
+    using Stylelint v17
+  - The TypeScript rewrite in v5 already resolved the circular reference issue
+    that affected v4.x
+
 ## 5.0.0-alpha.16 (2026-02-16)
 
 ### 🔒 Security

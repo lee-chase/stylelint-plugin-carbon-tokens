@@ -1,6 +1,6 @@
 {
   "name": "stylelint-plugin-carbon-tokens",
-  "version": "5.0.0-alpha.16",
+  "version": "5.0.0-alpha.17",
   "description": "A stylelint plugin to support the use of carbon component tokens.",
   "keywords": [
     "stylelint",
@@ -45,7 +45,7 @@
     "@ibm/telemetry-js": "^1.10.2",
     "postcss-scss": "^4.0.9",
     "postcss-value-parser": "^4.2.0",
-    "stylelint": "^16.26.1"
+    "stylelint": "^16.26.1 || ^17.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
