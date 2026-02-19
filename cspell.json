@@ -66,10 +66,8 @@
     "package.json",
     "*.snap",
     "*.log",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "v5-doc-archive"
   ],
-  "words": [
-    "carbondesignsystem",
-    "descriptionless",
-  ]
+  "words": ["carbondesignsystem", "descriptionless"]
 }

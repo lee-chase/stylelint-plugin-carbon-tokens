@@ -133,7 +133,7 @@ describe('theme-layer-use rule', () => {
       fix: true,
     });
 
-    assert.ok(result.output?.includes('$layer'));
-    assert.ok(!result.output?.includes('$layer-01'));
+    assert.ok(result.code?.includes('$layer'));
+    assert.ok(!result.code?.includes('$layer-01'));
   });
 });

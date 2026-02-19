@@ -8,7 +8,13 @@ import tsparser from '@typescript-eslint/parser';
 export default [
   // Ignore patterns (migrated from .eslintignore)
   {
-    ignores: ['node_modules/', 'dist/'],
+    ignores: [
+      'node_modules/',
+      'dist/',
+      'test-*.js',
+      'test-*.mjs',
+      'debug-*.js',
+    ],
   },
   // Base configurations
   // Note: ESLint v9 changes to recommended rules:

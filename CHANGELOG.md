@@ -11,6 +11,21 @@
     using Stylelint v17
   - The TypeScript rewrite in v5 already resolved the circular reference issue
     that affected v4.x
+  - Updated test utilities to use `result.code` instead of deprecated
+    `result.output`
+- **dependencies**: Removed ajv resolution to fix ESLint compatibility
+  - The ajv@^8.18.0 resolution was causing conflicts with @eslint/eslintrc
+  - ESLint dependencies require older ajv versions that support deprecated
+    options
+- **typescript**: Updated TypeScript configuration for better module resolution
+  - Changed `moduleResolution` from `node` to `node16`
+  - Changed `module` from `ES2022` to `Node16`
+  - Fixes Stylelint type resolution issues
+- **linting**: Improved linting configuration
+  - Added eslint-disable comments for necessary `any` type usage in
+    carbon-tokens.ts
+  - Added test and debug files to ESLint ignore patterns
+  - Added v5-doc-archive to cspell ignore paths
 
 ## 5.0.0-alpha.16 (2026-02-16)
 

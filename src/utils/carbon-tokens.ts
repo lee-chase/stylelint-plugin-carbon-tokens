@@ -46,7 +46,9 @@ export function loadThemeTokens(experimentalFixTheme?: string): CarbonToken[] {
   const tokens: CarbonToken[] = [];
 
   // If experimentalFixTheme is enabled, load actual color values for auto-fix
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if (experimentalFixTheme && (themes as any)[experimentalFixTheme]) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const theme = (themes as any)[experimentalFixTheme];
 
     for (const [tokenName, colorValue] of Object.entries(theme)) {
@@ -139,6 +141,7 @@ export function loadLayoutTokens(): TokenCollection {
     const token = formatTokenName(tokenName);
 
     // Get the actual CSS value from the Carbon package
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const actualValue = (layoutPackage as any)[tokenName];
 
     // Determine which category this token belongs to
@@ -252,6 +255,7 @@ export function loadMotionTokens(): TokenCollection {
 
   for (const tokenName of durationTokenNames) {
     const token = formatTokenName(tokenName);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const actualValue = (motionPackage as any)[tokenName];
 
     if (actualValue) {
@@ -271,6 +275,7 @@ export function loadMotionTokens(): TokenCollection {
   }
 
   // Load easing tokens with actual cubic-bezier values
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const easings = (motionPackage as any).easings;
   const easingMappings = [
     {

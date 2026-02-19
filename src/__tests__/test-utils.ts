@@ -49,7 +49,7 @@ export async function testFix(
   });
 
   return {
-    fixed: result.output || code,
+    fixed: result.code || code,
     result,
   };
 }
