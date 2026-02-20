@@ -246,6 +246,15 @@ export default async function checkRule(
     localScopes.unshift('');
   }
 
+  // Remove circular references from all nodes in the tree for VSCode/Bob compatibility
+  // The circular reference comes from postcss-scss's Lexer in the syntax property
+  // We must do this before processing to ensure all nodes are clean
+  root.walk((node) => {
+    if (node.syntax) {
+      delete node.syntax;
+    }
+  });
+
   // **** walk rules and check values
   await root.walkDecls(async (decl) => {
     const tokenizedValue = tokenizeValue(decl.value);
@@ -370,14 +379,6 @@ export default async function checkRule(
         };
 
         reports.forEach((report) => {
-          // Remove circular references from the node to prevent serialization errors
-          // in VSCode extension (postcss-scss adds syntax.lexer which has circular refs)
-          // We need to keep the original node for stylelint's rangeBy() method to work,
-          // but remove the syntax property which contains the circular reference
-          if (report.node && report.node.syntax) {
-            delete report.node.syntax;
-          }
-
           utils.report({
             ...report,
             fix: fixFunction,

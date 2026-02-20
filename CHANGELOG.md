@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.0.6
+
+- fix: Resolve Stylelint v17 + vscode-stylelint v2.0.0 circular reference issue
+  - Clean all PostCSS nodes in the AST tree before processing to remove circular
+    references from postcss-scss's Lexer
+  - This fixes the "Converting circular structure to JSON" error in VSCode/Bob
+    when using vscode-stylelint v2.0.0 with Stylelint v17
+  - Related to Stylelint issue #8964
+  - The fix ensures compatibility with the "Stylelint 17 way" of handling custom
+    syntaxes
+
 ## 4.0.5
 
 - fix: Completely resolve circular structure JSON serialization error in VSCode
